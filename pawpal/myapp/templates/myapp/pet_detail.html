@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ pet.name }} - Pet Detail | PawPal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      background-color: #f9f4e8;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 60px; /* Space for footer */
+    }
+
+    .card-detail {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 50%;
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .pet-image {
+      width: 50%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .heart-icon {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      color: #e8605c;
+      font-size: 24px;
+    }
+
+    .pet-id {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .pet-info {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+
+    .pet-info p {
+      margin: 8px 0;
+    }
+
+    .story-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .story-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    /* Footer from provided code */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #8db38b;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+
+    footer div {
+      font-size: 0.7em;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    footer div a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    footer div img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+
+    .active-nav {
+      color: #e8605c;
+    }
+
+    /* Back button */
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: none;
+      border: none;
+      color: #8db38b;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-detail">
+    <a href="{% url 'adopt_catalog' %}" class="back-button">←</a>
+    <span class="heart-icon">❤️</span>
+    
+    <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" class="pet-image">
+    
+    <div class="pet-id">No. {{ pet.name }}</div>
+    
+    <div class="pet-info">
+      <p>🐶 Breed       : {{ pet.breed }}</p>
+      <p>🚻 Gender      : {{ pet.gender }}</p>
+      <p>📅 Age         : {{ pet.age }}</p>
+      <p>💉 Vaccine     : {{ pet.vaccine|default:"-" }}</p>
+      <p>♿ Disability  : {{ pet.disability|default:"-" }}</p>
+      <p>😊 Personality : {{ pet.personality|default:"-" }}</p>
+      <p>✍️ Detail      : {{ pet.detail|default:"-" }}</p>
+    </div>
+    
+    <div class="story-section">
+      <div class="story-title">My Story :</div>
+      <div>{{ pet.story|default:"" }}</div>
+    </div>
+  </div>
+  {% include 'myapp/foot.html' %}
+
+</body>
+</html>

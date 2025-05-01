@@ -1,0 +1,13 @@
+<div class="grid">
+    {% for pet in pets %}
+      <a class="card" href="/pets/{{ pet.id }}/">
+        <span class="heart-icon">❤</span>
+        <img src="{{ pet.image.url }}" alt="{{ pet.name }}" />
+        <p><strong>No. {{ pet.pet_id }}</strong></p>
+        <p>Breed: {{ pet.breed }}</p>
+        <span class="gender-icon">
+          {% if pet.gender == 'Male' %}♂{% else %}♀{% endif %}
+        </span>
+      </a>
+    {% endfor %}
+  </div>

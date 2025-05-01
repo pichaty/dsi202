@@ -1,0 +1,413 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PawPal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      background-color: #f9f4e8;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px;
+      background-color: #fff;
+    }
+
+    .logo {
+      height: 150px;
+      margin: 0 auto;
+    }
+
+    .profile-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #8c6e5d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notifications {
+      position: relative;
+      width: 35px;
+      height: 35px;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #e8605c;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      padding: 10px;
+      background-color: #8db38b;
+    }
+
+    .search-bar {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-size: 0.9em;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8db38b;
+    }
+
+    .filter-button {
+      background-color: #4e7857;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Section Title */
+    .section-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #e8605c;
+      color: white;
+      padding: 0.5em;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    
+    .pet-count {
+      font-size: 0.8em;
+      font-weight: normal;
+    }
+
+    .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 20px;
+  padding-bottom: 60px;
+}
+
+
+    /* Updated Card Style with Original Border Radius */
+    .card {
+      background-color: white;
+      border-radius: 12px; /* กลับไปเป็นค่าเดิมที่มีความมนมากขึ้น */
+      padding: 0.5em;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1); /* กลับไปเป็นเงาแบบเดิม */
+      position: relative;
+    }
+    
+    .card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 10px; /* ทำให้รูปภาพมีมุมมนเหมือนเดิม */
+    }
+    
+    .card a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .pet-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    
+    .pet-name {
+      font-weight: bold;
+      font-size: 0.9em;
+      margin: 0;
+    }
+
+    .pet-gender {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 18px;
+      font-size: 0.8em;
+      color: white;
+    }
+
+    .pet-gender.male {
+      background-color: #4088c9;
+    }
+
+    .pet-gender.female {
+      background-color: #ff69b4;
+    }
+
+    .pet-badges {
+  display: flex;
+  flex-wrap: wrap; /* This allows badges to wrap to the next line */
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.badge {
+  background-color: #f0f0f0;
+  border-radius: 20px !important;
+  padding: 3px 8px;
+  font-size: 0.75em;
+  color: #666 !important;
+  max-width: 100%; /* Ensure badges don't exceed container width */
+  white-space: normal; /* Allow text to wrap */
+  word-break: break-word; /* Break words if needed */
+  box-sizing: border-box; /* Include padding in width calculations */
+}
+    .heart-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e8605c;
+      z-index: 10;
+    }
+
+    /* No results message */
+    .no-results {
+      grid-column: span 3;
+      text-align: center;
+      padding: 20px;
+      font-size: 1em;
+      color: #8c6e5d;
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #8db38b;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+
+    footer div {
+      font-size: 0.7em;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    footer div a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    footer div img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+
+    .active-nav {
+      color: #e8605c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="profile-icon">👤</div>
+    <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" />
+    <div class="notifications">
+      <img src="{% static 'myapp/images/message_box.png' %}" alt="Noti" height="24">
+      <span class="notification-count">2</span>
+    </div>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="search...">
+      <span class="search-icon">🔍</span>
+    </div>
+    <button class="filter-button" id="filterButton">≡</button>
+  </div>
+
+  <!-- Adopt Section Title -->
+  <div class="section-title-bar">
+    <div>Adopt pets</div>
+    <div class="pet-count" id="petCount"></div>
+  </div>
+
+  <!-- Grid of Pets -->
+  <div class="grid" id="petsGrid">
+    {% for pet in pets %}
+    <div class="card" data-pet-name="{{ pet.name|lower }}" data-pet-breed="{{ pet.breed|lower }}" data-pet-gender="{{ pet.gender|lower }}" data-pet-detail="{{ pet.detail|lower }}">
+      <div class="heart-icon">❤</div>
+      <a href="{% url 'pet_detail' pet.id %}">
+        <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
+        <div class="pet-info">
+          <p class="pet-name">No. {{ pet.name }}</p>
+          {% if pet.gender|lower == 'male' %}
+            <span class="pet-gender male">♂</span>
+          {% elif pet.gender|lower == 'female' %}
+            <span class="pet-gender female">♀</span>
+          {% else %}
+            <span class="pet-gender">?</span>
+          {% endif %}
+        </div>
+        <div class="pet-badges">
+          <span class="badge">{{ pet.breed }}</span>
+          <span class="badge">{{ pet.age }} </span>
+          <span class="badge">{{ pet.detail }} </span>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <div class="no-results">ไม่พบสัตว์เลี้ยงที่รอการรับเลี้ยง</div>
+    {% endfor %}
+  </div>
+
+  {% include 'myapp/foot.html' %}
+
+ 
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all elements we need
+      const searchInput = document.getElementById('searchInput');
+      const filterButton = document.getElementById('filterButton');
+      const petsGrid = document.getElementById('petsGrid');
+      const petCards = document.querySelectorAll('.card');
+      const petCountElement = document.getElementById('petCount');
+      
+      // Set initial pet count
+      updatePetCount();
+      
+      // Add event listener for search input
+      searchInput.addEventListener('input', function() {
+        filterPets();
+      });
+      
+      // Add event listener for filter button (we'll just toggle gender filter for now)
+      let currentFilter = 'all';
+      filterButton.addEventListener('click', function() {
+        // Cycle through filter options: all -> male -> female -> all
+        if (currentFilter === 'all') {
+          currentFilter = 'male';
+          filterButton.textContent = '♂';
+        } else if (currentFilter === 'male') {
+          currentFilter = 'female';
+          filterButton.textContent = '♀';
+        } else {
+          currentFilter = 'all';
+          filterButton.textContent = '≡';
+        }
+        
+        filterPets();
+      });
+      
+      // Function to filter pets based on search input and gender filter
+      function filterPets() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        let hasResults = false;
+        
+        // Remove any existing "no results" message
+        const existingNoResults = document.querySelector('.no-results');
+        if (existingNoResults) {
+          existingNoResults.remove();
+        }
+        
+        // Loop through all pet cards and filter them
+        petCards.forEach(card => {
+          const petName = card.getAttribute('data-pet-name');
+          const petBreed = card.getAttribute('data-pet-breed');
+          const petGender = card.getAttribute('data-pet-gender');
+          const petDetail = card.getAttribute('data-pet-detail');
+          
+          // Check if the card matches both search term and gender filter
+          const matchesSearch = searchTerm === '' ||
+                      petName.includes(searchTerm) ||
+                      petBreed.includes(searchTerm) ||
+                      petDetail.includes(searchTerm);
+                              
+          const matchesGender = currentFilter === 'all' || 
+                              (currentFilter === 'male' && petGender === 'male') || 
+                              (currentFilter === 'female' && petGender === 'female');
+          
+          // Show or hide the card
+          if (matchesSearch && matchesGender) {
+            card.style.display = '';
+            visibleCount++;
+            hasResults = true;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        // Add "no results" message if needed
+        if (!hasResults) {
+          const noResultsElement = document.createElement('div');
+          noResultsElement.className = 'no-results';
+          noResultsElement.textContent = 'ไม่พบสัตว์เลี้ยงที่ตรงกับการค้นหา';
+          petsGrid.appendChild(noResultsElement);
+        }
+        
+        // Update the pet count
+        updatePetCount(visibleCount);
+      }
+      
+      // Function to update the pet count display
+      function updatePetCount(count) {
+        if (count === undefined) {
+          count = petCards.length;
+        }
+        petCountElement.textContent = `แสดง ${count} ตัว`;
+      }
+    });
+  </script>
+</body>
+</html>
