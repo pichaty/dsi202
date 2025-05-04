@@ -199,73 +199,86 @@
             color: #666!important;
         }
         
+        /* แก้ไขสไตล์ของส่วน Donate */
         .donate-cards {
-    padding: 0 15px 50px;
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    scrollbar-width: none;
-}
+            padding: 0 15px 50px;
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            scrollbar-width: none;
+            margin: 0;
+            /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
+            background-color: var(--background);
+        }
 
-.donate-cards::-webkit-scrollbar {
-    display: none;
-}
+        .donate-cards::-webkit-scrollbar {
+            display: none;
+        }
 
-.donate-card.horizontal {
-    display: flex;
-    align-items: center;
-    background: white;
-    min-width: 400px;
-    border-radius: 15px;
-    padding: 20px 20px 20px 15px; /* top right bottom left */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    gap: 10px;
-}
+        .donate-card.horizontal {
+            display: flex;
+            align-items: center;
+            background: white;
+            min-width: 400px;
+            border-radius: 15px;
+            padding: 20px 20px 20px 15px; /* top right bottom left */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            gap: 10px;
+            margin: 0;
+            overflow: hidden;
+        }
 
-.donate-image-horizontal {
-    width: 120px;
-    height: 120px;
-    border-radius: 10px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
+        .donate-image-horizontal {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
 
-.donate-content {
-    flex: 1;
-}
+        .donate-content {
+            flex: 1;
+            /* เพิ่มเพื่อให้แน่ใจว่าเนื้อหาไม่ล้นออกมา */
+            overflow: hidden;
+        }
 
-.donate-card.horizontal h5 {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-}
+        .donate-card.horizontal h5 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
 
-.donate-card.horizontal p {
-    margin: 8px 0;
-    font-size: 14px;
-}
+        .donate-card.horizontal p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
 
-.paw-icon {
-    color: var(--light-orange);
-    font-size: 16px;
-    margin-left: 5px;
-}
+        .paw-icon {
+            color: var(--light-orange);
+            font-size: 16px;
+            margin-left: 5px;
+        }
 
-.donate-button.small {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 5px 10px;
-    font-size: 12px;
-    display: inline-block;
-    text-align: center;
-    text-decoration: none;
-    width: auto;
-}
-
+        /* แก้ไขปุ่ม Donate */
+        .donate-button.small {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            width: auto;
+            margin: 0;
+            box-sizing: border-box;
+            /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
+            white-space: nowrap;
+            line-height: normal;
+        }
         
-        /* Bottom Navigation - Updated to match your template */
+        /* Bottom Navigation */
         footer {
             position: fixed;
             bottom: 0;
@@ -334,28 +347,28 @@
     <div class="pet-cards">
         {% for pet in adopt_pets %}
         <a href="{% url 'pet_detail' pet.id %}" class="pet-card text-decoration-none text-dark">
-
-        <div class="pet-card">
-            {% if pet.photo %}
-                <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
-            {% else %}
-                <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
-            {% endif %}
-            <div class="favorite-icon">
-                <i class="fas fa-heart"></i>
-            </div>
-            <div class="pet-info">
-                <div class="pet-number">No. {{ pet.name}}</div>
-                <div class="pet-badges">
-                    <span class="badge">{{ pet.breed }}</span>
-                    <span class="badge">{{ pet.age }} </span>
+            <div class="pet-card">
+                {% if pet.photo %}
+                    <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
+                {% else %}
+                    <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
+                {% endif %}
+                <div class="favorite-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="pet-info">
+                    <div class="pet-number">No. {{ pet.name}}</div>
+                    <div class="pet-badges">
+                        <span class="badge">{{ pet.breed }}</span>
+                        <span class="badge">{{ pet.age }} </span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
     
-    <!-- Donate Section -->
+    <!-- Donate Section - แก้ไขโครงสร้าง -->
     <div class="section-header">
         <h3>Donate</h3>
         <a href="{% url 'donate' %}">See all</a>
@@ -376,7 +389,7 @@
                 <p>{{ case.description }}</p>
                 <a href="{% url 'donate_detail' case.id %}" class="donate-button small">Support medical expenses</a>
             </div>
-        
+        </div>
         {% endfor %}
     </div>
     
