@@ -6,6 +6,12 @@ from django.db.models import Q
 from .models import Pet
 from django.shortcuts import render
 from .models import Pet, DonationCase
+from django.shortcuts import render, get_object_or_404
+# myapp/views.py
+from .models import BlogPost, AboutContent, PetStatistics, ContactInfo  # เปลี่ยนจาก Stats เป็น PetStatistics
+
+
+
 #1. FBV: หน้า Home
 
 def home(request):
@@ -62,3 +68,39 @@ def donate_detail(request, pk):
 
 def about(request):
     return render(request, 'myapp/about.html')
+
+from django.shortcuts import render
+from .models import AboutContent, PetStatistics, BlogPost, ContactInfo
+
+# myapp/views.py
+
+def about_us(request):
+    # เปลี่ยนจาก About เป็น AboutContent
+    about = AboutContent.objects.first()
+    stats = PetStatistics.objects.first()  # เปลี่ยนจาก Stats เป็น PetStatistics
+    contact = ContactInfo.objects.first()  # เปลี่ยนจาก Contact เป็น ContactInfo
+    blog_posts = BlogPost.objects.all().order_by('-created_at')[:4]
+    
+    context = {
+        'about': about,
+        'stats': stats,
+        'contact': contact,
+        'blog_posts': blog_posts,
+    }
+    
+    return render(request, 'myapp/about.html', context)
+
+
+def blog_detail(request, blog_id=None, slug=None):
+    # ถ้าใช้ blog_id
+    if blog_id:
+        blog = get_object_or_404(BlogPost, id=blog_id)
+    # หรือถ้าใช้ slug
+    elif slug:
+        blog = get_object_or_404(BlogPost, slug=slug)
+    
+    context = {
+        'blog': blog,
+    }
+    
+    return render(request, 'myapp/blog_detail.html', context)

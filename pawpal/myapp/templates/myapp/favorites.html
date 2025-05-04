@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawPal - รายการโปรด</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom fonts */
+        :root {
+            --primary: #d55e00;
+            --secondary: #8d6e63;
+            --green: #8db38b;
+            --light-orange: #d99a56;
+            --background: #f9f4e8;
+            --accent-red: #e8605c;
+        }
+        
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--background);
+            margin: 0;
+            padding-bottom: 60px;
+        }
+        
+        .header {
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+        }
+        
+        .logo {
+            height: 150px;
+            margin: 0 auto;
+        }
+        
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .favorites-header {
+            background-color: var(--green);
+            text-align: center;
+            padding: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .pet-list {
+            padding: 15px;
+            background-color: #fff8e1;
+        }
+        
+        .pet-card-horizontal {
+            display: flex;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .pet-image-small {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        
+        .pet-info-horizontal {
+            padding: 10px;
+            flex: 1;
+        }
+        
+        .favorite-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            margin: 10px;
+            align-self: center;
+        }
+        
+        .filter-bar {
+            background-color: var(--green);
+            padding: 10px 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-option input {
+            margin-right: 5px;
+        }
+        
+        .adopt-button {
+            background-color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: none;
+            font-size: 14px;
+        }
+        
+        .empty-favorites {
+            text-align: center;
+            padding: 50px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="profile-icon">👤</div>
+        <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" />
+        <div class="favorite-icon">
+            <a href="{% url 'home' %}" class="text-decoration-none">
+                <i class="fas fa-home" style="font-size: 1.5rem; color: var(--primary);"></i>
+            </a>
+        </div>
+    </header>
+    
+    <!-- Favorites Header -->
+    <div class="favorites-header">
+        Fav Lists
+    </div>
+    
+    <!-- Favorites List -->
+    <div class="pet-list">
+        {% if pets %}
+            {% for pet in pets %}
+                <div class="pet-card-horizontal">
+                    {% if pet.photo %}
+                        <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image-small">
+                    {% else %}
+                        <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image" class="pet-image-small">
+                    {% endif %}
+                    <div class="pet-info-horizontal">
+                        <div class="fw-bold">No. {{ pet.name }}</div>
+                        <div>Breed: {{ pet.breed }}</div>
+                        <div>Gender: {{ pet.gender }}</div>
+                        <div>Age: {{ pet.age }}</div>
+                        <div>Personality: {{ pet.personality }}</div>
+                    </div>
+                    <button class="favorite-button" data-pet-id="{{ pet.id }}">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-favorites">
+                <p>คุณยังไม่มีสัตว์เลี้ยงในรายการโปรด</p>
+                <p>กดที่ไอคอนหัวใจบนการ์ดสัตว์เลี้ยงเพื่อเพิ่มในรายการโปรด</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-option">
+            <input type="radio" id="all" name="filter" checked>
+            <label for="all" class="text-white mb-0">All</label>
+        </div>
+        <a href="{% url 'adopt_catalog' %}" class="adopt-button text-decoration-none">
+            Adopt 🐾
+        </a>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript for toggling favorites
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoriteButtons = document.querySelectorAll('.favorite-button');
+    
+             favoriteButtons.forEach(button => {
+                 button.addEventListener('click', function() {
+                    const petId = this.getAttribute('data-pet-id');
+                    toggleFavorite(petId, this);
+        });
+    });
+    
+            function toggleFavorite(petId, buttonElement) {
+                 const formData = new FormData();
+                 formData.append('pet_id', petId);
+
+        // Get CSRF token
+                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+                    fetch('{% url "toggle_favorite" %}', {
+                        method: 'POST',
+                         body: formData,
+                         headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // ถ้าผู้ใช้ไม่ได้ล็อกอิน (ไม่สามารถเข้าถึงฐานข้อมูลได้)
+                    if (!data.is_favorite) {
+                    // ถ้าไม่ใช่รายการโปรด ให้ซ่อนการ์ด
+                         const petCard = buttonElement.closest('.pet-card-horizontal');
+                        petCard.style.opacity = '0';
+                         setTimeout(() => {
+                                petCard.style.display = 'none';
+                         }, 300);
+                }
+            } else if (data.status === 'redirect') {
+                // หากไม่ได้ล็อกอินให้แสดงข้อความหรือเปลี่ยนเส้นทางไปหน้าเข้าสู่ระบบ
+                alert("กรุณาล็อกอินเพื่อเพิ่มรายการโปรด");
+                window.location.href = '/accounts/login/';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
+
+
+    </script>
+</body>
+</html>
