@@ -106,38 +106,6 @@
     </div>
 </div>
 
-<!-- Bottom Navigation -->
-<footer>
-    <div>
-      <a href="/">
-        <img src="{% static 'myapp/images/icon-home.png' %}" alt="Home" />
-        Home
-      </a>
-    </div>
-    <div class="active-nav">
-      <a href="{% url 'adopt_catalog' %}">
-        <img src="{% static 'myapp/images/icon-adopt.png' %}" alt="Adopt" />
-        Adopt
-      </a>
-    </div>
-    <div>
-      <a href="/donate/">
-        <img src="{% static 'myapp/images/icon-donate.png' %}" alt="Donate" />
-        Donate
-      </a>
-    </div>
-    <div>
-      <a href="/about/">
-        <img src="{% static 'myapp/images/icon-about.png' %}" alt="About Us" />
-        About Us
-      </a>
-    </div>
- 
-   <!-- Bottom Navigation -->
-   <footer>
-    <div><a href="/"><span>🏠</span>Home</a></div>
-    <div><a href="/adopt/"><span>🐾</span>Adopt</a></div>
-    <div><a href="/donate/"><span>💰</span>Donate</a></div>
-    <div><a href="/about/"><span>ℹ️</span>About Us</a></div>
+{% include 'myapp/foot.html' %}
   </footer>
 {% endblock %}
