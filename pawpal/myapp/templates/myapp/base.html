@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawPal</title>
+    {# Ensure Font Awesome is included for icons #}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet">  {# Assuming you might have a style.css, add custom styles below or in that file #}
+    {% block extra_head %}{% endblock %}
+    <style>
+        /* Add or update your header styles here */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute space */
+            padding: 10px 15px; /* Add some padding */
+            background-color: #fff; /* Add background color if needed */
+        }
+
+        .header-left,
+        .header-center,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left {
+            /* Styles for the left side (e.g., profile icon) */
+             margin-right: 10px; /* Space between profile and logo */
+        }
+
+        .header-center {
+            flex-grow: 1; /* Allow logo area to take available space */
+            justify-content: center; /* Center the logo */
+        }
+
+        .header-right {
+            /* Styles for the right side (favorites and notifications) */
+            gap: 15px; /* Space between icons */
+             margin-left: 10px; /* Space between logo and icons */
+        }
+
+        .logo {
+            height: 60px; /* Adjust logo size as needed */
+            /* margin: 0 auto; Remove auto margin if using flexbox centering */
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #8c6e5d; /* Example color */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .favorites-icon a {
+            color: inherit; /* Inherit color from parent or set explicitly */
+            text-decoration: none;
+            display: flex; /* Use flex to center the icon */
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em; /* Adjust icon size */
+             color: #e8605c; /* Color for the heart/favorites icon */
+        }
+
+         /* Style for the combined icon if needed */
+         .favorites-icon .fa-house-heart {
+             font-size: 1.5em; /* Adjust size */
+             color: #e8605c; /* Color for the icon */
+         }
+
+
+        .notifications {
+            position: relative;
+            display: flex; /* Use flex to center the icon */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications img {
+            height: 24px; /* Adjust notification icon size */
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e8605c; /* Example color */
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main {
+            padding-top: 80px; /* Add padding to main content to avoid being hidden by fixed header */
+            padding-bottom: 60px; /* Add padding for the footer */
+        }
+        .favorites-icon-img {
+    width: 65px; /* กำหนดขนาดความกว้างของรูปภาพ */
+    height: auto; /* รักษาสัดส่วน */
+    /* อาจเพิ่ม style อื่นๆ เช่น vertical-align ถ้าจำเป็น */
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="profile-icon">👤</div> {# Profile Icon #}
+        </div>
+        <div class="header-center">
+            <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" /> {# Logo #}
+        </div>
+        <div class="header-right">
+            {# Favorites Icon (Home with Heart) - Linked to favorites page #}
+            <a href="{% url 'favorites' %}" class="favorites-icon">
+                {# ใช้แท็ก img แทน icon Font Awesome และใส่ path ไปยังรูปภาพของคุณ #}
+                <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorites-icon-img">
+            </a>
+            <div class="notifications">
+                <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
+                <span class="notification-count">2</span>
+            </div> {# Notification Icon #}
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {# Assuming foot.html contains your bottom navigation #}
+    {% include 'myapp/foot.html' %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -9,7 +9,12 @@ urlpatterns = [
     path('donate/<int:donation_id>/', views.donate_detail, name='donate_detail'),
     path('about/', views.about_us, name='about'),
     path('blog/<int:blog_id>/', views.blog_detail, name='blog_detail'),
-   
 
+
+    path('toggle-favorite/<int:pet_id>/', views.toggle_favorite, name='toggle_favorite'),
+    path('check-favorites/', views.check_favorites, name='check_favorites'),
+    path('favorites/', views.favorites_view, name='favorites'),
+    path('pets/<int:pet_id>/favorite/', views.toggle_favorite_pet, name='toggle_favorite_pet'),
 
 ]
+

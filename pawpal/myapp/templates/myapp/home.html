@@ -1,334 +1,221 @@
+{% extends 'myapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawPal - Find Your Perfect Pet</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Custom fonts */
-        :root {
-            --primary: #d55e00;
-            --secondary: #8d6e63;
-            --green: #8db38b;
-            --light-orange: #d99a56;
-            --background: #f9f4e8;
-            --accent-red: #e8605c;
-        }
-        
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: var(--background);
-            margin: 0;
-            padding-bottom: 60px;
-        }
-        
-        .header {
-            padding: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-        }
-        
-        .logo {
-            height: 150px;
-            margin: 0 auto;
-        }
-        
-        .profile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .notifications {
-            position: relative;
-        }
-        
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-red);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .personality-test-banner {
-            background-color: var(--primary);
-            border-radius: 20px;
-            padding: 15px;
-            margin: 15px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .banner-content {
-            flex: 1;
-        }
-        
-        .banner-content h2 {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 18px;
-        }
-        
-        .banner-content p {
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .btn-test {
-            background-color: white;
-            color: black;
-            border-radius: 50px;
-            padding: 5px 15px;
-            border: none;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .banner-image {
-            max-width: 10%;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            margin-top: 25px;
-        }
-        
-        .section-header h3 {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .section-header a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .pet-cards {
-            display: flex;
-            overflow-x: auto;
-            padding: 10px 15px;
-            gap: 15px;
-            scrollbar-width: none;
-        }
-        
-        .pet-cards::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .pet-card {
-            min-width: 160px;
-            border-radius: 15px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .pet-image {
-            height: 160px;
-            object-fit: cover;
-            width: 100%;
-        }
-        
-        .favorite-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .favorite-icon i {
-            color: #ccc;
-        }
-        
-        .favorite-icon i.active {
-            color: var(--accent-red);
-        }
-        
-        .pet-info {
-            padding: 10px;
-        }
-        
-        .pet-number {
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .pet-badges {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-        
-        .badge {
-            background-color: #f0f0f0;
-            border-radius: 20px !important;
-            padding: 3px 8px;
-            font-size: 12px;
-            color: #666!important;
-        }
-        
-        /* แก้ไขสไตล์ของส่วน Donate */
-        .donate-cards {
-            padding: 0 15px 50px;
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            scrollbar-width: none;
-            margin: 0;
-            /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
-            background-color: var(--background);
-        }
 
-        .donate-cards::-webkit-scrollbar {
-            display: none;
-        }
-
-        .donate-card.horizontal {
-            display: flex;
-            align-items: center;
-            background: white;
-            min-width: 400px;
-            border-radius: 15px;
-            padding: 20px 20px 20px 15px; /* top right bottom left */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            gap: 10px;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .donate-image-horizontal {
-            width: 120px;
-            height: 120px;
-            border-radius: 10px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .donate-content {
-            flex: 1;
-            /* เพิ่มเพื่อให้แน่ใจว่าเนื้อหาไม่ล้นออกมา */
-            overflow: hidden;
-        }
-
-        .donate-card.horizontal h5 {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .donate-card.horizontal p {
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .paw-icon {
-            color: var(--light-orange);
-            font-size: 16px;
-            margin-left: 5px;
-        }
-
-        /* แก้ไขปุ่ม Donate */
-        .donate-button.small {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 5px 10px;
-            font-size: 12px;
-            display: inline-block;
-            text-align: center;
-            text-decoration: none;
-            width: auto;
-            margin: 0;
-            box-sizing: border-box;
-            /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
-            white-space: nowrap;
-            line-height: normal;
-        }
-        
-        /* Bottom Navigation */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--green);
-            display: flex;
-            justify-content: space-around;
-            padding: 5px 0;
-            z-index: 1000;
-        }
-
-        footer div {
-            font-size: 0.8em;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        footer div a {
-            color: inherit;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        footer span {
-            font-size: 1.5em;
-            margin-bottom: 4px;
-        }
-
-        .active-nav {
-            color: var(--accent-red);
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="profile-icon">👤</div>
-        <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" />
-        <div class="notifications">
-            <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
-            <span class="notification-count">2</span>
-        </div>
-    </header>
+{% block extra_head %}
+  <style>
+    /* Home Page Specific Styles */
+    .personality-test-banner {
+        background-color: var(--primary);
+        border-radius: 20px;
+        padding: 15px;
+        margin: 15px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
     
-    <!-- Personality Test Banner -->
+    .banner-content {
+        flex: 1;
+    }
+    
+    .banner-content h2 {
+        font-weight: bold;
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
+    
+    .banner-content p {
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    
+    .btn-test {
+        background-color: white;
+        color: black;
+        border-radius: 50px;
+        padding: 5px 15px;
+        border: none;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .banner-image {
+        max-width: 10%;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15px;
+        margin-top: 25px;
+    }
+    
+    .section-header h3 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .section-header a {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .pet-cards {
+        display: flex;
+        overflow-x: auto;
+        padding: 10px 15px;
+        gap: 15px;
+        scrollbar-width: none;
+    }
+    
+    .pet-cards::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .pet-card {
+        min-width: 160px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .pet-image {
+        height: 160px;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    .favorite-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .favorite-icon i {
+        color: #ccc;
+    }
+    
+    .favorite-icon i.active {
+        color: var(--accent-red);
+    }
+    
+    .pet-info {
+        padding: 10px;
+    }
+    
+    .pet-number {
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .pet-badges {
+        display: flex;
+        gap: 5px;
+        margin-top: 5px;
+    }
+    
+    .badge {
+        background-color: #f0f0f0;
+        border-radius: 20px !important;
+        padding: 3px 8px;
+        font-size: 12px;
+        color: #666!important;
+    }
+    
+    /* แก้ไขสไตล์ของส่วน Donate */
+    .donate-cards {
+        padding: 0 15px 50px;
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        scrollbar-width: none;
+        margin: 0;
+        /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
+        background-color: var(--background);
+    }
+
+    .donate-cards::-webkit-scrollbar {
+        display: none;
+    }
+
+    .donate-card.horizontal {
+        display: flex;
+        align-items: center;
+        background: white;
+        min-width: 400px;
+        border-radius: 15px;
+        padding: 20px 20px 20px 15px; /* top right bottom left */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        gap: 10px;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .donate-image-horizontal {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .donate-content {
+        flex: 1;
+        /* เพิ่มเพื่อให้แน่ใจว่าเนื้อหาไม่ล้นออกมา */
+        overflow: hidden;
+    }
+
+    .donate-card.horizontal h5 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .donate-card.horizontal p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
+
+    .paw-icon {
+        color: var(--light-orange);
+        font-size: 16px;
+        margin-left: 5px;
+    }
+
+    /* แก้ไขปุ่ม Donate */
+    .donate-button.small {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 5px 10px;
+        font-size: 12px;
+        display: inline-block;
+        text-align: center;
+        text-decoration: none;
+        width: auto;
+        margin: 0;
+        box-sizing: border-box;
+        /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
+        white-space: nowrap;
+        line-height: normal;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
     <div class="personality-test-banner">
         <div class="banner-content">
             <h2>Personality Test</h2>
@@ -338,7 +225,6 @@
         <img src="{% static 'myapp/images/person_with_dog.png' %}" alt="Person with dog" class="banner-image">
     </div>
     
-    <!-- Adopt Pet Section -->
     <div class="section-header">
         <h3>Adopt pets</h3>
         <a href="{% url 'adopt_catalog' %}">See all</a>
@@ -368,7 +254,6 @@
         {% endfor %}
     </div>
     
-    <!-- Donate Section - แก้ไขโครงสร้าง -->
     <div class="section-header">
         <h3>Donate</h3>
         <a href="{% url 'donate' %}">See all</a>
@@ -392,9 +277,105 @@
         </div>
         {% endfor %}
     </div>
-    
-    {% include 'myapp/foot.html' %}
+{% endblock %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all favorite icons
+        const favoriteIcons = document.querySelectorAll('.favorite-icon');
+        
+        // Add click event to each favorite icon
+        favoriteIcons.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                // Prevent the click from bubbling up to parent links
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Get the pet ID from the closest anchor tag
+                const petCard = this.closest('a.pet-card');
+                const petId = petCard.href.split('/').filter(Boolean).pop();
+                
+                // Toggle favorite
+                toggleFavorite(petId, this);
+            });
+        });
+        
+        // Function to toggle favorite status
+        function toggleFavorite(petId, element) {
+            fetch(`/toggle-favorite/${petId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update UI based on favorite status
+                    const heartIcon = element.querySelector('i.fa-heart');
+                    if (data.is_favorite) {
+                        heartIcon.classList.add('active');
+                    } else {
+                        heartIcon.classList.remove('active');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // Check if pets are in favorites on page load
+        function checkFavoriteStatus() {
+            // Get all pet cards with IDs
+            const petCards = document.querySelectorAll('a.pet-card');
+            
+            // Extract pet IDs
+            const petIds = Array.from(petCards).map(card => {
+                return card.href.split('/').filter(Boolean).pop();
+            });
+            
+            // If no pets, return
+            if (petIds.length === 0) return;
+            
+            // Fetch favorite status for all pets
+            fetch('/check-favorites/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ pet_ids: petIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update UI based on response
+                for (const [petId, isFavorite] of Object.entries(data.favorites)) {
+                    const petCard = document.querySelector(`a.pet-card[href*="/${petId}"]`);
+                    if (petCard) {
+                        const heartIcon = petCard.querySelector('i.fa-heart');
+                        if (isFavorite) {
+                            heartIcon.classList.add('active');
+                        } else {
+                            heartIcon.classList.remove('active');
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        // Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Check favorite status on page load
+        checkFavoriteStatus();
+    });
+    
+</script>
+{% endblock %}

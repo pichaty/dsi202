@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Pet(models.Model):
@@ -22,7 +23,10 @@ class Pet(models.Model):
     photo = models.ImageField(upload_to='pets/', blank=True, null=True)
     pet_type = models.CharField(max_length=10, choices=PET_TYPE_CHOICES)
     detail = models.CharField(max_length=200, blank=True)
-    
+    favorited_by = models.ManyToManyField(User, related_name='favorite_pets', blank=True)
+
+    def __str__(self):
+        return self.name
 
     def __str__(self):
         return self.name
@@ -114,3 +118,10 @@ class ContactInfo(models.Model):
 class YourModel(models.Model):
     your_url = models.URLField(max_length=5000)
 
+class UserFavorite(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'pet')
