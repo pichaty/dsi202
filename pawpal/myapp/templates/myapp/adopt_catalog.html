@@ -1,63 +1,10 @@
+{% extends 'myapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PawPal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+
+{% block extra_head %}
   <style>
-    body {
-      font-family: 'Sarabun', sans-serif;
-      margin: 0;
-      background-color: #f9f4e8;
-    }
-
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5px;
-      background-color: #fff;
-    }
-
-    .logo {
-      height: 150px;
-      margin: 0 auto;
-    }
-
-    .profile-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: #8c6e5d;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .notifications {
-      position: relative;
-      width: 35px;
-      height: 35px;
-    }
-
-    .notification-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background-color: #e8605c;
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.7em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    /* Page specific styles for adopt_catalog.html */
+    /* Remove body styles as they are handled by base.html */
 
     /* Search Bar */
     .search-container {
@@ -109,37 +56,36 @@
       font-weight: bold;
       font-size: 1em;
     }
-    
+
     .pet-count {
       font-size: 0.8em;
       font-weight: normal;
     }
 
     .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  padding: 20px;
-  padding-bottom: 60px;
-}
-
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      padding: 20px;
+      /* padding-bottom is handled by main's padding-bottom in base.html */
+    }
 
     /* Updated Card Style with Original Border Radius */
     .card {
       background-color: white;
-      border-radius: 12px; /* กลับไปเป็นค่าเดิมที่มีความมนมากขึ้น */
+      border-radius: 12px;
       padding: 0.5em;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1); /* กลับไปเป็นเงาแบบเดิม */
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
       position: relative;
     }
-    
+
     .card img {
       width: 100%;
       aspect-ratio: 1/1;
       object-fit: cover;
-      border-radius: 10px; /* ทำให้รูปภาพมีมุมมนเหมือนเดิม */
+      border-radius: 10px;
     }
-    
+
     .card a {
       text-decoration: none;
       color: inherit;
@@ -151,7 +97,7 @@
       align-items: center;
       margin-top: 4px;
     }
-    
+
     .pet-name {
       font-weight: bold;
       font-size: 0.9em;
@@ -177,96 +123,67 @@
     }
 
     .pet-badges {
-  display: flex;
-  flex-wrap: wrap; /* This allows badges to wrap to the next line */
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.badge {
-  background-color: #f0f0f0;
-  border-radius: 20px !important;
-  padding: 3px 8px;
-  font-size: 0.75em;
-  color: #666 !important;
-  max-width: 100%; /* Ensure badges don't exceed container width */
-  white-space: normal; /* Allow text to wrap */
-  word-break: break-word; /* Break words if needed */
-  box-sizing: border-box; /* Include padding in width calculations */
-}
-    .heart-icon {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background-color: rgba(255, 255, 255, 0.7);
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e8605c;
-      z-index: 10;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      background-color: #f0f0f0;
+      border-radius: 20px !important;
+      padding: 3px 8px;
+      font-size: 0.75em;
+      color: #666 !important;
+      max-width: 100%;
+      white-space: normal;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+
+    /* Styling for the clickable heart icon */
+    .heart-icon {
+        position: absolute;
+        top: 10px; /* Adjusted position for better look */
+        right: 10px; /* Adjusted position for better look */
+        background: white; /* White background circle */
+        border-radius: 50%;
+        width: 30px; /* Increased size */
+        height: 30px; /* Increased size */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ccc; /* Default color */
+        z-index: 10;
+        cursor: pointer; /* Indicate it's clickable */
+    }
+
+    .heart-icon i {
+        color: #ccc; /* Default color of the Font Awesome icon */
+    }
+
+    .heart-icon i.active {
+        color: #e8605c; /* Color when favorited (matches accent-red) */
     }
 
     /* No results message */
     .no-results {
-      grid-column: span 3;
+      grid-column: span 3; /* Adjust span if your grid changes */
       text-align: center;
       padding: 20px;
       font-size: 1em;
       color: #8c6e5d;
     }
 
-    /* Footer */
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #8db38b;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0;
-    }
+    /* Remove footer styles as it's included via base.html */
+    /* Remove active-nav styles as they are in foot.html included by base.html */
 
-    footer div {
-      font-size: 0.7em;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    footer div a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    footer div img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 4px;
-    }
-
-    .active-nav {
-      color: #e8605c;
-    }
   </style>
-</head>
-<body>
+{% endblock %}
 
-  <!-- Header -->
-  <header>
-    <div class="profile-icon">👤</div>
-    <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" />
-    <div class="notifications">
-      <img src="{% static 'myapp/images/message_box.png' %}" alt="Noti" height="24">
-      <span class="notification-count">2</span>
-    </div>
-  </header>
+{% block content %}
+  {# Header is now part of base.html #}
 
-  <!-- Search Bar -->
   <div class="search-container">
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="search...">
@@ -275,19 +192,20 @@
     <button class="filter-button" id="filterButton">≡</button>
   </div>
 
-  <!-- Adopt Section Title -->
   <div class="section-title-bar">
     <div>Adopt pets</div>
     <div class="pet-count" id="petCount"></div>
   </div>
 
-  <!-- Grid of Pets -->
   <div class="grid" id="petsGrid">
     {% for pet in pets %}
     <div class="card" data-pet-name="{{ pet.name|lower }}" data-pet-breed="{{ pet.breed|lower }}" data-pet-gender="{{ pet.gender|lower }}" data-pet-detail="{{ pet.detail|lower }}">
-      <div class="heart-icon">❤</div>
+      {# Updated heart icon div with data-pet-id and Font Awesome icon #}
+      <div class="heart-icon" data-pet-id="{{ pet.id }}">
+          <i class="fas fa-heart"></i>
+      </div>
       <a href="{% url 'pet_detail' pet.id %}">
-        <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
+        <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
         <div class="pet-info">
           <p class="pet-name">No. {{ pet.name }}</p>
           {% if pet.gender|lower == 'male' %}
@@ -310,10 +228,12 @@
     {% endfor %}
   </div>
 
-  {% include 'myapp/foot.html' %}
+  {# Footer is now included via base.html #}
 
- 
+{% endblock %}
 
+{% block extra_scripts %}
+  {# Add the JavaScript for search, filter, and favorite functionality #}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get all elements we need
@@ -322,15 +242,17 @@
       const petsGrid = document.getElementById('petsGrid');
       const petCards = document.querySelectorAll('.card');
       const petCountElement = document.getElementById('petCount');
-      
+      // Select heart icons specifically within pet cards
+      const heartIcons = document.querySelectorAll('.card .heart-icon');
+
       // Set initial pet count
       updatePetCount();
-      
+
       // Add event listener for search input
       searchInput.addEventListener('input', function() {
         filterPets();
       });
-      
+
       // Add event listener for filter button (we'll just toggle gender filter for now)
       let currentFilter = 'all';
       filterButton.addEventListener('click', function() {
@@ -345,39 +267,39 @@
           currentFilter = 'all';
           filterButton.textContent = '≡';
         }
-        
+
         filterPets();
       });
-      
+
       // Function to filter pets based on search input and gender filter
       function filterPets() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
         let hasResults = false;
-        
+
         // Remove any existing "no results" message
         const existingNoResults = document.querySelector('.no-results');
         if (existingNoResults) {
           existingNoResults.remove();
         }
-        
+
         // Loop through all pet cards and filter them
         petCards.forEach(card => {
           const petName = card.getAttribute('data-pet-name');
           const petBreed = card.getAttribute('data-pet-breed');
           const petGender = card.getAttribute('data-pet-gender');
           const petDetail = card.getAttribute('data-pet-detail');
-          
+
           // Check if the card matches both search term and gender filter
           const matchesSearch = searchTerm === '' ||
                       petName.includes(searchTerm) ||
                       petBreed.includes(searchTerm) ||
                       petDetail.includes(searchTerm);
-                              
-          const matchesGender = currentFilter === 'all' || 
-                              (currentFilter === 'male' && petGender === 'male') || 
+
+          const matchesGender = currentFilter === 'all' ||
+                              (currentFilter === 'male' && petGender === 'male') ||
                               (currentFilter === 'female' && petGender === 'female');
-          
+
           // Show or hide the card
           if (matchesSearch && matchesGender) {
             card.style.display = '';
@@ -387,7 +309,7 @@
             card.style.display = 'none';
           }
         });
-        
+
         // Add "no results" message if needed
         if (!hasResults) {
           const noResultsElement = document.createElement('div');
@@ -395,11 +317,11 @@
           noResultsElement.textContent = 'ไม่พบสัตว์เลี้ยงที่ตรงกับการค้นหา';
           petsGrid.appendChild(noResultsElement);
         }
-        
+
         // Update the pet count
         updatePetCount(visibleCount);
       }
-      
+
       // Function to update the pet count display
       function updatePetCount(count) {
         if (count === undefined) {
@@ -407,7 +329,114 @@
         }
         petCountElement.textContent = `แสดง ${count} ตัว`;
       }
+
+        // Add click event to each heart icon
+        heartIcons.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                // Prevent the default link behavior
+                e.preventDefault();
+                e.stopPropagation();
+
+                const petId = this.getAttribute('data-pet-id');
+                toggleFavorite(petId, this);
+            });
+        });
+
+        // Function to toggle favorite status
+        function toggleFavorite(petId, element) {
+            fetch(`/pets/${petId}/favorite/`, { // Use the specific favorite toggle URL
+                method: 'POST',
+                 headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Handle cases like not logged in (status 403 Forbidden)
+                    if (response.status === 403) {
+                        console.error('Error: User not authenticated. Cannot favorite.');
+                         alert('โปรดเข้าสู่ระบบเพื่อบันทึกรายการโปรด'); // Show an alert
+                    } else {
+                        console.error('Error toggling favorite:', response.statusText);
+                    }
+                    return Promise.reject('Response not OK'); // Stop processing
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update UI based on favorite status
+                const heartIcon = element.querySelector('i.fas.fa-heart');
+                if (data.favorited) {
+                    heartIcon.classList.add('active');
+                } else {
+                    heartIcon.classList.remove('active');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+         // Check if pets are in favorites on page load
+        function checkFavoriteStatus() {
+            // Get all pet card heart icons with pet IDs
+            const heartIconsWithId = document.querySelectorAll('.card .heart-icon[data-pet-id]');
+
+
+            // Extract pet IDs
+            const petIds = Array.from(heartIconsWithId).map(icon => {
+                return icon.getAttribute('data-pet-id');
+            });
+
+            // If no pets, return
+            if (petIds.length === 0) return;
+
+            // Fetch favorite status for all pets
+            fetch('/check-favorites/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ pet_ids: petIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update UI based on response
+                for (const [petId, isFavorite] of Object.entries(data.favorites)) {
+                    const heartIconContainer = document.querySelector(`.card .heart-icon[data-pet-id="${petId}"]`);
+                    if (heartIconContainer) {
+                        const heartIcon = heartIconContainer.querySelector('i.fas.fa-heart');
+                        if (isFavorite) {
+                            heartIcon.classList.add('active');
+                        } else {
+                            heartIcon.classList.remove('active');
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Check favorite status on page load
+        // Add a small delay to ensure all elements are rendered
+        setTimeout(checkFavoriteStatus, 100);
+
+
     });
   </script>
-</body>
-</html>
+{% endblock %}

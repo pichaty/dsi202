@@ -14,22 +14,22 @@
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .banner-content {
         flex: 1;
     }
-    
+
     .banner-content h2 {
         font-weight: bold;
         margin-bottom: 5px;
         font-size: 18px;
     }
-    
+
     .banner-content p {
         margin-bottom: 15px;
         font-size: 14px;
     }
-    
+
     .btn-test {
         background-color: white;
         color: black;
@@ -39,11 +39,11 @@
         font-size: 14px;
         font-weight: bold;
     }
-    
+
     .banner-image {
         max-width: 10%;
     }
-    
+
     .section-header {
         display: flex;
         justify-content: space-between;
@@ -51,18 +51,18 @@
         padding: 0 15px;
         margin-top: 25px;
     }
-    
+
     .section-header h3 {
         font-size: 18px;
         font-weight: bold;
     }
-    
+
     .section-header a {
         color: var(--primary);
         text-decoration: none;
         font-size: 14px;
     }
-    
+
     .pet-cards {
         display: flex;
         overflow-x: auto;
@@ -70,11 +70,11 @@
         gap: 15px;
         scrollbar-width: none;
     }
-    
+
     .pet-cards::-webkit-scrollbar {
         display: none;
     }
-    
+
     .pet-card {
         min-width: 160px;
         border-radius: 15px;
@@ -83,13 +83,14 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         position: relative;
     }
-    
+
     .pet-image {
         height: 160px;
         object-fit: cover;
         width: 100%;
     }
-    
+
+    /* Favorite icon styles for pet cards on home page */
     .favorite-icon {
         position: absolute;
         top: 10px;
@@ -101,31 +102,34 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 10; /* Ensure icon is above the image link */
+        cursor: pointer; /* Indicate clickable */
     }
-    
+
     .favorite-icon i {
-        color: #ccc;
+        color: #ccc; /* Default color */
     }
-    
+
     .favorite-icon i.active {
-        color: var(--accent-red);
+        color: var(--accent-red); /* Color when favorited */
     }
-    
+
+
     .pet-info {
         padding: 10px;
     }
-    
+
     .pet-number {
         font-size: 14px;
         font-weight: bold;
     }
-    
+
     .pet-badges {
         display: flex;
         gap: 5px;
         margin-top: 5px;
     }
-    
+
     .badge {
         background-color: #f0f0f0;
         border-radius: 20px !important;
@@ -133,7 +137,7 @@
         font-size: 12px;
         color: #666!important;
     }
-    
+
     /* แก้ไขสไตล์ของส่วน Donate */
     .donate-cards {
         padding: 0 15px 50px;
@@ -224,7 +228,7 @@
         </div>
         <img src="{% static 'myapp/images/person_with_dog.png' %}" alt="Person with dog" class="banner-image">
     </div>
-    
+
     <div class="section-header">
         <h3>Adopt pets</h3>
         <a href="{% url 'adopt_catalog' %}">See all</a>
@@ -232,16 +236,18 @@
 
     <div class="pet-cards">
         {% for pet in adopt_pets %}
-        <a href="{% url 'pet_detail' pet.id %}" class="pet-card text-decoration-none text-dark">
-            <div class="pet-card">
+        {# Added data-pet-id to the clickable area or a parent div #}
+        <div class="pet-card" data-pet-id="{{ pet.id }}">
+            <div class="favorite-icon" data-pet-id="{{ pet.id }}">
+                <i class="fas fa-heart"></i>
+            </div>
+             {# Wrapped card content in a link to pet detail #}
+            <a href="{% url 'pet_detail' pet.id %}" class="text-decoration-none text-dark">
                 {% if pet.photo %}
                     <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
                 {% else %}
                     <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
                 {% endif %}
-                <div class="favorite-icon">
-                    <i class="fas fa-heart"></i>
-                </div>
                 <div class="pet-info">
                     <div class="pet-number">No. {{ pet.name}}</div>
                     <div class="pet-badges">
@@ -249,11 +255,11 @@
                         <span class="badge">{{ pet.age }} </span>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
         {% endfor %}
     </div>
-    
+
     <div class="section-header">
         <h3>Donate</h3>
         <a href="{% url 'donate' %}">See all</a>
@@ -282,54 +288,80 @@
 {% block extra_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get all favorite icons
-        const favoriteIcons = document.querySelectorAll('.favorite-icon');
-        
+        // Get all favorite icons within pet cards
+        const favoriteIcons = document.querySelectorAll('.pet-card .favorite-icon');
+
         // Add click event to each favorite icon
         favoriteIcons.forEach(icon => {
             icon.addEventListener('click', function(e) {
                 // Prevent the click from bubbling up to parent links
                 e.preventDefault();
                 e.stopPropagation();
-                
-                // Get the pet ID from the closest anchor tag
-                const petCard = this.closest('a.pet-card');
-                const petId = petCard.href.split('/').filter(Boolean).pop();
-                
+
+                // Get the pet ID from the closest parent with data-pet-id
+                const petCard = this.closest('.pet-card[data-pet-id]');
+                if (!petCard) {
+                    console.error("Could not find parent .pet-card with data-pet-id");
+                    return;
+                }
+                const petId = petCard.getAttribute('data-pet-id');
+
                 // Toggle favorite
                 toggleFavorite(petId, this);
             });
         });
-        
+
         // Function to toggle favorite status
-        function toggleFavorite(petId, element) {
-            fetch(`/toggle-favorite/${petId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    // Update UI based on favorite status
-                    const heartIcon = element.querySelector('i.fa-heart');
-                    if (data.is_favorite) {
-                        heartIcon.classList.add('active');
-                    } else {
-                        heartIcon.classList.remove('active');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        
+       function toggleFavorite(petId, element) {
+        // Corrected URL to use the standardized toggle view
+        fetch(`/toggle-favorite/${petId}/`, {
+             method: 'POST', // Ensure POST method is used
+             headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                 // Handle cases like not logged in (status 403 Forbidden)
+                if (response.status === 403) {
+                     console.error('Error: User not authenticated. Cannot favorite.');
+                     alert('โปรดเข้าสู่ระบบเพื่อบันทึกรายการโปรด'); // Show an alert
+                } else {
+                    console.error('Error toggling favorite:', response.statusText);
+                }
+                return Promise.reject('Response not OK'); // Stop processing
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update UI based on favorite status received in the response
+            const heartIcon = element.querySelector('i.fas.fa-heart');
+            if (data.is_favorite) { // Use data.is_favorite from the updated view
+                heartIcon.classList.add('active');
+            } else {
+                heartIcon.classList.remove('active');
+            }
+             console.log(`Pet ${petId} favorited status: ${data.is_favorite}`); // Log status
+             // Optional: If the view returns favorite_count, update the header badge here
+             // updateFavoriteCountInHeader(data.favorite_count); // Need this function
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    // ... rest of the script (checkFavoriteStatus function should be fine)
+
         // Check if pets are in favorites on page load
         function checkFavoriteStatus() {
-            // Get all pet cards with IDs
-            const petCards = document.querySelectorAll('a.pet-card');
-            
+             // Get all pet cards with data-pet-id
+            const petCardsWithId = document.querySelectorAll('.pet-card[data-pet-id]');
+
             // Extract pet IDs
-            const petIds = Array.from(petCards).map(card => {
-                return card.href.split('/').filter(Boolean).pop();
+            const petIds = Array.from(petCardsWithId).map(card => {
+                return card.getAttribute('data-pet-id');
             });
-            
+
             // If no pets, return
             if (petIds.length === 0) return;
-            
+
             // Fetch favorite status for all pets
             fetch('/check-favorites/', {
                 method: 'POST',
@@ -343,9 +375,10 @@
             .then(data => {
                 // Update UI based on response
                 for (const [petId, isFavorite] of Object.entries(data.favorites)) {
-                    const petCard = document.querySelector(`a.pet-card[href*="/${petId}"]`);
-                    if (petCard) {
-                        const heartIcon = petCard.querySelector('i.fa-heart');
+                    // Find the favorite icon for the specific pet ID
+                    const favoriteIcon = document.querySelector(`.pet-card[data-pet-id="${petId}"] .favorite-icon`);
+                    if (favoriteIcon) {
+                        const heartIcon = favoriteIcon.querySelector('i.fas.fa-heart');
                         if (isFavorite) {
                             heartIcon.classList.add('active');
                         } else {
@@ -356,7 +389,7 @@
             })
             .catch(error => console.error('Error:', error));
         }
-        
+
         // Get CSRF token from cookies
         function getCookie(name) {
             let cookieValue = null;
@@ -372,10 +405,10 @@
             }
             return cookieValue;
         }
-        
+
         // Check favorite status on page load
-        checkFavoriteStatus();
+        // Add a small delay to ensure all elements are rendered
+        setTimeout(checkFavoriteStatus, 100);
     });
-    
 </script>
 {% endblock %}

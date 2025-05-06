@@ -9,84 +9,74 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-    <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet">  {# Assuming you might have a style.css, add custom styles below or in that file #}
-    {% block extra_head %}{% endblock %}
+    <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet">  {# Assuming you might have a style.css #}
+
     <style>
         /* Add or update your header styles here */
-        .header {
+        header {
+            position: fixed; /* Make the header fixed at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure it's above other content */
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Distribute space */
-            padding: 10px 15px; /* Add some padding */
-            background-color: #fff; /* Add background color if needed */
+            justify-content: space-between;
+            padding: 5px; /* Match original adopt_catalog padding */
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Add a subtle shadow */
         }
 
-        .header-left,
-        .header-center,
-        .header-right {
+        .header-icon-container {
             display: flex;
             align-items: center;
+            /* Optional: Add fixed width/height if needed for consistent spacing */
         }
 
-        .header-left {
-            /* Styles for the left side (e.g., profile icon) */
-             margin-right: 10px; /* Space between profile and logo */
+        .header-icon-container.right-icons {
+            gap: 10px; /* Space between favorite and notification icons */
         }
 
-        .header-center {
-            flex-grow: 1; /* Allow logo area to take available space */
-            justify-content: center; /* Center the logo */
-        }
-
-        .header-right {
-            /* Styles for the right side (favorites and notifications) */
-            gap: 15px; /* Space between icons */
-             margin-left: 10px; /* Space between logo and icons */
-        }
 
         .logo {
-            height: 60px; /* Adjust logo size as needed */
-            /* margin: 0 auto; Remove auto margin if using flexbox centering */
+            height: 150px;
+            margin: 0 auto;
         }
 
         .profile-icon {
-            width: 32px;
-            height: 32px;
+            width: 32px; /* Keep original size */
+            height: 32px; /* Keep original size */
             border-radius: 50%;
             background-color: #8c6e5d; /* Example color */
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em;
+            font-size: 1.2em; /* Keep font size */
         }
 
-        .favorites-icon a {
-            color: inherit; /* Inherit color from parent or set explicitly */
-            text-decoration: none;
-            display: flex; /* Use flex to center the icon */
+        .favorite-icon-link { /* Renamed class to avoid conflict with pet card favorite icon */
+            display: flex; /* Use flex for centering */
             align-items: center;
             justify-content: center;
-            font-size: 1.5em; /* Adjust icon size */
-             color: #e8605c; /* Color for the heart/favorites icon */
         }
 
-         /* Style for the combined icon if needed */
-         .favorites-icon .fa-house-heart {
-             font-size: 1.5em; /* Adjust size */
-             color: #e8605c; /* Color for the icon */
-         }
-
+        .favorite-icon-img {
+            width: 60px; /* Adjust size of the favorite icon image */
+            height: auto;
+        }
 
         .notifications {
             position: relative;
-            display: flex; /* Use flex to center the icon */
+            display: flex; /* Use flex for centering */
             align-items: center;
             justify-content: center;
+            width: 40px; /* Give notification container a size */
+            height: 40px;
         }
 
         .notifications img {
-            height: 24px; /* Adjust notification icon size */
+            height: 24px; /* Keep original notification icon image height */
         }
 
         .notification-count {
@@ -105,29 +95,50 @@
         }
 
         main {
-            padding-top: 80px; /* Add padding to main content to avoid being hidden by fixed header */
+            /* Adjust padding-top based on the fixed header height */
+            /* Logo height (150px) + top/bottom padding (5px + 5px) = 160px */
+            padding-top: 160px;
             padding-bottom: 60px; /* Add padding for the footer */
         }
-        .favorites-icon-img {
-    width: 65px; /* กำหนดขนาดความกว้างของรูปภาพ */
-    height: auto; /* รักษาสัดส่วน */
-    /* อาจเพิ่ม style อื่นๆ เช่น vertical-align ถ้าจำเป็น */
-}
+
+         /* Styles for the favorite heart icon on pet cards (needed if not in a shared CSS) */
+        .favorite-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ccc; /* Default color */
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .favorite-icon i {
+            color: #ccc; /* Default color of the icon */
+        }
+
+        .favorite-icon i.active {
+            color: #e8605c; /* Color when favorited - matches var(--accent-red) */
+        }
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
+    <header>
+        <div class="header-icon-container profile">
             <div class="profile-icon">👤</div> {# Profile Icon #}
         </div>
-        <div class="header-center">
-            <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" /> {# Logo #}
-        </div>
-        <div class="header-right">
+        <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" /> {# Logo #}
+        <div class="header-icon-container right-icons">
             {# Favorites Icon (Home with Heart) - Linked to favorites page #}
-            <a href="{% url 'favorites' %}" class="favorites-icon">
+            <a href="{% url 'favorites' %}" class="favorite-icon-link"> {# Renamed class #}
                 {# ใช้แท็ก img แทน icon Font Awesome และใส่ path ไปยังรูปภาพของคุณ #}
-                <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorites-icon-img">
+                <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
             </a>
             <div class="notifications">
                 <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
