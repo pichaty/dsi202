@@ -1,191 +1,23 @@
+{% extends 'myapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawPal - My Favorites</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+
+{% block extra_head %}
     <style>
-        /* Custom fonts */
-        :root {
-            --primary: #d55e00;
-            --secondary: #8d6e63;
-            --green: #8db38b;
-            --light-orange: #d99a56;
-            --background: #f9f4e8;
-            --accent-red: #e8605c;
-        }
-        
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: var(--background);
-            margin: 0;
-            padding-bottom: 60px;
-        }
-        
-        .header {
-            padding: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-        }
-        
-        .page-title {
-            font-weight: bold;
-            font-size: 20px;
-            text-align: center;
-            flex-grow: 1;
-        }
-        
-        .profile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .notifications {
-            position: relative;
-        }
-        
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-red);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .favorites-list {
-            padding: 15px;
-        }
-        
-        .pet-item {
-            background-color: white;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            padding: 15px;
-            display: flex;
-            position: relative;
-        }
-        
-        .pet-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            object-fit: cover;
-            margin-right: 15px;
-        }
-        
-        .pet-info {
-            flex: 1;
-        }
-        
-        .pet-number {
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .pet-details {
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        
-        .pet-badges {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-        
-        .badge {
-            background-color: #f0f0f0;
-            border-radius: 20px !important;
-            padding: 3px 8px;
-            font-size: 12px;
-            color: #666 !important;
-        }
-        
-        .favorite-status {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: var(--accent-red);
-            font-size: 24px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #999;
-        }
-        
-        /* Bottom Navigation */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--green);
-            display: flex;
-            justify-content: space-around;
-            padding: 5px 0;
-            z-index: 1000;
-        }
+        /* Custom fonts and base styles are now in base.html */
 
-        footer div {
-            font-size: 0.8em;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* Page specific styles for favorites.html */
+        /* Header styles are now in base.html */
 
-        footer div a {
-            color: inherit;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        footer span {
-            font-size: 1.5em;
-            margin-bottom: 4px;
-        }
-
-        .active-nav {
-            color: var(--accent-red);
-        }
-        
         /* Filter tabs */
         .filter-tabs {
             display: flex;
             padding: 10px 15px;
             background-color: var(--green);
             justify-content: space-between;
+            /* Add padding top to avoid overlap with fixed header */
+            margin-top: 0; /* Ensure no extra top margin if not needed */
         }
-        
+
         .filter-tab {
             padding: 5px 15px;
             border-radius: 50px;
@@ -194,13 +26,84 @@
             border: none;
             font-size: 14px;
         }
-        
+
         .filter-tab.active {
             background-color: white;
             color: var(--green);
             font-weight: bold;
         }
-        
+
+        .favorites-list {
+            padding: 15px;
+        }
+
+        .pet-item {
+            background-color: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            display: flex;
+            position: relative;
+        }
+
+        .pet-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .pet-info {
+            flex: 1;
+        }
+
+        .pet-number {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .pet-details {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .pet-badges {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .badge {
+            background-color: #f0f0f0;
+            border-radius: 20px !important;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: #666 !important;
+        }
+
+        .favorite-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--accent-red);
+            font-size: 24px;
+            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #999;
+        }
+
+        /* Adopt button */
         .adopt-button {
             background-color: var(--primary);
             color: white;
@@ -215,37 +118,35 @@
             text-align: center;
             text-decoration: none;
         }
+
+        /* Adjust main content padding if needed, although base.html should handle this */
+        /* main { padding-top: ...; padding-bottom: ...; } */
     </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <a href="{% url 'home' %}" class="text-decoration-none text-dark">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <div class="page-title">Fav Lists</div>
-        <div class="notifications">
-            <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
-            <span class="notification-count">2</span>
-        </div>
-    </header>
-    
-    <!-- Filter Tabs -->
+{% endblock %}
+
+{% block content %}
+    {# The header is now provided by base.html #}
+
+    {# You might want to add a title within the content block if base.html doesn't provide one #}
+    {# For example: <h2 style="text-align: center; margin-top: 10px;">Fav Lists</h2> #}
+
+
     <div class="filter-tabs">
         <button class="filter-tab active" id="all-tab">All</button>
     </div>
-    
-    <!-- Favorites List -->
+
     <div class="favorites-list">
         {% if favorite_pets %}
             {% for pet in favorite_pets %}
             <div class="pet-item">
+                {# Wrapped pet image and info in a link to pet detail if needed #}
+                {# <a href="{% url 'pet_detail' pet.id %}" class="text-decoration-none text-dark d-flex align-items-center w-100"> #}
                 {% if pet.photo %}
                     <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
                 {% else %}
                     <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
                 {% endif %}
-                
+
                 <div class="pet-info">
                     <div class="pet-number">No. {{ pet.name }}</div>
                     <div class="pet-details">
@@ -255,13 +156,14 @@
                         Personality: {{ pet.personality }}
                     </div>
                 </div>
-                
+                {# </a> #}
+
                 <div class="favorite-status" data-pet-id="{{ pet.id }}">
                     <i class="fas fa-heart"></i>
                 </div>
             </div>
             {% endfor %}
-            
+
             <a href="{% url 'adopt_catalog' %}" class="adopt-button">Adopt</a>
         {% else %}
             <div class="empty-state">
@@ -270,9 +172,12 @@
             </div>
         {% endif %}
     </div>
-    
-    {% include 'myapp/foot.html' %}
 
+    {# The footer is now included by base.html #}
+
+{% endblock %}
+
+{% block extra_scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -284,31 +189,66 @@
                     toggleFavorite(petId, this);
                 });
             });
-            
+
             function toggleFavorite(petId, element) {
-                fetch(`/toggle-favorite/${petId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.removed) {
-                            // If pet was removed from favorites, remove the pet item from DOM
-                            element.closest('.pet-item').remove();
-                            
-                            // Check if there are any pets left
-                            const petItems = document.querySelectorAll('.pet-item');
-                            if (petItems.length === 0) {
-                                // Show empty state if no pets left
-                                const emptyState = `
-                                    <div class="empty-state">
-                                        <i class="far fa-heart"></i>
-                                        <p>You don't have any favorites yet.<br>Go add some pets to your favorites!</p>
-                                    </div>`;
-                                document.querySelector('.favorites-list').innerHTML = emptyState;
-                            }
+                 fetch(`/toggle-favorite/${petId}/`, { // Use the standardized toggle favorite URL
+                     method: 'POST', // Ensure POST method is used
+                     headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                .then(response => {
+                     if (!response.ok) {
+                        // Handle cases like not logged in (status 403 Forbidden)
+                        if (response.status === 403) {
+                             console.error('Error: User not authenticated. Cannot unfavorite.');
+                             // Optionally alert the user or redirect to login
+                             // alert('โปรดเข้าสู่ระบบเพื่อยกเลิกรายการโปรด');
+                        } else {
+                            console.error('Error toggling favorite:', response.statusText);
                         }
-                    })
-                    .catch(error => console.error('Error:', error));
+                        return Promise.reject('Response not OK'); // Stop processing
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.removed) {
+                        // If pet was removed from favorites, remove the pet item from DOM
+                        element.closest('.pet-item').remove();
+
+                        // Check if there are any pets left
+                        const petItems = document.querySelectorAll('.pet-item');
+                        if (petItems.length === 0) {
+                            // Show empty state if no pets left
+                            const emptyState = `
+                                <div class="empty-state">
+                                    <i class="far fa-heart"></i>
+                                    <p>You don't have any favorites yet.<br>Go add some pets to your favorites!</p>
+                                </div>`;
+                            document.querySelector('.favorites-list').innerHTML = emptyState;
+                        }
+                    }
+                     // Note: In the favorites page, we expect it to be removed.
+                     // If we were toggling from another page, we would check data.is_favorite
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            // Function to get CSRF token
+             function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
             }
         });
     </script>
-</body>
-</html>
+{% endblock %}

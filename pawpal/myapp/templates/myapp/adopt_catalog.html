@@ -344,7 +344,7 @@
 
         // Function to toggle favorite status
         function toggleFavorite(petId, element) {
-            fetch(`/pets/${petId}/favorite/`, { // Use the specific favorite toggle URL
+            fetch(`/toggle-favorite/${petId}/`, { // Use the specific favorite toggle URL
                 method: 'POST',
                  headers: {
                     'X-CSRFToken': getCookie('csrftoken')
