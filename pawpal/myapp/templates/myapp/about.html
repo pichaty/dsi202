@@ -1,391 +1,289 @@
+{% extends 'myapp/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawPal - About Us</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Custom fonts */
-        :root {
-            --primary: #d55e00;
-            --secondary: #8d6e63;
-            --green: #8db38b;
-            --light-orange: #d99a56;
-            --background: #f9f4e8;
-            --accent-red: #e8605c;
-        }
-        
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: var(--background);
-            margin: 0;
-            padding-bottom: 60px;
-        }
-        
-        .header {
-            padding: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-        }
-        
-        .logo {
-            height: 150px;
-            margin: 0 auto;
-        }
-        
-        .profile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .notifications {
-            position: relative;
-        }
-        
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-red);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* About Us Page Specific Styles */
-        .page-title {
-            background-color: var(--green);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .about-section {
-            background-color: #fff9e8;
-            border-radius: 10px;
-            margin: 15px;
-            padding: 20px;
-        }
-        
-        .about-section h2 {
-            color: var(--primary);
-            font-size: 20px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        
-        .about-section p {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
-        .highlight {
-            background-color: #ffece0;
-            padding: 10px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-            margin: 15px 0;
-        }
-        
-        .paw-icon {
-            color: var(--light-orange);
-        }
-        
-        .stats-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 15px;
-            text-align: center;
-        }
-        
-        .stats-title {
-            color: var(--accent-red);
-            background-color: #ffe4e3;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .stats-chart {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            height: 180px;
-            margin: 30px 0;
-        }
-        
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .triangle-point {
-            position: absolute;
-        }
-        
-        .triangle-point.top {
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-        
-        .triangle-point.left {
-            bottom: 0;
-            left: 0;
-            text-align: left;
-        }
-        
-        .triangle-point.right {
-            bottom: 0;
-            right: 0;
-            text-align: right;
-        }
-        
-        .triangle-icon {
-            font-size: 40px;
-            margin-bottom: 5px;
-            color: var(--light-orange);
-        }
-        
-        .triangle-lines {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-        
-        /* Blog section - UPDATED */
-        .blog-section {
-            margin: 15px;
-        }
-        
-        .blog-title {
-            background-color: var(--green);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .blog-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-        
-        .blog-card {
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 100%;
-        }
-        
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .blog-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            height: 100%;
-        }
-        
-        .blog-image {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
-        
-        .blog-card-content {
-            padding: 12px;
-        }
-        
-        .blog-card-title {
-            font-weight: bold;
-            font-size: 14px;
-            color: var(--secondary);
-            margin-bottom: 5px;
-        }
-        
-        .new-tag {
-            background-color: var(--accent-red);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            margin-right: 5px;
-        }
-        
-        /* Contact section */
-        .contact-section {
-            margin: 15px;
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .contact-title {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .contact-icon {
-            width: 24px;
-            margin-right: 10px;
-            color: var(--secondary);
-        }
-        
-        .contact-info {
-            font-size: 14px;
-        }
-        
-        .contact-hours {
-            display: flex;
-            align-items: flex-start;
-        }
-        
-        /* Bottom Navigation */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--green);
-            display: flex;
-            justify-content: space-around;
-            padding: 5px 0;
-            z-index: 1000;
-        }
+{% block extra_head %}
+  <style>
+    /* Custom fonts */
+    :root {
+        --primary: #d55e00;
+        --secondary: #8d6e63;
+        --green: #8db38b;
+        --light-orange: #d99a56;
+        --background: #f9f4e8;
+        --accent-red: #e8605c;
+    }
 
-        footer div {
-            font-size: 0.8em;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    body {
+        font-family: 'Sarabun', sans-serif;
+        background-color: var(--background);
+        margin: 0;
+        padding-bottom: 60px; /* Adjusted padding-bottom for fixed footer in base.html */
+    }
 
-        footer div a {
-            color: inherit;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* About Us Page Specific Styles */
+    .page-title {
+        background-color: var(--green);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
 
-        footer span {
-            font-size: 1.5em;
-            margin-bottom: 4px;
-        }
+    .about-section {
+        background-color: #fff9e8;
+        border-radius: 10px;
+        margin: 15px;
+        padding: 20px;
+    }
 
-        .active-nav {
-            color: var(--accent-red);
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="profile-icon">👤</div>
-        <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" />
-        <div class="notifications">
-            <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
-            <span class="notification-count">2</span>
-        </div>
-    </header>
-    
-    <!-- Page Title -->
+    .about-section h2 {
+        color: var(--primary);
+        font-size: 20px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .about-section p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .highlight {
+        background-color: #ffece0;
+        padding: 10px;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+        margin: 15px 0;
+    }
+
+    .paw-icon {
+        color: var(--light-orange);
+    }
+
+    .stats-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 20px 15px;
+        text-align: center;
+    }
+
+    .stats-title {
+        color: var(--accent-red);
+        background-color: #ffe4e3;
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+    }
+
+    .stats-chart {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        height: 180px;
+        margin: 30px 0;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .triangle-point {
+        position: absolute;
+    }
+
+    .triangle-point.top {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+    }
+
+    .triangle-point.left {
+        bottom: 0;
+        left: 0;
+        text-align: left;
+    }
+
+    .triangle-point.right {
+        bottom: 0;
+        right: 0;
+        text-align: right;
+    }
+
+    .triangle-icon {
+        font-size: 40px;
+        margin-bottom: 5px;
+        color: var(--light-orange);
+    }
+
+    .triangle-lines {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    /* Blog section - UPDATED */
+    .blog-section {
+        margin: 15px;
+    }
+
+    .blog-title {
+        background-color: var(--green);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .blog-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .blog-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .blog-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+
+    .blog-image {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+
+    .blog-card-content {
+        padding: 12px;
+    }
+
+    .blog-card-title {
+        font-weight: bold;
+        font-size: 14px;
+        color: var(--secondary);
+        margin-bottom: 5px;
+    }
+
+    .new-tag {
+        background-color: var(--accent-red);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+
+    /* Contact section */
+    .contact-section {
+        margin: 15px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .contact-title {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .contact-icon {
+        width: 24px;
+        margin-right: 10px;
+        color: var(--secondary);
+    }
+
+    .contact-info {
+        font-size: 14px;
+    }
+
+    .contact-hours {
+        display: flex;
+        align-items: flex-start;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
     <div class="page-title">
         About Us
     </div>
-    
-    <!-- About Us Content -->
+
     <div class="about-section">
         <h2>{{ about.what_we_do_title }} <span class="paw-icon">🐾</span></h2>
         <p>{{ about.what_we_do_content }}</p>
         <p>{{ about.what_we_do_content2 }}</p>
-        
+
         <div class="highlight">
             {{ about.tagline }}
         </div>
-        
+
         <h2>{{ about.why_we_do_title }} <span class="paw-icon">🐾</span></h2>
         <p>{{ about.why_we_do_content }}</p>
         <p>{{ about.why_we_do_content2 }}</p>
     </div>
-    
-    <!-- Stats Section -->
+
     <div class="stats-container">
         <div class="stats-title">{{ stats.stats_title }}</div>
-        
+
         <div class="stat-number">{{ stats.treated_count }}</div>
         <div class="stat-label">{{ stats.treated_label }}</div>
-        
+
         <div class="stats-chart">
-            <!-- Triangle Points -->
             <div class="triangle-point top">
                 <div class="triangle-icon">❤️</div>
                 <div class="stat-number">{{ stats.treated_count }}</div>
                 <div class="stat-label">{{ stats.treated_label }}</div>
             </div>
-            
+
             <div class="triangle-point left">
                 <div class="triangle-icon">🐱</div>
                 <div class="stat-number">{{ stats.adopted_count }}</div>
                 <div class="stat-label">{{ stats.adopted_label }}</div>
             </div>
-            
+
             <div class="triangle-point right">
                 <div class="triangle-icon">💉</div>
                 <div class="stat-number">{{ stats.neutered_count }}</div>
                 <div class="stat-label">{{ stats.neutered_label }}</div>
             </div>
-            
-            <!-- SVG Triangle Lines -->
+
             <svg class="triangle-lines" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
                 <line x1="150" y1="30" x2="30" y2="150" stroke="#e8605c" stroke-width="2" />
                 <line x1="150" y1="30" x2="270" y2="150" stroke="#e8605c" stroke-width="2" />
@@ -393,16 +291,15 @@
             </svg>
         </div>
     </div>
-    
-    <!-- Blog and Resources Section - UPDATED TO CLICKABLE IMAGES -->
+
     <div class="blog-section">
         <div class="blog-title">
             Blog and Resources
         </div>
-        
+
         <div class="blog-cards">
             {% for post in blog_posts %}
-            
+
             <a href="{{ post.url|default:'#' }}" class="blog-link" target="_blank">
 
                 <div class="blog-card">
@@ -433,7 +330,7 @@
                     </div>
                 </div>
             </a>
-            
+
             <a href="https://blog.pawpal.com/dog-health" class="blog-link">
                 <div class="blog-card">
                     <img src="{% static 'myapp/images/blog_image2.png' %}" alt="Pet adoption advice" class="blog-image">
@@ -444,7 +341,7 @@
                     </div>
                 </div>
             </a>
-            
+
             <a href="https://blog.pawpal.com/cat-care" class="blog-link">
                 <div class="blog-card">
                     <img src="{% static 'myapp/images/default_blog.png' %}" alt="Cat care" class="blog-image">
@@ -455,7 +352,7 @@
                     </div>
                 </div>
             </a>
-            
+
             <a href="https://blog.pawpal.com/vaccination" class="blog-link">
                 <div class="blog-card">
                     <img src="{% static 'myapp/images/default_blog.png' %}" alt="Pet vaccination" class="blog-image">
@@ -469,11 +366,10 @@
             {% endfor %}
         </div>
     </div>
-    
-    <!-- Contact Information -->
+
     <div class="contact-section">
         <div class="contact-title">Contact Us</div>
-        
+
         <div class="contact-item">
             <div class="contact-icon">
                 <i class="fas fa-phone"></i>
@@ -482,7 +378,7 @@
                 tel: {{ contact.phone }}
             </div>
         </div>
-        
+
         <div class="contact-item contact-hours">
             <div class="contact-icon">
                 <i class="far fa-clock"></i>
@@ -492,7 +388,7 @@
                 {{ contact.closing_days }}
             </div>
         </div>
-        
+
         <div class="contact-item">
             <div class="contact-icon">
                 <i class="fas fa-map-marker-alt"></i>
@@ -502,8 +398,8 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
-    {% include 'myapp/foot.html' %}
+{% block extra_scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
