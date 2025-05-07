@@ -14,8 +14,7 @@
             padding: 10px 15px;
             background-color: var(--green);
             justify-content: space-between;
-            /* Add padding top to avoid overlap with fixed header */
-            margin-top: 0; /* Ensure no extra top margin if not needed */
+            margin-top: 0;
         }
 
         .filter-tab {
@@ -37,12 +36,14 @@
             padding: 15px;
         }
 
+        /* ปรับ layout ของแต่ละรายการสัตว์เลี้ยงให้มี checkbox */
         .pet-item {
             background-color: white;
             border-radius: 15px;
             margin-bottom: 15px;
             padding: 15px;
             display: flex;
+            align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
             position: relative;
         }
 
@@ -52,10 +53,12 @@
             border-radius: 10px;
             object-fit: cover;
             margin-right: 15px;
+            flex-shrink: 0; /* ป้องกันรูปภาพถูกย่อ */
         }
 
         .pet-info {
-            flex: 1;
+            flex-grow: 1; /* ให้ส่วนข้อมูลขยายเต็มที่ */
+            margin-right: 15px; /* เพิ่มระยะห่างระหว่างข้อมูลกับ checkbox */
         }
 
         .pet-number {
@@ -82,14 +85,54 @@
             color: #666 !important;
         }
 
+        /* ปรับตำแหน่งของ favorite status icon ให้อยู่มุมขวาบน */
         .favorite-status {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px; /* ปรับตำแหน่ง */
+            right: 10px; /* ปรับตำแหน่ง */
             color: var(--accent-red);
-            font-size: 24px;
-            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+            font-size: 20px; /* ปรับขนาดเล็กน้อย */
+            cursor: pointer;
+            z-index: 1; /* ให้อยู่เหนือเนื้อหา */
         }
+
+        /* สไตล์สำหรับ Checkbox ให้เป็นวงกลม */
+        .pet-checkbox {
+            width: 24px; /* กำหนดขนาด checkbox */
+            height: 24px;
+            margin-left: auto; /* ชิดขวา */
+            flex-shrink: 0; /* ป้องกัน checkbox ถูกย่อ */
+            /* Added styles for circular appearance */
+            -webkit-appearance: none; /* ลบการแสดงผลเริ่มต้นของ browser */
+            -moz-appearance: none;
+            appearance: none;
+            border: 2px solid #ccc; /* เพิ่มเส้นขอบ */
+            border-radius: 50%; /* ทำให้เป็นวงกลม */
+            outline: none; /* ลบเส้น outline เวลา focus */
+            cursor: pointer; /* เปลี่ยน cursor เมื่อชี้ */
+            position: relative; /* จำเป็นสำหรับการวางตำแหน่งเครื่องหมายถูก */
+            background-color: white; /* ตั้งพื้นหลังเป็นสีขาว */
+        }
+
+        /* สไตล์เมื่อ Checkbox ถูกเลือก */
+        .pet-checkbox:checked {
+            border-color: var(--green); /* เปลี่ยนสีขอบ */
+            background-color: var(--green); /* เปลี่ยนสีพื้นหลัง */
+        }
+
+        /* เพิ่มเครื่องหมายถูก (checkmark) เมื่อ Checkbox ถูกเลือก */
+        .pet-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px; /* ขนาดของเครื่องหมายถูก */
+            height: 10px; /* ขนาดของเครื่องหมายถูก */
+            border: solid white; /* สีของเครื่องหมายถูก */
+            border-width: 0 3px 3px 0; /* กำหนดความหนาและรูปร่างของเส้น */
+            transform: translate(-50%, -50%) rotate(45deg); /* จัดตำแหน่งและหมุนให้เป็นเครื่องหมายถูก */
+        }
+
 
         .empty-state {
             text-align: center;
@@ -103,7 +146,14 @@
             color: #999;
         }
 
-        /* Adopt button */
+        /* ปรับปุ่ม Adopt ให้อยู่ในตำแหน่งที่ต้องการ */
+        .adopt-button-container {
+             padding: 15px;
+             background-color: var(--background); /* สีพื้นหลังเดียวกับ body */
+             padding-bottom: 70px; /* เพิ่ม padding ด้านล่างเพื่อไม่ให้ชนกับ footer */
+        }
+
+
         .adopt-button {
             background-color: var(--primary);
             color: white;
@@ -112,24 +162,17 @@
             padding: 8px 20px;
             font-size: 14px;
             font-weight: bold;
-            margin-top: 10px;
             display: block;
             width: 100%;
             text-align: center;
             text-decoration: none;
+            cursor: pointer; /* แสดงว่าเป็นปุ่มที่กดได้ */
         }
-
-        /* Adjust main content padding if needed, although base.html should handle this */
-        /* main { padding-top: ...; padding-bottom: ...; } */
     </style>
 {% endblock %}
 
 {% block content %}
     {# The header is now provided by base.html #}
-
-    {# You might want to add a title within the content block if base.html doesn't provide one #}
-    {# For example: <h2 style="text-align: center; margin-top: 10px;">Fav Lists</h2> #}
-
 
     <div class="filter-tabs">
         <button class="filter-tab active" id="all-tab">All</button>
@@ -139,8 +182,9 @@
         {% if favorite_pets %}
             {% for pet in favorite_pets %}
             <div class="pet-item">
-                {# Wrapped pet image and info in a link to pet detail if needed #}
+                {# คุณสามารถใส่ลิงก์ไปยังหน้ารายละเอียดสัตว์เลี้ยงรอบรูปหรือข้อมูลได้ที่นี่ #}
                 {# <a href="{% url 'pet_detail' pet.id %}" class="text-decoration-none text-dark d-flex align-items-center w-100"> #}
+
                 {% if pet.photo %}
                     <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
                 {% else %}
@@ -158,13 +202,16 @@
                 </div>
                 {# </a> #}
 
+                {# Icon Favorite สำหรับลบออกจากรายการโปรด #}
                 <div class="favorite-status" data-pet-id="{{ pet.id }}">
                     <i class="fas fa-heart"></i>
                 </div>
+
+                {# Checkbox สำหรับเลือกสัตว์เลี้ยงเพื่อนำไปสู่การ Adopt #}
+                <input type="checkbox" class="pet-checkbox" data-pet-id="{{ pet.id }}">
             </div>
             {% endfor %}
 
-            <a href="{% url 'adopt_catalog' %}" class="adopt-button">Adopt</a>
         {% else %}
             <div class="empty-state">
                 <i class="far fa-heart"></i>
@@ -172,6 +219,15 @@
             </div>
         {% endif %}
     </div>
+
+    {# ปุ่ม Adopt อยู่ใน main content #}
+     {% if favorite_pets %}
+    <div class="adopt-button-container">
+        {# เปลี่ยนจาก a tag เป็น button และเพิ่ม id เพื่อให้ JavaScript อ้างอิงได้ #}
+        <button class="adopt-button" id="adoptSelectedButton">Let's Adopt </button>
+    </div>
+    {% endif %}
+
 
     {# The footer is now included by base.html #}
 
@@ -181,7 +237,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle favorite toggles in favorites page
+            // Handle favorite toggles in favorites page (unfavorite)
             const favoriteIcons = document.querySelectorAll('.favorite-status');
             favoriteIcons.forEach(icon => {
                 icon.addEventListener('click', function() {
@@ -190,6 +246,7 @@
                 });
             });
 
+            // Function to toggle favorite status (used for unfavoriting from this page)
             function toggleFavorite(petId, element) {
                  fetch(`/toggle-favorite/${petId}/`, { // Use the standardized toggle favorite URL
                      method: 'POST', // Ensure POST method is used
@@ -199,15 +256,12 @@
                 })
                 .then(response => {
                      if (!response.ok) {
-                        // Handle cases like not logged in (status 403 Forbidden)
                         if (response.status === 403) {
                              console.error('Error: User not authenticated. Cannot unfavorite.');
-                             // Optionally alert the user or redirect to login
-                             // alert('โปรดเข้าสู่ระบบเพื่อยกเลิกรายการโปรด');
                         } else {
                             console.error('Error toggling favorite:', response.statusText);
                         }
-                        return Promise.reject('Response not OK'); // Stop processing
+                        return Promise.reject('Response not OK');
                     }
                     return response.json();
                 })
@@ -226,6 +280,11 @@
                                     <p>You don't have any favorites yet.<br>Go add some pets to your favorites!</p>
                                 </div>`;
                             document.querySelector('.favorites-list').innerHTML = emptyState;
+                             // Hide the adopt button container if no pets are left
+                            const adoptButtonContainer = document.querySelector('.adopt-button-container');
+                            if (adoptButtonContainer) {
+                                adoptButtonContainer.style.display = 'none';
+                            }
                         }
                     }
                      // Note: In the favorites page, we expect it to be removed.
@@ -233,6 +292,31 @@
                 })
                 .catch(error => console.error('Error:', error));
             }
+
+            // Handle Adopt Selected Pets button click
+            const adoptSelectedButton = document.getElementById('adoptSelectedButton');
+            if (adoptSelectedButton) {
+                adoptSelectedButton.addEventListener('click', function() {
+                    const selectedPetIds = [];
+                    // Find all checked checkboxes
+                    const checkboxes = document.querySelectorAll('.pet-checkbox:checked');
+                    checkboxes.forEach(checkbox => {
+                        selectedPetIds.push(checkbox.getAttribute('data-pet-id'));
+                    });
+
+                    if (selectedPetIds.length > 0) {
+                        // Redirect to the adoption form page with selected pet IDs
+                        // Assuming your adoption form page can handle a list of pet IDs
+                        // Example: /adopt/apply/?pets=id1,id2,id3
+                        window.location.href = `/adopt/apply/?pets=${selectedPetIds.join(',')}`;
+                        // Note: You will need to create or update the view and URL for /adopt/apply/
+                        // to handle these pet IDs and display the form appropriately.
+                    } else {
+                        alert('โปรดเลือกสัตว์เลี้ยงที่ต้องการรับเลี้ยงอย่างน้อยหนึ่งตัว');
+                    }
+                });
+            }
+
 
             // Function to get CSRF token
              function getCookie(name) {
