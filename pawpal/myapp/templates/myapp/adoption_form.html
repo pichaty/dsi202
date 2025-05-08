@@ -1,0 +1,326 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <style>
+        /* Custom fonts and base styles are in base.html */
+
+        /* Page specific styles for adoption_form.html */
+        main {
+            /* Adjust padding-top based on the fixed header height */
+            /* Logo height (150px) + top/bottom padding (5px + 5px) = 160px */
+            padding-top: 160px;
+            padding-bottom: 60px; /* Add padding for the footer */
+            background-color: var(--background); /* Set background color for the main content */
+        }
+
+        .page-content {
+            padding: 15px;
+        }
+
+        .adoption-process-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0; /* Prevent number from shrinking */
+        }
+
+        .step-content h4 {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0 0 5px 0;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .initial-enquiry-form {
+             background-color: #ffece0; /* Background color from screenshot */
+             border-radius: 15px;
+             padding: 20px;
+        }
+
+        .form-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        .form-group textarea {
+            height: 80px; /* Adjust height as needed */
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1; /* Each form group in a row takes equal space */
+        }
+
+        .submit-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .submit-button {
+            background-color: var(--secondary); /* Color from screenshot */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Styles for displaying selected pets (optional) */
+        .selected-pets-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e9e9e9; /* Light grey background */
+            border-radius: 10px;
+        }
+
+        .selected-pets-section h4 {
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .selected-pets-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .selected-pet-item {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {# The header is now provided by base.html #}
+
+    <div class="page-content">
+
+        {# Optional: Display selected pets for context #}
+        {% if selected_pets %}
+        <div class="selected-pets-section">
+            <h4>Pets you are applying for:</h4>
+            <ul class="selected-pets-list">
+                {% for pet in selected_pets %}
+                    <li class="selected-pet-item">- No. {{ pet.name }} ({{ pet.breed }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+
+        <div class="adoption-process-section">
+            <div class="section-title">Adoption process</div>
+
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Initial enquiry</h4>
+                    <p>Submit an adoption enquiry, answering some initial questions about your family, lifestyle and ideal companion.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Interview</h4>
+                    <p>Join a video call with one of our adoption coordinators to help find your perfect match. Discuss the dog's medical history, behavioural needs and more.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Home Assessment</h4>
+                    <p>Complete a home visit - either in person or virtually - with one of our staff or volunteers to ensure you have everything in place to welcome a rescue dog.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Adoption agreement</h4>
+                    <p>Sign the adoption agreement, confirming your commitment to the care of your chosen dog.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>Travel arrangements</h4>
+                    <p>Let our logistics team arrange your dog's journey to you. Collect your new best friend from a pre-arranged location and enjoy a lifetime of happiness together!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="initial-enquiry-form">
+            <div class="form-title">Initial enquiry</div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" required>
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="subdistrict">Subdistrict</label>
+                        <input type="text" id="subdistrict" name="subdistrict">
+                    </div>
+                     <div class="form-group">
+                        <label for="district">District</label>
+                        <input type="text" id="district" name="district">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="province">Province</label>
+                        <input type="text" id="province" name="province">
+                    </div>
+                     <div class="form-group">
+                        <label for="postal_code">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number">
+                    </div>
+                     <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="household">Who do you live with in your household?</label>
+                    <input type="text" id="household" name="household">
+                </div>
+
+                <div class="form-group">
+                    <label for="other_pets">Do you have any other pets? (if yes, please describe)</label>
+                    <textarea id="other_pets" name="other_pets"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="property_description">Please describe your property and its location</label>
+                     <textarea id="property_description" name="property_description"></textarea>
+                </div>
+
+                 <div class="form-group">
+                    <label for="job_working_hours">What is your job and working hours?</label>
+                    <input type="text" id="job_working_hours" name="job_working_hours">
+                </div>
+
+                 <div class="form-group">
+                    <label for="motivation">Feel free to tell us more about yourself and why you are interested in adopting</label>
+                    <textarea id="motivation" name="motivation"></textarea>
+                </div>
+
+
+                <div class="submit-button-container">
+                    {# You can add a hidden input field here to include the selected pet IDs when submitting the form #}
+                    {% if selected_pets %}
+                        <input type="hidden" name="selected_pet_ids" value="{{ selected_pets|join:',' }}">
+                    {% endif %}
+                    <button type="submit" class="submit-button">Submit</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+    {# The footer is now included by base.html #}
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    {# Add any specific JavaScript for this page here if needed for form validation or other interactions #}
+{% endblock %}

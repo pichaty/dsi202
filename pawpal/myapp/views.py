@@ -1,20 +1,16 @@
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse,JsonResponse
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from .models import Pet
-from django.shortcuts import render
-from .models import Pet, DonationCase
+import json
+from .models import Pet, UserFavorite, BlogPost, AboutContent, PetStatistics, ContactInfo, DonationCase
+
 from django.shortcuts import render, get_object_or_404
 # myapp/views.py
-from .models import BlogPost, AboutContent, PetStatistics, ContactInfo  # เปลี่ยนจาก Stats เป็น PetStatistics
-from django.http import JsonResponse
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-import json
-from django.shortcuts import get_object_or_404, render
-from .models import Pet, UserFavorite
+
 
 
 #1. FBV: หน้า Home
