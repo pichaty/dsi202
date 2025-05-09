@@ -1,0 +1,75 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <style>
+        /* เพิ่ม CSS สำหรับจัดรูปแบบหน้า Thank You ที่นี่ */
+        .thank-you-container {
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 50px; /* อาจจะต้องปรับเพื่อให้ไม่ชนกับ Header */
+            background-color: var(--background); /* ใช้สีพื้นหลังตามที่คุณมี */
+            min-height: calc(100vh - 220px); /* ปรับความสูงเผื่อ Header และ Footer */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .thank-you-message {
+            font-size: 1.2em;
+            color: #333; /* สีข้อความ */
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .house-icon {
+            font-size: 3em; /* ขนาดไอคอนบ้าน */
+            color: var(--primary); /* ใช้สีหลักของคุณ */
+            margin-bottom: 20px;
+        }
+
+         /* สไตล์ข้อความใต้ไอคอนบ้าน */
+        .message-highlight {
+            font-size: 1em;
+            color: #555;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+         /* สไตล์ไอคอนแชทเล็กๆ */
+        .chat-bubble-icon {
+            color: var(--green); /* ใช้สีเขียวของคุณ */
+            margin-left: 5px;
+        }
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {# Header และ Footer จะมาจาก base.html อยู่แล้ว #}
+
+    <div class="thank-you-container">
+         {# คุณอาจจะเพิ่มไอคอนบ้านตรงนี้ ถ้าเป็นรูปภาพ หรือใช้ Font Awesome #}
+         {# ตัวอย่างใช้ Font Awesome #}
+         <div class="house-icon">🏠</div>
+
+        <div class="thank-you-message">
+            Thank you for submitting your adoption enquiry.<br>
+            Our team will get back to you shortly<br>
+            — please keep an eye on your inbox. <i class="fas fa-comment-dots chat-bubble-icon"></i>
+        </div>
+
+         {# ถ้ามีข้อความเพิ่มเติมใต้ไอคอนบ้านตามรูป ก็สามารถเพิ่มตรงนี้ได้ #}
+         {# ตัวอย่างข้อความเพิ่มเติม #}
+         {# <div class="message-highlight">We appreciate your interest!</div> #}
+
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    {# ถ้ามี script เฉพาะหน้านี้ก็ใส่ตรงนี้ #}
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

@@ -136,4 +136,38 @@ class ContactInfoAdmin(admin.ModelAdmin):
             return False
         return super().has_add_permission(request)
 
+#adopt
+
+# ใน work/dsi202/pawpal/myapp/admin.py
+
+from django.contrib import admin
+# ตรวจสอบว่าได้ import โมเดล AdoptionApplication แล้ว
+from .models import AdoptionApplication, Pet # ตรวจสอบว่า Pet ก็ถูก import ด้วยถ้ายังไม่มี
+
+@admin.register(AdoptionApplication)
+class AdoptionApplicationAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_pets', 'is_approved')
+    list_filter = ('is_approved', 'apply_date')
+    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation')
+    date_hierarchy = 'apply_date' # เพิ่มการกรองตามวันที่สมัคร
+
+    # ฟังก์ชันสำหรับแสดงรายชื่อสัตว์เลี้ยงที่เกี่ยวข้องในรายการ
+    def display_pets(self, obj):
+        return ", ".join([pet.name for pet in obj.pets.all()])
+    display_pets.short_description = 'Applied for Pets'
+
+
+# อย่าลืมลงทะเบียนโมเดลอื่นๆ ที่คุณต้องการใน Admin Site ด้วย (ถ้ายังไม่ได้ทำ)
+# ตัวอย่าง:
+# @admin.register(Pet)
+# class PetAdmin(admin.ModelAdmin):
+#     # ... กำหนด list_display, list_filter ฯลฯ ...
+#     pass
+
+# @admin.register(UserFavorite)
+# class UserFavoriteAdmin(admin.ModelAdmin):
+#      list_display = ('user', 'pet', 'created_at')
+#      list_filter = ('user', 'pet')
+
+from .models import PetStatistics
 

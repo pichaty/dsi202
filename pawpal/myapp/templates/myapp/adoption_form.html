@@ -132,19 +132,25 @@
             cursor: pointer;
         }
 
-        /* Styles for displaying selected pets (optional) */
+      
+        /* Styles for displaying selected pets WITH images */
         .selected-pets-section {
             margin-bottom: 20px;
             padding: 15px;
-            background-color: #e9e9e9; /* Light grey background */
-            border-radius: 10px;
+            background-color: white; /* เปลี่ยนพื้นหลังเป็นสีขาว เพื่อให้เห็นเงาชัดขึ้น */
+            border-radius: 15px; /* ปรับ border-radius ให้เหมือน card อื่นๆ */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* เพิ่มเงาเพื่อให้ดูเป็นกรอบลอยขึ้นมา */
+            /* อาจเพิ่ม max-width ถ้าต้องการจำกัดความกว้างบนหน้าจอใหญ่ๆ */
+            /* max-width: 500px; */
+            /* margin: 20px auto;  ถ้าเพิ่ม max-width อาจใช้ margin auto เพื่อจัดกึ่งกลาง */
         }
 
         .selected-pets-section h4 {
-            font-size: 16px;
+            font-size: 18px;
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่างหัวข้อ */
             font-weight: bold;
+            color: #333; /* ปรับสีหัวข้อเล็กน้อย */
         }
 
         .selected-pets-list {
@@ -153,10 +159,31 @@
             margin: 0;
         }
 
-        .selected-pet-item {
-            font-size: 14px;
-            margin-bottom: 5px;
+        .selected-pet-item-with-image {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 20px; /* เพิ่ม padding ภายในแต่ละรายการให้ใหญ่ขึ้น */
+            background-color: #fffde7; /* ใช้สีเทาอ่อนสำหรับพื้นหลังของแต่ละรายการ */
+            border-radius: 10px; /* ปรับ border-radius สำหรับรายการย่อย */
+            /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* อาจเพิ่มเงาเล็กๆ ให้รายการย่อยถ้าต้องการ */
         }
+
+        .selected-pet-image {
+            width: 100px; /* เพิ่มขนาดรูปภาพให้ใหญ่ขึ้น */
+            height: 100px; /* เพิ่มขนาดรูปภาพให้ใหญ่ขึ้น */
+            object-fit: cover;
+            border-radius: 8px; /* ปรับ border-radius ของรูปภาพเล็กน้อย */
+            margin-right: 15px; /* เพิ่มระยะห่างระหว่างรูปภาพกับข้อความ */
+            flex-shrink: 0;
+        }
+
+        .selected-pet-details-text {
+            font-size: 16px; /* อาจเพิ่มขนาดตัวอักษรขึ้นเล็กน้อย */
+            color: #555; /* ปรับสีข้อความเล็กน้อย */
+            flex-grow: 1;
+        }
+        
 
     </style>
 {% endblock %}
@@ -172,12 +199,21 @@
             <h4>Pets you are applying for:</h4>
             <ul class="selected-pets-list">
                 {% for pet in selected_pets %}
-                    <li class="selected-pet-item">- No. {{ pet.name }} ({{ pet.breed }})</li>
+                    <li class="selected-pet-item-with-image"> {# เปลี่ยน class name เพื่อใช้ CSS ใหม่ #}
+                        {% if pet.photo %}
+                            <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="selected-pet-image">
+                        {% else %}
+                            {# ใช้รูป default ถ้าไม่มีรูปสัตว์เลี้ยง #}
+                            <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="selected-pet-image">
+                        {% endif %}
+                        <div class="selected-pet-details-text"> {# เพิ่ม div คลุมข้อความ #}
+                            - No. {{ pet.name }} ({{ pet.breed }})
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
         {% endif %}
-
 
         <div class="adoption-process-section">
             <div class="section-title">Adoption process</div>

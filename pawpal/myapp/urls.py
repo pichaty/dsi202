@@ -15,6 +15,7 @@ urlpatterns = [
     path('check-favorites/', views.check_favorites, name='check_favorites'),
     path('favorites/', views.favorites_view, name='favorites'),
     path('pets/<int:pet_id>/favorite/', views.toggle_favorite_pet, name='toggle_favorite_pet'),
-
+     path('adopt/apply/', views.adoption_form_view, name='adoption_form'), # URL สำหรับหน้าฟอร์ม
+    path('adopt/thank-you/', views.adoption_thank_you_view, name='adoption_thank_you'), # URL สำหรับหน้าขอบคุณ
 ]
 
