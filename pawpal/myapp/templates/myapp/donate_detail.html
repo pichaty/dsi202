@@ -20,11 +20,12 @@
      .page-header-title {
         background-color: #5B9B5F; /* สีเขียวตามรูป */
         color: white;
-        padding: 12px 15px;
+        padding: 15px 15px;
         text-align: center;
-        font-size: 18px;
-        font-weight: normal;
-        margin-top: 160px; /* เพิ่ม margin เพื่อให้เนื้อหาอยู่ใต้ header ที่ fixed */
+        font-size: 20px;
+        font-weight: 1000 ;
+        font-family: Grandstander; /* ใช้ฟอนต์ Grandstander ตามโค้ดที่คุณให้มา */
+         margin-top: 160px; 
     }
 
     /* Container สำหรับเนื้อหารายละเอียด กำหนดความกว้างสูงสุดและจัดกึ่งกลาง */
@@ -62,17 +63,18 @@
 
      /* สไตล์สำหรับไอคอนเพศใน Header */
      .pet-info-header .gender-icon {
-        width: 24px; /* กำหนดขนาดวงกลม */
-        height: 24px;
-        border-radius: 50%; /* ทำให้เป็นวงกลม */
-        background-color: #b0e0e6; /* สีฟ้าอ่อน (ตัวอย่าง) */
-        color: #007bff; /* สีไอคอน (ตัวอย่าง) */
-        font-size: 14px; /* ขนาดสัญลักษณ์เพศ */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
+        width: 30px; /* กำหนดขนาดวงกลม */
+         height: 30px;
+         border-radius: 50%; /* ทำให้เป็นวงกลม */
+         background-color: #66b0f5;
+         color: #ffffff;
+         font-size: 18px; /* ขนาดสัญลักษณ์เพศ */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-weight: 3000;
+         flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
+         font-family: 'font-awesome', sans-serif; /* ใช้ font-family ตามโค้ดที่คุณให้มา */
      }
 
       /* ตัวอย่างสีสำหรับเพศหญิง ถ้าต้องการแยกสี */
@@ -221,9 +223,7 @@
         flex-shrink: 0; /* **ป้องกันตัวเลือกการชำระเงินถูกบีบจนเล็กเกินไป** */
     }
 
-    .payment-option {
-        /* สไตล์จัดการที่ label class .payment-button */
-    }
+   
 
     .payment-option input[type="radio"] {
         display: none; /* ซ่อน Radio Button เดิม */
@@ -269,7 +269,7 @@
 
     /* ปุ่ม Donate Now */
     .donate-now-btn {
-        background-color: #ff8c42; /* สีส้มตามรูป */
+        background-color: #d55e00; /* สีส้มตามรูป */
         color: white;
         border: none;
         padding: 12px 30px;
@@ -278,12 +278,41 @@
         font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s;
-        width: 100%; /* ให้เต็มความกว้าง */
+        width: 50%; /* ให้เต็มความกว้าง */
     }
 
     .donate-now-btn:hover {
         background-color: #e0783a; /* สีส้มเข้มขึ้นเมื่อ Hover */
     }
+    /* Back button style */
+  
+    .back-button-container {
+    position: relative;
+    height: 50px; /* กำหนดความสูงเพื่อกันพื้นที่สำหรับปุ่ม Back */
+}
+
+.back-button {
+    position: absolute;
+    left: 20px; /* ระยะห่างจากขอบซ้าย */
+    top: 280;
+    padding: 8px 12px;
+    font-size: 30;
+    color: #d55e00;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 3000;
+    font-family: 'Varela Round', sans-serif;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+}
+
+.back-button:hover {
+    background-color: #e0783a;
+}
+
+
+</style>
+
 
 
 /*ส่วนRelatedPetsSectionและNavigationFooterเดิมถูกลบออกไป */
@@ -292,11 +321,14 @@
 {% endblock %}
 
 {% block content %}
-    {# ส่วน Header จะมาจาก base.html โดยอัตโนมัติ #}
-
-    <div class="page-header-title">
-        Donate
+<div class="back-button-container">
+    <a href="#" class="back-button" onclick="history.back(); return false;">← </a>
+</div>
+        
+    <div class="page-header-title"> 
+            Donate
     </div>
+    
 
     <div class="donate-detail-container">
         <div class="pet-detail-card">
@@ -305,9 +337,9 @@
                  {# แสดงไอคอนเพศใน Header นี้ด้วย #}
                  <div class="gender-icon {% if case.pet.gender|lower == 'female' %}female{% endif %}">
                     {% if case.pet.gender|lower == 'male' %}
-                        ♂ {# สัญลักษณ์เพศผู้ #}
+                        ♂
                     {% elif case.pet.gender|lower == 'female' %}
-                        ♀ {# สัญลักษณ์เพศเมีย #}
+                        ♀ 
                     {% else %}
                         ? {# สัญลักษณ์ไม่ทราบเพศ #}
                     {% endif %}
@@ -326,6 +358,7 @@
                          <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">
                     {% endif %}
                 </div>
+            
 
                 <div class="pet-details">
                     <div class="detail-row">
@@ -380,16 +413,13 @@
 
                     <div class="payment-options">
                          {# ตัวเลือก Credit Card #}
-                        <div class="payment-option">
-                            <input type="radio" id="detailCreditCard" name="paymentMethod" value="creditCard">
-                            <label for="detailCreditCard" class="payment-button">Credit Card</label>
-                        </div>
-                        {# ตัวเลือก PromptPay - ใช้รูปภาพตามรูป Screenshot #}
+            
+                        
                         <div class="payment-option">
                             <input type="radio" id="detailPromptPay" name="paymentMethod" value="promptPay" checked> {# เปลี่ยน value เป็น promptPay และ id เป็น detailPromptPay #}
                              {# ตรวจสอบให้แน่ใจว่ามีรูป promptpay.png ใน static files ของคุณ หรือใช้รูป unionpay.png เดิมก็ได้ถ้าต้องการ #}
                              <label for="detailPromptPay" class="payment-button promptpay-label"> {# เปลี่ยน class เป็น promptpay-label #}
-                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay"> {# อาจเปลี่ยนรูปเป็น promptpay.png ถ้ามี #}
+                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay"> 
                             </label>
                         </div>
                         {# สามารถเพิ่มตัวเลือกการชำระเงินอื่นๆ ได้ที่นี่ #}

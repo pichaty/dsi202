@@ -1,5 +1,5 @@
-{% extends 'myapp/base.html' %} {# สั่งให้สืบทอดจาก base.html เพื่อใช้ Header และ Footer #}
-{% load static %} {# โหลด tag สำหรับจัดการไฟล์ Static #}
+{% extends 'myapp/base.html' %} 
+{% load static %} 
 
 {% block extra_head %}
 <style>
@@ -12,21 +12,23 @@
         padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างสำหรับ Footer แบบ Fixed */
     }
 
-    /* Header Title Bar ของหน้านี้ (สีเขียว) */
-    /* Adjusted margin-top to push content below the fixed header from base.html */
+    
     .page-header-title {
         background-color: #5B9B5F; /* สีเขียวตามรูป */
         color: white;
-        padding: 12px 15px;
+        padding: 15px 15px;
         text-align: center;
-        font-size: 18px;
-        font-weight: normal;
-        margin-top: 160px; /* เพิ่ม margin เพื่อให้เนื้อหาอยู่ใต้ header ที่ fixed */
+        font-size: 20px;
+        font-weight: 1000 ;
+        font-family: Grandstander; /* ใช้ฟอนต์ Grandstander ตามโค้ดที่คุณให้มา */
+        
+         margin-top: 160px; 
     }
 
     /* พื้นที่เนื้อหาหลัก เพิ่ม padding รอบๆ */
     .content-area {
         padding: 10px;
+        padding-top: 60px; 
     }
 
     /* Card Mission Statement */
@@ -58,9 +60,10 @@
     /* ข้อความใน Mission Card */
     .mission-text {
         padding: 12px;
-        /* font-size: 13px; /* ขนาดฟอนต์เดิม */ 
+        /* font-size: 13px; /* ขนาดฟอนต์เดิม */
         font-size: 16px; /* **ขนาดฟอนต์ใหม่ที่คุณต้องการ** */
-        font-family: 'Boriboon', sans-serif; /* **ใช้ฟอนต์ Sarabun (ถ้าต้องการ)** */
+        font-family: 'Quicksand', sans-serif; /* ใช้ฟอนต์ Quicksand ตามที่คุณให้มา */
+        font-weight: 600; /* ใช้ font-weight ตามที่คุณให้มา */
         /* อาจเพิ่ม color หรือ line-height ถ้าต้องการปรับเพิ่มเติม */
     }
 
@@ -82,6 +85,9 @@
         display: flex;
         align-items: center;
         margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 18px;
+        font-family: 'outfit', sans-serif;
     }
 
     .radio-option input[type="radio"] {
@@ -118,9 +124,11 @@
     }
 
     .section-label {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: bold;
         margin-bottom: 8px;
+        display: block;
+        font-family: 'Mitr', sans-serif;
     }
 
     .payment-methods {
@@ -167,16 +175,21 @@
 
     /* ปุ่ม Donate Now */
     .donate-button {
-        background-color: #ff8c42; /* สีส้มตามรูป */
+        background-color: #d55e00; /* สีส้มตามรูป */
         color: white;
         border: none;
         border-radius: 25px; /* ทำให้ปุ่มโค้งมน */
         padding: 12px;
-        width: 100%; /* ให้เต็มความกว้าง */
+        width: 30%; /* ให้เต็มความกว้าง */
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่าง */
+        margin-left: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
+        margin-right: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
+        display: block; /* ทำให้สามารถใช้ margin auto ได้ */
+        
     }
 
     .donate-button:hover {
@@ -184,25 +197,26 @@
     }
 
     /* รายการเคสสัตว์เลี้ยง */
-    /* รายการเคสสัตว์เลี้ยง - ปรับสไตล์ตามรูปใหม่ล่าสุด */
     .pet-cases {
         margin-top: 15px;
     }
 
     .pet-case-card {
-    display: flex;
-    background-color: #f8f4d7; /* สีที่เข้มขึ้นจาก #fff3e0 */
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเล็กน้อย */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 10px;
+        display: flex;
+        background-color: #fcf6e7;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเล็กน้อย */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 10px;
+        text-decoration: none; /* **เอาขีดเส้นใต้ออก** */
+        color: inherit;
     }
 
     .pet-case-card:hover {
-    transform: translateY(-4px); /* ขยับขึ้นเล็กน้อย */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
+        transform: translateY(-4px); /* ขยับขึ้นเล็กน้อย */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
     }
 
 
@@ -237,12 +251,13 @@
     }
 
     .case-number {
-        font-size: 14px;
+        font-size: 17px;
         font-weight: bold;
-        /* margin-bottom: 5px; /* ย้าย margin-bottom ไปที่ .case-header */ 
+        /* margin-bottom: 5px; /* ย้าย margin-bottom ไปที่ .case-header */
         display: flex;
         align-items: center;
-        /* position: relative; /* ลบ position: relative ออกจาก case-number */ 
+        /* position: relative; /* ลบ position: relative ออกจาก case-number */
+        color: #614a2d;
     }
 
     .paw-icon {
@@ -251,40 +266,36 @@
         font-size: 1em; /* ขนาดเดียวกับข้อความ */
     }
 
-    /* สไตล์สำหรับไอคอนเพศ */
+    /* สไตล์สำหรับไอคอนเพศ - ใช้ฟอนต์เดียวกับ Adopt Catalog */
     .gender-icon {
-         width: 20px; /* กำหนดขนาดวงกลม */
-         height: 20px;
+         width: 30px; /* กำหนดขนาดวงกลม */
+         height: 30px;
          border-radius: 50%; /* ทำให้เป็นวงกลม */
-         background-color: #b0e0e6; /* สีฟ้าอ่อน (ตัวอย่าง อาจปรับสีตามต้องการ) */
-         color: #007bff; /* สีไอคอน (ตัวอย่าง อาจปรับสีตามต้องการ) */
-         font-size: 12px; /* ขนาดสัญลักษณ์เพศ */
+         background-color: #66b0f5;
+         color: #ffffff;
+         font-size: 18px; /* ขนาดสัญลักษณ์เพศ */
          display: flex;
          justify-content: center;
          align-items: center;
-         font-weight: bold;
+         font-weight: 3000;
          flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
+         font-family: 'font-awesome', sans-serif; /* ใช้ font-family ตามโค้ดที่คุณให้มา */
     }
 
      /* ตัวอย่างสีสำหรับเพศหญิง ถ้าต้องการแยกสี */
      .gender-icon.female {
-         background-color: #ffb6c1; /* สีชมพูอ่อน */
-         color: #ff69b4; /* สีชมพู */
+         background-color: #ff69b4; /* สีชมพูอ่อน */
+         color: #fdeef5; /* สีชมพู */
      }
-
-
-    /* สไตล์สำหรับส่วน Description of the condition */
-     .condition-section {
-        /* ไม่มีสไตล์เฉพาะมากนัก อาจใช้ padding หรือ margin ถ้าต้องการ */
-    }
 
     /* สไตล์สำหรับ Label "Description of the condition" และไอคอน */
     .condition-label {
         display: flex; /* จัดเรียงไอคอนและข้อความในแนวนอน */
         align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-        font-size: 12px; /* ขนาดฟอนต์ Label */
+        font-size: 16px; /* ขนาดฟอนต์ Label */
         font-weight: bold;
-        margin-bottom: 3px; /* ระยะห่างด้านล่าง Label */
+        margin-bottom: 8px; /* ระยะห่างด้านล่าง Label */
+        color: #523a28;
     }
 
     /* สไตล์สำหรับไอคอนสมุดโน้ต */
@@ -296,24 +307,14 @@
 
 
     .case-description {
-        font-size: 12px;
-        /* margin-bottom เดิมถูกย้ายไปที่ condition-label และด้านล่างสุดไม่มีปุ่มแล้ว */
+        font-size: 14px;
+        
     }
 
     .case-description p {
-         margin: 0; /* ลบ margin ค่า default ของ p */
-         color: #555; /* ปรับสีข้อความคำอธิบายเล็กน้อย */
+         margin: 0; 
+         color: #523a28; /* ปรับสีข้อความคำอธิบายเล็กน้อย */
     }
-
-
-    .support-button-container { /* ลบสไตล์นี้ออก เพราะไม่มีปุ่มแล้ว */
-        display: none;
-    }
-
-     .support-button { /* ลบสไตล์นี้ออก เพราะไม่มีปุ่มแล้ว */
-        display: none;
-    }
-
 
     .info-button { /* ลบสไตล์นี้ออก หรือเก็บไว้ถ้ายังมีใช้อยู่ที่อื่น */
         display: none; /* ซ่อนไอคอน Info เดิมตามรูปใหม่ */
@@ -325,18 +326,22 @@
         padding: 20px;
         color: #888;
     }
-    
+
 </style>
 {% endblock %}
 
 {% block content %}
     {# ส่วน Header จะมาจาก base.html โดยอัตโนมัติ #}
 
+    {# Header "Donate" ที่จะ Fixed #}
     <div class="page-header-title">
         Donate
     </div>
 
+    {# พื้นที่เนื้อหาหลักทั้งหมด จะมี padding ด้านบนเพิ่มขึ้น #}
     <div class="content-area">
+        {# ... เนื้อหาอื่นๆ ในหน้า Donate ทั้งหมดจะอยู่ใน div นี้ ... #}
+
         <div class="mission-card">
             <div class="pet-images-row">
                 <div class="pet-image">
@@ -357,11 +362,11 @@
             </div>
         </div>
 
-        <div class="donation-form-card">
-            {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'process_donation' #}
-            <form method="post" action="{% url 'process_donation' %}" id="donationForm">
-                {% csrf_token %} {# เพิ่ม CSRF token สำหรับความปลอดภัย #}
-
+        {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'process_donation' #}
+        <form method="post" action="{% url 'process_donation' %}" id="donationForm">
+            {% csrf_token %} {# เพิ่ม CSRF token สำหรับความปลอดภัย #}
+            
+            <div class="donation-form-card">
                 <div class="radio-options">
                     <div class="radio-option">
                         <input type="radio" id="monthlyDonation" name="donationType" value="monthly">
@@ -374,30 +379,26 @@
                 </div>
 
                 <div class="amount-field">
-                    <span class="currency-symbol">$</span> {# หรือใช้สัญลักษณ์สกุลเงินของคุณ เช่น ฿ #}
+                    <span class="currency-symbol">฿</span> {# หรือใช้สัญลักษณ์สกุลเงินของคุณ เช่น ฿ #}
                     <input type="number" name="donationAmount" value="200" min="10"> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
                 </div>
 
                 <div class="payment-section">
                     <div class="section-label">Donate By</div>
-                    <div class="payment-methods">
-                       
-                        <div class="payment-method">
-                            <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
-                            <label for="creditCard" class="payment-label">Credit Card</label>
-                        </div>
-                        
+                    <div class="payment-methods"> 
+
                          <div class="payment-method">
                              <input type="radio" id="promptPay" name="paymentMethod" value="promptPay">
                              <label for="promptPay" class="payment-label">PromptPay</label>
                          </div>
-                         
+
                     </div>
                 </div>
-
-                <button type="submit" class="donate-button">Donate Now</button>
-            </form>
-        </div>
+            </div>
+            
+            {# ปุ่ม Donate Now แยกออกจาก card แล้ว #}
+            <button type="submit" class="donate-button">Donate Now</button>
+        </form>
 
         <div class="pet-cases">
             {# วนลูปแสดงข้อมูลจาก donation_cases ที่ส่งมาจาก view #}
@@ -418,14 +419,14 @@
                    </div>
                    {# ส่วนข้อมูลด้านขวา #}
                    <div class="pet-info">
-                       <div class="case-header"> {# เพิ่ม div ใหม่สำหรับ header ด้านขวา #}
+                       <div class="case-header">
                            <div class="case-number">No. {{ case.case_id }} <span class="paw-icon">🐾</span></div> {# แสดง case_id พร้อมไอคอนอุ้งเท้า #}
                            {# แสดงไอคอนเพศ #}
-                           <div class="gender-icon">
+                           <div class="gender-icon {% if case.pet.gender|lower == 'female' %}female{% endif %}">
                                {% if case.pet.gender|lower == 'male' %}
                                    ♂ {# สัญลักษณ์เพศผู้ #}
                                {% elif case.pet.gender|lower == 'female' %}
-                                   ♀ {# สัญลักษณ์เพศเมีย #}
+                                    ♀ {# สัญลักษณ์เพศเมีย #}
                                {% else %}
                                    ? {# สัญลักษณ์ไม่ทราบเพศ #}
                                {% endif %}

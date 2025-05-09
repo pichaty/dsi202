@@ -7,15 +7,16 @@
     <title>PawPal</title>
     {# Ensure Font Awesome is included for icons #}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&display=swap" rel="stylesheet">
     <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet">  {# Assuming you might have a style.css #}
 
     <style>
         /* Add or update your header styles here */
         header {
             position: fixed; /* Make the header fixed at the top */
-            top: 0;
+            top: 0; /* กำหนดให้อยู่ที่ขอบบนสุด */
             left: 0;
             width: 100%;
             z-index: 1000; /* Ensure it's above other content */
@@ -25,7 +26,19 @@
             padding: 5px; /* Match original adopt_catalog padding */
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Add a subtle shadow */
+            /* ****** เพิ่ม transition สำหรับการเลื่อน ****** */
+            transition: top 0.3s ease-in-out; /* ทำให้การเลื่อนเข้า/ออกดูนุ่มนวล */
+            /* ****************************************** */
         }
+
+        /* ****** เพิ่มคลาส CSS สำหรับ Header ที่ซ่อน ****** */
+        .header-hidden {
+            /* กำหนด top ให้เป็นค่าลบเท่ากับความสูงของ header เพื่อซ่อน */
+            /* ความสูง header ประมาณ 160px (logo 150 + padding 5+5) */
+            top: -160px; /* ****** อาจต้องปรับค่านี้ให้ตรงกับความสูงจริงของ Header คุณ ****** */
+        }
+        /* ********************************************** */
+
 
         .header-icon-container {
             display: flex;
@@ -116,11 +129,11 @@
             align-items: center;
             color: #ccc; /* Default color */
             z-index: 10;
-            cursor: pointer;
+            cursor: pointer; /* Indicate it's clickable */
         }
 
         .favorite-icon i {
-            color: #ccc; /* Default color of the icon */
+            color: #ccc; /* Default color of the Font Awesome icon */
         }
 
         .favorite-icon i.active {
@@ -162,5 +175,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
     {% block extra_scripts %}{% endblock %}
+
+    {# ****** เพิ่ม JavaScript สำหรับควบคุมการซ่อน/แสดง Header ****** #}
+    <script>
+        let lastScrollTop = 0; // ตัวแปรเก็บตำแหน่ง scroll ล่าสุด
+        const header = document.querySelector('header'); // เลือก Header element
+        // หาความสูงของ Header แบบ dynamic เพื่อความแม่นยำ
+        const headerHeight = header.offsetHeight;
+
+        // Event Listener เมื่อมีการ scroll หน้าจอ
+        window.addEventListener('scroll', function() {
+            let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop; // ตำแหน่ง scroll ปัจจุบัน
+
+            // ตรวจสอบทิศทางการ scroll
+            // ถ้าเลื่อนลง (ตำแหน่งปัจจุบันมากกว่าตำแหน่งล่าสุด)
+            // และตำแหน่งปัจจุบันเลื่อนลงมาแล้วเกินความสูงของ Header
+            if (currentScrollTop > lastScrollTop && currentScrollTop > headerHeight) {
+                header.classList.add('header-hidden'); // ซ่อน header โดยเพิ่มคลาส header-hidden
+            } else {
+                // ถ้าเลื่อนขึ้น หรือ อยู่ที่ด้านบนสุดของหน้าจอ (หรือยังเลื่อนลงไม่เกินความสูง header)
+                header.classList.remove('header-hidden'); // แสดง header โดยลบคลาส header-hidden ออก
+            }
+            lastScrollTop = currentScrollTop; // อัปเดตตำแหน่ง scroll ล่าสุด
+
+            // เพิ่มเงื่อนไขพิเศษ ถ้า scroll กลับไปบนสุด (ตำแหน่ง = 0) ให้แสดง header เสมอ
+            if (currentScrollTop === 0) {
+                 header.classList.remove('header-hidden');
+            }
+        });
+    </script>
+    
+
 </body>
 </html>
