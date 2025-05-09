@@ -41,7 +41,7 @@
     /* แถวรูปภาพสัตว์เลี้ยงใน Mission Card */
     .pet-images-row {
         display: flex;
-        height: 80px; /* กำหนดความสูง */
+        height: 200px; /* กำหนดความสูง */
     }
 
     .pet-image {
@@ -58,7 +58,10 @@
     /* ข้อความใน Mission Card */
     .mission-text {
         padding: 12px;
-        font-size: 13px;
+        /* font-size: 13px; /* ขนาดฟอนต์เดิม */ 
+        font-size: 16px; /* **ขนาดฟอนต์ใหม่ที่คุณต้องการ** */
+        font-family: 'Boriboon', sans-serif; /* **ใช้ฟอนต์ Sarabun (ถ้าต้องการ)** */
+        /* อาจเพิ่ม color หรือ line-height ถ้าต้องการปรับเพิ่มเติม */
     }
 
     /* สไตล์สำหรับฟอร์มบริจาค */
@@ -187,20 +190,21 @@
     }
 
     .pet-case-card {
-        display: flex; /* จัดเรียงรูปภาพและข้อมูลในแนวนอน */
-        /* align-items: center; /* เอา align-items: center ออก เพื่อให้เนื้อหาส่วน info ชิดบน */
-        background-color : #fff3e0; /* สีส้มอ่อน/เหลืองตามเดิม */
-        border-radius: 8px; /* มุมโค้งตามเดิม */
-        overflow: hidden;
-        margin-bottom: 10px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงานิดหน่อย */
-        transition: transform 0.2s ease;
-        padding: 10px; /* เพิ่ม padding ภายใน Card */
+    display: flex;
+    background-color: #f8f4d7; /* สีที่เข้มขึ้นจาก #fff3e0 */
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเล็กน้อย */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px;
     }
 
     .pet-case-card:hover {
-        transform: translateY(-2px);
+    transform: translateY(-4px); /* ขยับขึ้นเล็กน้อย */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
     }
+
 
     .pet-photo {
         width: 100px; /* กำหนดขนาดรูปภาพให้ใหญ่ขึ้นตามรูปใหม่ */
@@ -270,7 +274,7 @@
 
 
     /* สไตล์สำหรับส่วน Description of the condition */
-    .condition-section {
+     .condition-section {
         /* ไม่มีสไตล์เฉพาะมากนัก อาจใช้ padding หรือ margin ถ้าต้องการ */
     }
 
