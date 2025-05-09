@@ -1,0 +1,443 @@
+/* donate_detail.html*/
+{% extends 'myapp/base.html' %} 
+{% load static %} 
+
+{% block title %}PAWal - Donation Detail - No. {{ case.case_id }}{% endblock %} {# ตั้ง Title ของหน้า #}
+
+{% block extra_head %}
+<style>
+    /* สไตล์สำหรับหน้า Detail Donate */
+    body {
+        background-color: #f6f6f1; /* ใช้สีพื้นหลังตามรูป */
+        font-family: Arial, sans-serif; /* ใช้ฟอนต์ตามที่คุณต้องการ */
+        color: #333;
+        line-height: 1.4;
+        padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างสำหรับ Footer แบบ Fixed */
+    }
+
+    /* Header Title Bar ของหน้านี้ (สีเขียว) */
+     /* Adjusted margin-top to push content below the fixed header from base.html */
+     .page-header-title {
+        background-color: #5B9B5F; /* สีเขียวตามรูป */
+        color: white;
+        padding: 12px 15px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: normal;
+        margin-top: 160px; /* เพิ่ม margin เพื่อให้เนื้อหาอยู่ใต้ header ที่ fixed */
+    }
+
+    /* Container สำหรับเนื้อหารายละเอียด กำหนดความกว้างสูงสุดและจัดกึ่งกลาง */
+    .donate-detail-container {
+        max-width: 500px; /* จำกัดความกว้าง */
+        margin: 0 auto; /* จัดกึ่งกลาง */
+        padding: 10px; /* เพิ่ม padding รอบๆ */
+    }
+
+    /* Card รายละเอียดสัตว์เลี้ยง */
+    .pet-detail-card {
+        background-color: #fff3e0; /* สีส้มอ่อน/เหลืองตามรูป */
+        border-radius: 8px;
+        overflow: hidden; /* ให้เนื้อหาที่มุมโค้งถูกตัด */
+        margin-bottom: 15px; /* ระยะห่างใต้ Card */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงานิดหน่อย */
+        padding: 15px; /* เพิ่ม padding ภายใน Card */
+    }
+
+    /* Header ใน Pet Detail Card (หมายเลขเคส + ไอคอนเพศ) */
+    .pet-info-header {
+        display: flex; /* จัดเรียงหมายเลขเคสและไอคอนเพศในแนวนอน */
+        justify-content: space-between; /* แยกออกจากกัน */
+        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ffdbb8; /* เส้นแบ่งสีส้มอ่อน */
+    }
+
+    .pet-info-header h3 {
+        margin: 0;
+        color: #333;
+        font-size: 16px; /* ปรับขนาดฟอนต์ */
+    }
+
+     /* สไตล์สำหรับไอคอนเพศใน Header */
+     .pet-info-header .gender-icon {
+        width: 24px; /* กำหนดขนาดวงกลม */
+        height: 24px;
+        border-radius: 50%; /* ทำให้เป็นวงกลม */
+        background-color: #b0e0e6; /* สีฟ้าอ่อน (ตัวอย่าง) */
+        color: #007bff; /* สีไอคอน (ตัวอย่าง) */
+        font-size: 14px; /* ขนาดสัญลักษณ์เพศ */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
+     }
+
+      /* ตัวอย่างสีสำหรับเพศหญิง ถ้าต้องการแยกสี */
+      .pet-info-header .gender-icon.female {
+          background-color: #ffb6c1; /* สีชมพูอ่อน */
+          color: #ff69b4; /* สีชมพู */
+      }
+
+
+    /* ส่วนข้อมูลรายละเอียดและรูปภาพสัตว์เลี้ยง */
+    .pet-detail-info {
+        display: flex;
+        /* align-items: center; /* เอา align-items: center ออกเพื่อให้ข้อมูลชิดบน */ 
+        margin-bottom : 15px; /* ระยะห่างใต้ส่วนนี้ */
+    }
+
+    /* รูปภาพสัตว์เลี้ยงใน Detail Card */
+    .pet-image {
+        width: 120px; /* กำหนดขนาดรูปภาพ */
+        height: 120px;
+        overflow: hidden;
+        border-radius: 4px; /* ปรับมุมโค้งรูปภาพ */
+        margin-right: 15px;
+        flex-shrink: 0; /* ป้องกันรูปภาพถูกย่อ */
+    }
+
+    .pet-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* ส่วนรายละเอียดด้านข้างรูปภาพ (Hospital, Gender, Age) */
+    .pet-details {
+        flex-grow: 1; /* ให้ส่วนรายละเอียดขยายเต็มที่ */
+    }
+
+    .detail-row {
+        display: flex;
+        margin-bottom: 5px; /* ระยะห่างระหว่างแต่ละแถวข้อมูล */
+        font-size: 13px; /* ปรับขนาดฟอนต์ */
+    }
+
+    .detail-label {
+        width: 80px; /* กำหนดความกว้างคงที่สำหรับ Label */
+        color: #666;
+        font-weight: bold;
+        flex-shrink: 0; /* ป้องกัน Label ถูกย่อ */
+    }
+
+    .detail-value {
+        flex-grow: 1;
+    }
+
+    /* ส่วนคำอธิบายเงื่อนไข */
+    .pet-condition {
+        /* มี padding จาก .pet-detail-card อยู่แล้ว */
+        margin-top: 15px; /* เพิ่มระยะห่างด้านบน */
+    }
+
+    /* สไตล์สำหรับ Label "Description of the condition" และไอคอน */
+    .condition-label {
+         display: flex; /* จัดเรียงไอคอนและข้อความในแนวนอน */
+         align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+         font-size: 14px; /* ขนาดฟอนต์ Label */
+         font-weight: bold;
+         margin-bottom: 5px; /* ระยะห่างด้านล่าง Label */
+         color: #333; /* สีข้อความ Label */
+    }
+
+     /* สไตล์สำหรับไอคอนสมุดโน้ต */
+    .notebook-icon {
+        margin-right: 5px; /* ระยะห่างขวาจากไอคอน */
+         /* สามารถใช้รูปภาพ หรือ Font Awesome icon แทนตัวอักษร '📄' */
+         /* ตัวอย่าง Font Awesome icon: <i class="fas fa-book"></i> หรือ <i class="fas fa-file-alt"></i> */
+    }
+
+
+    .pet-condition p {
+        color: #666;
+        font-size: 13px; /* ปรับขนาดฟอนต์ */
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    /* สไตล์ส่วนฟอร์มบริจาคในหน้า Detail */
+    /* สไตล์ส่วนฟอร์มบริจาคในหน้า Detail */
+    .donation-section {
+        background-color: #fff; /* พื้นหลังสีขาว */
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px; /* ระยะห่างด้านบนส่วนบริจาค */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงานิดหน่อย */
+    }
+
+    .section-heading {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center; /* จัดหัวข้อตรงกลาง */
+    }
+
+    /* **สไตล์ใหม่สำหรับ Container ที่รวมช่องจำนวนเงินและตัวเลือก** */
+    .amount-and-options {
+        display: flex; /* จัดเรียงช่องจำนวนเงินและตัวเลือกในแนวนอน */
+        flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+        margin-bottom: 15px; /* ระยะห่างด้านล่าง Container นี้ */
+        gap: 15px; /* ระยะห่างระหว่างช่องจำนวนเงินกับตัวเลือก */
+    }
+
+
+    /* ช่องกรอกจำนวนเงิน */
+    .amount-input {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ddd; /* เส้นขอบ */
+        border-radius: 4px;
+        padding: 8px 12px;
+        /* margin-bottom: 15px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */ 
+        background-color: #f9f9f9; /* สีพื้นหลังช่องกรอก */
+        flex-grow: 1; /* **ให้ช่องกรอกจำนวนเงินยืดขยายได้** */
+        min-width: 120px; /* **กำหนดความกว้างขั้นต่ำ เพื่อไม่ให้แคบเกินไปในจอเล็ก** */
+    }
+
+    .amount-input span {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .amount-input input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 16px;
+        background: transparent; /* พื้นหลังโปร่งใส */
+    }
+
+    /* ตัวเลือกการชำระเงิน */
+    .payment-options {
+        display: flex;
+        flex-wrap: wrap; /* ให้ Wrap ลงบรรทัดใหม่ */
+        /* margin-bottom: 20px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */ 
+        /* justify-content: center; /* อาจจะไม่ต้องจัด center แล้ว เพราะจะเรียงตามพื้นที่ */ 
+        gap: 10px; /* **ลด gap ระหว่างปุ่มตัวเลือกการชำระเงินเอง** */
+        flex-shrink: 0; /* **ป้องกันตัวเลือกการชำระเงินถูกบีบจนเล็กเกินไป** */
+    }
+
+    .payment-option {
+        /* สไตล์จัดการที่ label class .payment-button */
+    }
+
+    .payment-option input[type="radio"] {
+        display: none; /* ซ่อน Radio Button เดิม */
+    }
+
+    /* Label ของวิธีการชำระเงินที่ทำเป็นปุ่ม */
+    .payment-button {
+        display: inline-block;
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px; /* ทำให้เป็นปุ่มโค้ง */
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+         background-color: #fff; /* พื้นหลังสีขาวสำหรับปุ่มที่ยังไม่ถูกเลือก */
+         color: #333; /* สีข้อความสำหรับปุ่มที่ยังไม่ถูกเลือก */
+         white-space: nowrap; /* **ป้องกันข้อความในปุ่มตัดบรรทัด** */
+    }
+
+     /* ปรับ padding สำหรับ Label ที่มีรูป UnionPay (PromptPay ในรูป) */
+     /* ถ้าใช้รูป PromptPay ควรมี class แยก เช่น .promptpay-label */
+     .payment-button.promptpay-label { /* เปลี่ยนจาก unionpay-label ถ้าจะใช้ PromptPay */
+        padding: 4px 10px; /* ปรับ padding ให้เหมาะสมกับรูป */
+    }
+
+    /* รูปภาพ PromptPay หรือ UnionPay */
+    .payment-button.promptpay-label img { /* เปลี่ยนจาก unionpay-label ถ้าจะใช้ PromptPay */
+        height: 80px; /* กำหนดความสูงรูปภาพ */
+        vertical-align: middle; /* จัดแนวตั้งให้อยู่ตรงกลาง */
+    }
+
+    /* สไตล์สำหรับวิธีการชำระเงินที่ถูกเลือก */
+    .payment-option input[type="radio"]:checked + .payment-button {
+        background-color: #ff8c42; /* สีส้มตามรูป */
+        color: white;
+        border-color: #ff8c42;
+    }
+
+    /* Container สำหรับปุ่ม Donate Now จัดกึ่งกลาง */
+    .donate-button-container {
+        text-align: center;
+    }
+
+    /* ปุ่ม Donate Now */
+    .donate-now-btn {
+        background-color: #ff8c42; /* สีส้มตามรูป */
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px; /* ทำให้ปุ่มโค้งมน */
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%; /* ให้เต็มความกว้าง */
+    }
+
+    .donate-now-btn:hover {
+        background-color: #e0783a; /* สีส้มเข้มขึ้นเมื่อ Hover */
+    }
+
+
+/*ส่วนRelatedPetsSectionและNavigationFooterเดิมถูกลบออกไป */
+
+</style>
+{% endblock %}
+
+{% block content %}
+    {# ส่วน Header จะมาจาก base.html โดยอัตโนมัติ #}
+
+    <div class="page-header-title">
+        Donate
+    </div>
+
+    <div class="donate-detail-container">
+        <div class="pet-detail-card">
+            <div class="pet-info-header">
+                <h3>No. {{ case.case_id }}</h3> {# แสดง case_id #}
+                 {# แสดงไอคอนเพศใน Header นี้ด้วย #}
+                 <div class="gender-icon {% if case.pet.gender|lower == 'female' %}female{% endif %}">
+                    {% if case.pet.gender|lower == 'male' %}
+                        ♂ {# สัญลักษณ์เพศผู้ #}
+                    {% elif case.pet.gender|lower == 'female' %}
+                        ♀ {# สัญลักษณ์เพศเมีย #}
+                    {% else %}
+                        ? {# สัญลักษณ์ไม่ทราบเพศ #}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="pet-detail-info">
+                <div class="pet-image">
+                     {# แสดงรูปภาพของเคส ถ้ามี ถ้าไม่มีให้ใช้รูปภาพของ Pet ที่เกี่ยวข้อง ถ้า Pet ไม่มีรูปให้ใช้รูป default #}
+                    {% if case.image %}
+                        <img src="{{ case.image.url }}" alt="{{ case.title }}">
+                    {% elif case.pet.photo %} {# Fallback ไปใช้รูปภาพ Pet ถ้า case.image ไม่มี #}
+                         <img src="{{ case.pet.photo.url }}" alt="{{ case.pet.name }}">
+                    {% else %}
+                         {# รูปภาพ default ถ้าไม่มีรูปเลย #}
+                         <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">
+                    {% endif %}
+                </div>
+
+                <div class="pet-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Hospital:</span>
+                        {# แสดงชื่อโรงพยาบาล ถ้าไม่มีให้แสดง N/A #}
+                        <span class="detail-value">{{ case.hospital|default:"N/A" }}</span>
+                    </div>
+                     {# ใน Screenshot มี "Cause" แต่ใน DonationCase model อาจจะไม่มีฟิลด์ตรงๆ #}
+                     {# ใช้ title เป็นตัวอย่าง หรือคุณอาจจะเพิ่มฟิลด์ 'cause' ในโมเดล DonationCase #}
+                     <div class="detail-row">
+                        <span class="detail-label">Cause:</span>
+                        <span class="detail-value">{{ case.title|default:"N/A" }}</span> {# ใช้ title เป็นตัวอย่าง #}
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Gender:</span>
+                        {# เข้าถึงข้อมูลเพศจาก Pet ที่เกี่ยวข้อง #}
+                        <span class="detail-value">{{ case.pet.gender|default:"N/A" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Age:</span>
+                         {# เข้าถึงข้อมูลอายุจาก Pet ที่เกี่ยวข้อง #}
+                        <span class="detail-value">{{ case.pet.age|default:"N/A" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pet-condition">
+                 {# ส่วน Label "Description of the condition" พร้อมไอคอนสมุดโน้ต #}
+                 <div class="condition-label">
+                     <span class="notebook-icon">📄</span> Description of the condition
+                 </div>
+                 {# คำอธิบายของเคส #}
+                <p>{{ case.description|default:"No description provided." }}</p>
+            </div>
+        </div>
+
+        <div class="donation-section">
+            <div class="section-heading">Donation</div>
+             {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'process_donation' #}
+             {# ในฟอร์ม Detail นี้ เราอาจจะต้องส่ง case_id ไปด้วย เพื่อให้ backend รู้ว่าบริจาคให้เคสไหน #}
+            <form method="post" action="{% url 'process_donation' %}">
+                {% csrf_token %} {# เพิ่ม CSRF token #}
+                {# เพิ่ม hidden input เพื่อส่ง case_id ไปกับฟอร์ม #}
+                <input type="hidden" name="case_id" value="{{ case.pk }}">
+
+                {# **เพิ่ม div ใหม่สำหรับรวมช่องจำนวนเงินและตัวเลือกการชำระเงิน** #}
+                <div class="amount-and-options">
+                    <div class="amount-input">
+                        <span>฿</span> {# **ใช้สัญลักษณ์ ฿ บาท ตามรูป** #}
+                        <input type="number" name="donationAmount" value="200" min="10"> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
+                    </div>
+
+                    <div class="payment-options">
+                         {# ตัวเลือก Credit Card #}
+                        <div class="payment-option">
+                            <input type="radio" id="detailCreditCard" name="paymentMethod" value="creditCard">
+                            <label for="detailCreditCard" class="payment-button">Credit Card</label>
+                        </div>
+                        {# ตัวเลือก PromptPay - ใช้รูปภาพตามรูป Screenshot #}
+                        <div class="payment-option">
+                            <input type="radio" id="detailPromptPay" name="paymentMethod" value="promptPay" checked> {# เปลี่ยน value เป็น promptPay และ id เป็น detailPromptPay #}
+                             {# ตรวจสอบให้แน่ใจว่ามีรูป promptpay.png ใน static files ของคุณ หรือใช้รูป unionpay.png เดิมก็ได้ถ้าต้องการ #}
+                             <label for="detailPromptPay" class="payment-button promptpay-label"> {# เปลี่ยน class เป็น promptpay-label #}
+                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay"> {# อาจเปลี่ยนรูปเป็น promptpay.png ถ้ามี #}
+                            </label>
+                        </div>
+                        {# สามารถเพิ่มตัวเลือกการชำระเงินอื่นๆ ได้ที่นี่ #}
+                    </div>
+                </div>
+                {# **สิ้นสุด div สำหรับรวม** #}
+
+
+                <div class="donate-button-container">
+                    <button type="submit" class="donate-now-btn">Donate Now</button>
+                </div>
+            </form>
+        </div>
+
+         {# ส่วน Related Pets Section และ Navigation Footer เดิมถูกลบออกไป #}
+
+    </div>
+
+    {# ส่วน Footer จะมาจาก base.html โดยอัตโนมัติ #}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // เพิ่ม JavaScript สำหรับการเลือกวิธีการชำระเงินเพื่อปรับสไตล์ปุ่ม (สำหรับฟอร์มในหน้า Detail)
+        const paymentOptions = document.querySelectorAll('.payment-option input[type="radio"]');
+        const paymentLabels = document.querySelectorAll('.payment-button');
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                // ลบ class 'selected' ออกจากทุก Label
+                paymentLabels.forEach(label => {
+                    label.classList.remove('selected');
+                });
+
+                // เพิ่ม class 'selected' ให้กับ Label ของ Radio Button ที่ถูกเลือก
+                if (this.checked) {
+                    document.querySelector(`label[for="${this.id}"]`).classList.add('selected');
+                }
+            });
+        });
+
+        // กำหนดสไตล์เริ่มต้นสำหรับวิธีการชำระเงินที่ถูกเลือกไว้ตอนแรก
+        const initialChecked = document.querySelector('.payment-option input[type="radio"]:checked');
+        if (initialChecked) {
+            document.querySelector(`label[for="${initialChecked.id}"]`).classList.add('selected');
+        }
+    });
+</script>
+{% endblock %}

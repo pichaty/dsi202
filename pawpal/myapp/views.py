@@ -29,14 +29,21 @@ def donate(request):
     """
     View for the donation page that displays donation options and active cases
     """
-    # Get pets to display at the top
-    pets = Pet.objects.all()[:3]
+    # Get pets to display at the top (ตาม screenshot เหมือนจะดึง Pet ปกติมาแสดง)
+    # อาจจะต้องพิจารณาว่าจะแสดง Pet ทั่วไป หรือ Pet ที่มี DonationCase เกี่ยวข้อง
+    # ในโค้ดเดิมดึง Pet.objects.all()[:3] ซึ่งดึง 3 ตัวแรก
+    # ถ้าต้องการดึง Pet ที่มี DonationCase อาจจะต้องปรับ query
+    pets_in_need_cases = DonationCase.objects.all() # ดึง DonationCase ทั้งหมด
+    pets_for_gallery = [case.pet for case in pets_in_need_cases[:3]] # ดึง Pet จาก 3 เคสแรก
 
-    # Get donation cases
-    donation_cases = DonationCase.objects.all().order_by('-id')[:2]
+    # Get donation cases to display (อาจจะแสดงทั้งหมด หรือจำกัดจำนวนตามต้องการ)
+    # ในโค้ดเดิมดึงมา 2 เคสแรก: DonationCase.objects.all().order_by('-id')[:2]
+    # ถ้าต้องการแสดงทั้งหมด: donation_cases = DonationCase.objects.all().order_by('-id')
+    donation_cases = DonationCase.objects.all().order_by('-id')
+
 
     context = {
-        'pets': pets,
+        'pets': pets_for_gallery, # เปลี่ยนเป็น Pet ที่เกี่ยวข้องกับเคสบริจาค
         'donation_cases': donation_cases,
     }
 
@@ -56,12 +63,15 @@ def adopt_catalog(request):
 
 
 def donate_detail(request, pk):
-    # ดึง DonationCase object หรือแสดง 404 ถ้าไม่พบ
+    """
+    View for the donation case detail page
+    """
+    # ดึง DonationCase object หรือแสดง 404 ถ้าไม่พบ โดยใช้ pk ที่รับมา
     case = get_object_or_404(DonationCase, pk=pk)
     context = {
         'case': case
     }
-    return render(request, 'myapp/donate_detail.html', context) # ต้องสร้าง template นี้ด้วย
+    return render(request, 'myapp/donate_detail.html', context)
 
 
 def about(request):
@@ -289,3 +299,22 @@ def adoption_form_view(request):
 # View สำหรับแสดงหน้าขอบคุณ
 def adoption_thank_you_view(request):
     return render(request, 'myapp/adoption_thank_you.html')
+from django.views.decorators.csrf import csrf_exempt # เพิ่ม import นี้เพื่อยกเว้น CSRF token ชั่วคราวสำหรับการทดสอบ (ควรแก้ไขในภายหลัง)
+from django.http import HttpResponse
+
+@csrf_exempt # ยกเว้น CSRF token สำหรับ view นี้ชั่วคราว
+def process_donation_view(request):
+    if request.method == 'POST':
+        # ในที่นี้เราจะยังไม่เขียน logic การประมวลผลการบริจาคจริงจัง
+        # แค่แสดงข้อความยืนยันว่าได้รับข้อมูลแล้ว
+        donation_amount = request.POST.get('donationAmount')
+        payment_method = request.POST.get('paymentMethod')
+        # สามารถดึงข้อมูลอื่นๆ ที่ส่งมาจากฟอร์มได้ที่นี่
+
+        print(f"Received donation of {donation_amount} via {payment_method}")
+
+        # คุณอาจจะ redirect ไปหน้าขอบคุณ หรือแสดงข้อความยืนยัน
+        return HttpResponse("Thank you for your donation (Processing logic to be implemented).")
+    else:
+        # ถ้าไม่ใช่ method POST อาจจะ redirect กลับไปหน้าบริจาค หรือแสดง error
+        return HttpResponse("Method not allowed.", status=405)

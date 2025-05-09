@@ -137,7 +137,7 @@
         <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" /> {# Logo #}
         <div class="header-icon-container right-icons">
             {# Favorites Icon (Home with Heart) - Linked to favorites page #}
-            <a href="{% url 'favorites' %}" class="favorite-icon-link"> {# Renamed class #}
+            <a href="{% url 'favorites' %}" class="favorite-icon-link">
                 {# ใช้แท็ก img แทน icon Font Awesome และใส่ path ไปยังรูปภาพของคุณ #}
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
                 {% if favorite_count > 0 %} {# Check if favorite_count is greater than 0 to display the count #}

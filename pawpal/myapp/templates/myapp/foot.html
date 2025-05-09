@@ -81,7 +81,7 @@
             </a>
         </div>
         <div class="{% if request.path == '/adopt/' %}active-nav{% endif %}">
-            <a href="/adopt/">
+            <a href="{% url 'adopt_catalog' %}">
                 <span>🐾</span>
                 Adopt
             </a>
