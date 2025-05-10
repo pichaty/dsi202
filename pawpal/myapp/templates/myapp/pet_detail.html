@@ -1,148 +1,319 @@
+{% extends 'myapp/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
+{% block extra_head %}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ pet.name }} - Pet Detail | PawPal</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Sarabun', sans-serif;
-      margin: 0;
-      background-color: #f9f4e8;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding-bottom: 60px; /* Space for footer */
+    .pet-detail-page-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px; /* ลด padding โดยรวมของหน้าลงเล็กน้อย */
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .card-detail {
       background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 50%;
-      max-width: 400px;
-      margin: 20px auto;
+      border-radius: 12px; /* ลดความโค้งมนลงเล็กน้อย */
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12); /* ปรับเงาเล็กน้อย */
+      padding: 20px; /* ลด padding ภายในการ์ด */
+      width: 100%;
+      max-width: 480px; /* <<<< ลด max-width ของการ์ดลง */
       text-align: center;
       position: relative;
-    }
-
-    .pet-image {
-      width: 50%;
-      border-radius: 10px;
       margin-bottom: 15px;
     }
 
-    .heart-icon {
+    .pet-image-container {
+        width: 60%; /* <<<< ลด % ความกว้างของรูปเทียบกับการ์ด */
+        max-width: 220px; /* <<<< ลดขนาดสูงสุดของรูปภาพ */
+        margin: 0 auto 15px auto; /* ลด margin-bottom ของรูป */
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .pet-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .heart-icon-detail {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 15px; /* ปรับตำแหน่งให้เหมาะสมกับขนาดใหม่ */
+      right: 15px; /* ปรับตำแหน่งให้เหมาะสมกับขนาดใหม่ */
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      width: 35px; /* <<<< ลดขนาดไอคอนหัวใจ */
+      height: 35px; /* <<<< ลดขนาดไอคอนหัวใจ */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .heart-icon-detail:hover {
+        transform: scale(1.1);
+    }
+
+    .heart-icon-detail i.fas.fa-heart {
+      font-size: 18px; /* <<<< ลดขนาด Font Awesome icon */
+      color: #ccc;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .heart-icon-detail i.fas.fa-heart.active {
       color: #e8605c;
-      font-size: 24px;
     }
 
     .pet-id {
       font-weight: bold;
-      margin-bottom: 15px;
+      font-size: 1.1em; /* <<<< ลดขนาดฟอนต์ ID เล็กน้อย */
+      margin-bottom: 15px; /* ลดระยะห่าง */
+      color: #333;
     }
 
     .pet-info {
       text-align: left;
-      margin-bottom: 15px;
+      margin-bottom: 20px; /* ลดระยะห่าง */
+      padding-left: 0; /* อาจจะไม่ต้องมี padding ซ้าย ถ้าต้องการให้ชิด */
     }
 
     .pet-info p {
-      margin: 8px 0;
+      margin: 8px 0; /* <<<< ลดระยะห่างระหว่างบรรทัด */
+      font-size: 0.9em; /* <<<< ลดขนาดฟอนต์ข้อมูล */
+      color: #555;
+      display: flex; 
+      align-items: center; 
+    }
+    .pet-info p .icon { 
+        margin-right: 8px; /* ลดระยะห่าง icon */
+        color: #8db38b;
+        width: 20px; 
+        text-align: center;
+        font-size: 1em; /* ลดขนาด icon */
     }
 
     .story-section {
-      text-align: center;
-      margin-top: 20px;
+      text-align: left;
+      margin-top: 20px; /* ลดระยะห่าง */
+      padding: 12px; /* ลด padding */
+      background-color: #f9f9f9;
+      border-radius: 8px;
     }
 
     .story-title {
       font-weight: bold;
-      margin-bottom: 5px;
+      font-size: 1.05em; /* ลดขนาด */
+      margin-bottom: 8px; /* ลดระยะห่าง */
+      color: #d55e00;
+    }
+    .story-content { 
+        font-size: 0.9em; /* ลดขนาด */
+        color: #444;
+        line-height: 1.6; /* ลด line-height */
     }
 
-    /* Footer from provided code */
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #8db38b;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0;
-    }
-
-    footer div {
-      font-size: 0.7em;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    footer div a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    footer div img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 4px;
-    }
-
-    .active-nav {
-      color: #e8605c;
-    }
-
-    /* Back button */
     .back-button {
       position: absolute;
-      top: 15px;
-      left: 15px;
+      top: 15px; /* ปรับให้สอดคล้องกับ heart icon */
+      left: 15px; /* ปรับให้สอดคล้องกับ heart icon */
       background: none;
       border: none;
       color: #8db38b;
-      font-size: 24px;
+      font-size: 28px; /* ลดขนาดปุ่ม back */
       cursor: pointer;
+      padding: 5px;
+      line-height: 1;
     }
   </style>
-</head>
-<body>
-  <div class="card-detail">
-    <a href="{% url 'adopt_catalog' %}" class="back-button">←</a>
-    <span class="heart-icon">❤️</span>
-    
-    <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" class="pet-image">
-    
-    <div class="pet-id">No. {{ pet.name }}</div>
-    
-    <div class="pet-info">
-      <p>🐶 Breed       : {{ pet.breed }}</p>
-      <p>🚻 Gender      : {{ pet.gender }}</p>
-      <p>📅 Age         : {{ pet.age }}</p>
-      <p>💉 Vaccine     : {{ pet.vaccine|default:"-" }}</p>
-      <p>♿ Disability  : {{ pet.disability|default:"-" }}</p>
-      <p>😊 Personality : {{ pet.personality|default:"-" }}</p>
-      <p>✍️ Detail      : {{ pet.detail|default:"-" }}</p>
-    </div>
-    
-    <div class="story-section">
-      <div class="story-title">My Story :</div>
-      <div>{{ pet.story|default:"" }}</div>
-    </div>
-  </div>
-  {% include 'myapp/foot.html' %}
+{% endblock %}
 
-</body>
-</html>
+{# ส่วน {% block content %} และ {% block extra_scripts %} จะเหมือนเดิม #}
+{# ... (เนื้อหา HTML และ JavaScript ที่เคยให้ไป) ... #}
+
+{% block content %}
+  <div class="pet-detail-page-container">
+      <div class="card-detail">
+        <a href="{% url 'adopt_catalog' %}" class="back-button" aria-label="Back to catalog">←</a>
+        
+        <div class="heart-icon-detail" data-pet-id="{{ pet.id }}">
+            <i class="fas fa-heart"></i>
+        </div>
+        
+        <div class="pet-image-container">
+            <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" class="pet-image">
+        </div>
+        
+        <div class="pet-id">No. {{ pet.name }}</div> 
+        
+        <div class="pet-info">
+          <p><span class="icon">🐕</span>Breed: {{ pet.breed }}</p>
+          <p><span class="icon">🚻</span>Gender: {{ pet.get_gender_display }}</p>
+          <p><span class="icon">📅</span>Age: {{ pet.age }}</p>
+          <p><span class="icon">💉</span>Vaccine: {% if pet.vaccinated %}Yes{% else %}No{% endif %}</p>
+          <p><span class="icon">♿</span>Disability: {{ pet.disability|default:"-" }}</p>
+          <p><span class="icon">😊</span>Personality: {{ pet.personality|default:"-" }}</p>
+          <p><span class="icon">✍️</span>Detail: {{ pet.detail|default:"-" }}</p>
+        </div>
+        
+        <div class="story-section">
+          <div class="story-title">My Story:</div>
+          <div class="story-content">{{ pet.story|default:"This pet doesn't have a story written yet, but they are full of love and waiting for a new chapter with you!"|linebreaksbr }}</div>
+        </div>
+      </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const heartIconDetailElement = document.querySelector('.heart-icon-detail');
+      const petId = heartIconDetailElement ? heartIconDetailElement.getAttribute('data-pet-id') : null;
+      const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
+
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      function updateHeartIconUI(isFavorite) {
+          if (heartIconDetailElement) {
+            const heartIcon = heartIconDetailElement.querySelector('i.fas.fa-heart');
+            if (heartIcon) {
+                if (isFavorite) {
+                    heartIcon.classList.add('active');
+                } else {
+                    heartIcon.classList.remove('active');
+                }
+            }
+          }
+      }
+
+      function toggleFavorite(petIdToToggle) {
+          if (!petIdToToggle) {
+              console.error('Pet ID is missing for toggleFavorite.');
+              return;
+          }
+          
+          fetch(`/toggle-favorite/${petIdToToggle}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': getCookie('csrftoken'),
+                  'X-Requested-With': 'XMLHttpRequest'
+              }
+          })
+          .then(response => {
+              if (response.redirected && response.url.includes('/accounts/login/')) {
+                  window.location.href = response.url;
+                  throw new Error('User not authenticated, redirecting to login.'); 
+              }
+              if (!response.ok) {
+                  console.error('Toggle favorite failed with status:', response.status, response.statusText);
+                  alert('An error occurred while updating your favorites. Please try again.');
+                  return response.text().then(text => { throw new Error('Server Error: ' + text + ' (Status: ' + response.status + ')') });
+              }
+              return response.json();
+          })
+          .then(data => {
+              if (data.error) {
+                  alert('Error: ' + data.error);
+                  return;
+              }
+              if (data.is_favorite !== undefined) {
+                  updateHeartIconUI(data.is_favorite);
+                  const favoriteCountHeaderElement = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
+                  if (favoriteCountHeaderElement && data.favorite_count !== undefined) {
+                      favoriteCountHeaderElement.textContent = data.favorite_count;
+                      if (data.favorite_count > 0) {
+                          favoriteCountHeaderElement.style.display = 'flex';
+                      } else {
+                          favoriteCountHeaderElement.style.display = 'none';
+                      }
+                  }
+              }
+          })
+          .catch(error => {
+              if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error toggling favorite:', error);
+              }
+          });
+      }
+
+      if (heartIconDetailElement) {
+          heartIconDetailElement.addEventListener('click', function() {
+              if (!userIsAuthenticated) {
+                  alert('Please log in to add pets to your favorites.');
+                  return;
+              }
+              toggleFavorite(petId);
+          });
+      }
+
+      function checkInitialFavoriteStatus(petIdToCheck) {
+          if (!petIdToCheck || !userIsAuthenticated) {
+              updateHeartIconUI(false);
+              return;
+          }
+          
+          fetch('/check-favorites/', {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': getCookie('csrftoken'),
+                  'Content-Type': 'application/json',
+                  'X-Requested-With': 'XMLHttpRequest'
+              },
+              body: JSON.stringify({ pet_ids: [petIdToCheck] })
+          })
+          .then(response => {
+              if (response.redirected && response.url.includes('/accounts/login/')) {
+                  throw new Error('User not authenticated, redirecting to login during check status.'); 
+              }
+              if (!response.ok) { 
+                  console.error('Check favorites failed with status:', response.status, response.statusText);
+                  throw new Error('Network response was not ok for check-favorites.'); 
+              }
+              return response.json();
+          })
+          .then(data => {
+              if (data.favorites && data.favorites[petIdToCheck] !== undefined) {
+                  updateHeartIconUI(data.favorites[petIdToCheck]);
+              } else {
+                  updateHeartIconUI(false);
+                  console.warn('Favorite status for pet_id', petIdToCheck, 'not found in response from /check-favorites/. Response:', data);
+              }
+          })
+          .catch(error => {
+              if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error checking initial favorite status:', error);
+              }
+              updateHeartIconUI(false);
+          });
+      }
+
+      if (petId) {
+          checkInitialFavoriteStatus(petId);
+      } else if (heartIconDetailElement) {
+          updateHeartIconUI(false);
+          console.warn("Pet ID is null, but heart icon element exists. Defaulting favorite status to false.");
+      }
+    });
+  </script>
+{% endblock %}
