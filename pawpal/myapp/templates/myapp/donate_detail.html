@@ -1,9 +1,9 @@
-{# in myapp/templates/myapp/donate_detail.html #}
+{# work/dsi202/pawpal/myapp/templates/myapp/donate_detail.html #}
 
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block title %}PAWal - Donation Detail - No. {{ case.case_id }}{% endblock %} {# ตั้ง Title ของหน้า #}
+{% block title %}PAWal - Donation Detail - No. {{ case.case_id }}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -295,9 +295,9 @@
 .back-button {
     position: absolute;
     left: 20px; /* ระยะห่างจากขอบซ้าย */
-    top: 400;
+    top: 280px ;
     padding: 8px 12px;
-    font-size: 30;
+    font-size: 35px ;
     color: #d55e00;
     text-decoration: none;
     border-radius: 8px;
@@ -408,12 +408,7 @@
         color: #555;
         line-height: 1.6;
     }
-
-
 </style>
-
-
-
 {% endblock %}
 
 {% block content %}
@@ -425,68 +420,56 @@
             Donate
     </div>
 
-
     <div class="donate-detail-container">
         <div class="pet-detail-card">
             <div class="pet-info-header">
-                <h3>No. {{ case.case_id }}</h3> {# แสดง case_id #}
-                 {# แสดงไอคอนเพศใน Header นี้ด้วย #}
+                <h3>No. {{ case.case_id }}</h3>
                  <div class="gender-icon {% if case.pet.gender|lower == 'female' %}female{% endif %}">
                     {% if case.pet.gender|lower == 'male' %}
                         ♂
                     {% elif case.pet.gender|lower == 'female' %}
                         ♀
                     {% else %}
-                        ? {# สัญลักษณ์ไม่ทราบเพศ #}
+                        ?
                     {% endif %}
                 </div>
             </div>
 
             <div class="pet-detail-info">
                 <div class="pet-image">
-                     {# แสดงรูปภาพของเคส ถ้ามี ถ้าไม่มีให้ใช้รูปภาพของ Pet ที่เกี่ยวข้อง ถ้า Pet ไม่มีรูปให้ใช้รูป default #}
                     {% if case.image %}
                         <img src="{{ case.image.url }}" alt="{{ case.title }}">
-                    {% elif case.pet.photo %} {# Fallback ไปใช้รูปภาพ Pet ถ้า case.image ไม่มี #}
+                    {% elif case.pet.photo %}
                          <img src="{{ case.pet.photo.url }}" alt="{{ case.pet.name }}">
                     {% else %}
-                         {# รูปภาพ default ถ้าไม่มีรูปเลย #}
                          <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">
                     {% endif %}
                 </div>
 
-
                 <div class="pet-details">
                     <div class="detail-row">
                         <span class="detail-label">Hospital:</span>
-                        {# แสดงชื่อโรงพยาบาล ถ้าไม่มีให้แสดง N/A #}
                         <span class="detail-value">{{ case.hospital|default:"N/A" }}</span>
                     </div>
-                     {# ใน Screenshot มี "Cause" แต่ใน DonationCase model อาจจะไม่มีฟิลด์ตรงๆ #}
-                     {# ใช้ title เป็นตัวอย่าง หรือคุณอาจจะเพิ่มฟิลด์ 'cause' ในโมเดล DonationCase #}
                      <div class="detail-row">
                         <span class="detail-label">Cause:</span>
-                        <span class="detail-value">{{ case.title|default:"N/A" }}</span> {# ใช้ title เป็นตัวอย่าง #}
+                        <span class="detail-value">{{ case.title|default:"N/A" }}</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Gender:</span>
-                         {# เข้าถึงข้อมูลเพศจาก Pet ที่เกี่ยวข้อง #}
                         <span class="detail-value">{{ case.pet.gender|default:"N/A" }}</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Age:</span>
-                         {# เข้าถึงข้อมูลอายุจาก Pet ที่เกี่ยวข้อง #}
                         <span class="detail-value">{{ case.pet.age|default:"N/A" }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="pet-condition">
-                 {# ส่วน Label "Description of the condition" พร้อมไอคอนสมุดโน้ต #}
                  <div class="condition-label">
                      <span class="notebook-icon">📄</span> Description of the condition
                  </div>
-                 {# คำอธิบายของเคส #}
                 <p>{{ case.description|default:"No description provided." }}</p>
             </div>
         </div>
@@ -494,27 +477,23 @@
         <div class="donation-section">
             <div class="section-heading">Donation</div>
 
-            {# Modified form to include ID for JavaScript and remove action/method for AJAX #}
             <form id="donation-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="case_id" value="{{ case.pk }}">
 
-                {# **เพิ่ม div ใหม่สำหรับรวมช่องจำนวนเงินและตัวเลือกการชำระเงิน** #}
                 <div class="amount-and-options">
                     <div class="amount-input">
-                        <span>฿</span> {# **ใช้สัญลักษณ์ ฿ บาท ตามรูป** #}
-                        <input type="number" name="donationAmount" value="200" min="10" required> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
+                        <span>฿</span>
+                        <input type="number" name="donationAmount" value="200" min="10" required>
                     </div>
 
                     <div class="payment-options">
-
                         <div class="payment-option">
-                            <input type="radio" id="detailPromptPay" name="paymentMethod" value="PromptPay" checked> {# Changed value to "PromptPay" #}
+                            <input type="radio" id="detailPromptPay" name="paymentMethod" value="PromptPay" checked>
                              <label for="detailPromptPay" class="payment-button promptpay-label">
                                 <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay">
                             </label>
                         </div>
-                        {# Add other payment methods here if needed #}
                          <div class="payment-option">
                             <input type="radio" id="otherPayment" name="paymentMethod" value="Other">
                              <label for="otherPayment" class="payment-button">
@@ -523,11 +502,8 @@
                         </div>
                     </div>
                 </div>
-                {# **สิ้นสุด div สำหรับรวม** #}
 
-                {# Container for QR Code and Slip Upload - Hidden by default #}
                 <div id="promptpay-details">
-                     {# แก้ไขตรงนี้: ดึงรูป QR Code จาก donation_settings แทน case #}
                      {% if donation_settings and donation_settings.promptpay_qr_code %}
                          <img src="{{ donation_settings.promptpay_qr_code.url }}" alt="QR Code สำหรับการบริจาค">
                      {% else %}
@@ -536,33 +512,25 @@
 
                      <div class="form-group">
                          <label for="slip_image">แนบสลิป (เฉพาะ PromptPay):</label>
-                         <input type="file" id="slip_image" name="slip_image" accept="image/*" > {# Remove 'required' here, handle validation in JS/View #}
+                         <input type="file" id="slip_image" name="slip_image" accept="image/*" >
                      </div>
                 </div>
-
 
                 <div class="donate-button-container">
                     <button type="submit" class="donate-now-btn">Donate Now</button>
                 </div>
             </form>
         </div>
-
-         {# ส่วน Related Pets Section และ Navigation Footer เดิมถูกลบออกไป #}
-
     </div>
 
-    {# Thank You Popup Structure - Hidden by default #}
     <div id="thank-you-popup" class="popup-overlay">
         <div class="popup-content">
             <button class="close-btn">&times;</button>
             <div class="icon">❤️</div>
-            <h4>ขอบคุณสำหรับการบริจาคของคุณ!</h4>
-            <p>การสนับสนุนของคุณช่วยให้เราดูแลสัตว์ที่ต้องการได้</p>
+            <h4>Thank you for your donation!</h4>
+            <p>Your support helps us care for animals in need.</p>
         </div>
     </div>
-
-
-    {# ส่วน Footer จะมาจาก base.html โดยอัตโนมัติ #}
 
 {% endblock %}
 
@@ -574,89 +542,90 @@
         const donationForm = document.getElementById('donation-form');
         const thankYouPopup = document.getElementById('thank-you-popup');
         const closePopupBtn = thankYouPopup.querySelector('.close-btn');
-        const slipImageInput = document.getElementById('slip_image'); // Get the slip input field
+        const slipImageInput = document.getElementById('slip_image');
 
-
-        // Function to show/hide PromptPay details
         function togglePromptPayDetails() {
             const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             if (selectedMethod === 'PromptPay') {
                 promptpayDetails.style.display = 'block';
-                // Make slip image required for PromptPay
                 slipImageInput.setAttribute('required', 'required');
             } else {
                 promptpayDetails.style.display = 'none';
-                // Remove required attribute for other payment methods
                 slipImageInput.removeAttribute('required');
             }
         }
 
-        // Add event listeners to payment method radio buttons
         paymentMethodRadios.forEach(radio => {
             radio.addEventListener('change', togglePromptPayDetails);
         });
-
-        // Initial check on page load
         togglePromptPayDetails();
 
-
-        // Handle form submission with AJAX
         donationForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
+            event.preventDefault();
             const formData = new FormData(this);
             const selectedMethod = formData.get('paymentMethod');
 
-            // Basic validation for PromptPay slip
             if (selectedMethod === 'PromptPay') {
                  if (!formData.get('slip_image') || formData.get('slip_image').size === 0) {
                     alert('โปรดแนบสลิปสำหรับการบริจาคด้วย PromptPay');
-                    return; // Stop the submission
+                    return;
                  }
             }
 
-
-            fetch('', { // Submit to the same URL
+            fetch('', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken') // Include CSRF token
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest' // ***** เพิ่มบรรทัดนี้ *****
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                // ตรวจสอบว่าเป็น JSON response ก่อนเรียก .json()
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // ถ้าไม่ใช่ JSON อาจเป็น error page หรือ response ที่ไม่คาดคิด
+                    console.error('Received non-JSON response from server.');
+                    response.text().then(text => console.error("Response text:", text)); // แสดง text ของ response เพื่อ debug
+                    alert('เกิดข้อผิดพลาดในการสื่อสารกับเซิร์ฟเวอร์ (Non-JSON response)');
+                    return Promise.reject('Non-JSON response'); // reject promise เพื่อไม่ให้ .then(data => ...) ทำงานต่อ
+                }
+            })
             .then(data => {
                 if (data.success) {
-                    // Show thank you popup
                     thankYouPopup.classList.add('visible');
-                    // Clear the form (optional)
                     donationForm.reset();
-                    // Reset the display of PromptPay details
-                     togglePromptPayDetails(); // Ensure PromptPay details hide after reset if Other is default
+                    // ตรวจสอบให้แน่ใจว่า detailPromptPay (หรือ radio button แรก) ถูก check หลังจาก reset
+                    const defaultPaymentRadio = document.getElementById('detailPromptPay');
+                    if (defaultPaymentRadio) {
+                        defaultPaymentRadio.checked = true;
+                    }
+                    togglePromptPayDetails();
                 } else {
-                    // Handle errors if any
-                    alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + data.error);
+                    alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+                // Error ที่มาจาก Promise.reject ข้างบน หรือ network error
+                if (error !== 'Non-JSON response') { // ไม่แสดง alert ซ้ำถ้าเป็น non-json
+                     console.error('Error during fetch:', error);
+                     alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+                }
             });
         });
 
-        // Close popup when close button is clicked
         closePopupBtn.addEventListener('click', function() {
             thankYouPopup.classList.remove('visible');
         });
 
-         // Close popup when clicking outside the popup content
          thankYouPopup.addEventListener('click', function(event) {
              if (event.target === thankYouPopup) {
                  thankYouPopup.classList.remove('visible');
              }
          });
 
-
-        // Function to get CSRF token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -672,8 +641,6 @@
             return cookieValue;
         }
 
-
-         // Add JavaScript for payment method button styling (from previous code)
         const paymentOptionRadios = document.querySelectorAll('.payment-option input[type="radio"]');
         const paymentButtonLabels = document.querySelectorAll('.payment-button');
 
@@ -693,8 +660,6 @@
         if (initialChecked) {
             document.querySelector(`label[for="${initialChecked.id}"]`).classList.add('selected');
         }
-
-
     });
 </script>
 {% endblock %}

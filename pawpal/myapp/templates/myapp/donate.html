@@ -484,25 +484,29 @@
         font-size: 1.1em;
     }
 
-    /* สไตล์สำหรับไอคอนเพศ */
+    /* สไตล์สำหรับไอคอนเพศ - ใช้ฟอนต์เดียวกับ Adopt Catalog */
     .gender-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: #5B9B5F; /* Default for male or unknown */
-        color: #ffffff;
-        font-size: 18px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        flex-shrink: 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+         width: 30px; /* กำหนดขนาดวงกลม */
+         height: 30px;
+         border-radius: 50%; /* ทำให้เป็นวงกลม */
+         background-color: #66b0f5;
+         color: #ffffff;
+         font-size: 18px; /* ขนาดสัญลักษณ์เพศ */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-weight: 3000;
+         flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
+         font-family: 'font-awesome', sans-serif; /* ใช้ font-family ตามโค้ดที่คุณให้มา */
     }
 
-    .gender-icon.female { /* Specific style for female */
-        background-color: #ff69b4; /* Pink for female */
-    }
+     /* ตัวอย่างสีสำหรับเพศหญิง ถ้าต้องการแยกสี */
+     .gender-icon.female {
+         background-color: #ff69b4; /* สีชมพูอ่อน */
+         color: #fdeef5; /* สีชมพู */
+     }
+
+
     
     .condition-section { /* เพิ่ม class นี้เพื่อจัดกลุ่ม */
         /* margin-top: 10px;  อาจจะไม่จำเป็นถ้า case-header มี margin-bottom เพียงพอ */
@@ -705,7 +709,7 @@
     {# ส่วน Header จะมาจาก base.html โดยอัตโนมัติ #}
 
     <div class="page-header-title">
-        <i class="fas fa-heart" style="margin-right: 8px;"></i> Donate & Support Our Animals
+        <i  style="margin-right: 8px;"></i> Donate 
     </div>
 
     <div class="content-area">
@@ -840,8 +844,8 @@
         <div class="popup-content">
             <button class="close-btn" onclick="document.getElementById('thank-you-popup-general').classList.remove('visible');">&times;</button>
             <div class="icon">❤️</div>
-            <h4>ขอบคุณสำหรับการบริจาคของคุณ!</h4>
-            <p>การสนับสนุนของคุณช่วยให้เราดูแลสัตว์ที่ต้องการได้</p>
+            <h4>Thank you for your donation!</h4>
+            <p>Your support helps us care for animals in need.</p>
         </div>
     </div>
 
