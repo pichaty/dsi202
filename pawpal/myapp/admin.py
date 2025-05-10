@@ -188,13 +188,45 @@ from .models import AdoptionApplication, Pet # ตรวจสอบว่า Pe
 
 @admin.register(AdoptionApplication)
 class AdoptionApplicationAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_pets', 'is_approved')
+    list_display = ('id','first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_applied_pets', 'is_approved') # เปลี่ยนชื่อ method เล็กน้อยเพื่อความชัดเจน
     list_filter = ('is_approved', 'apply_date')
-    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation')
-    date_hierarchy = 'apply_date' # เพิ่มการกรองตามวันที่สมัคร
+    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation', 'pets__name', 'pets__id') # เพิ่มการ search จากชื่อหรือ ID ของ Pet
+    date_hierarchy = 'apply_date'
+    readonly_fields = ('apply_date',) # ทำให้วันที่สมัครแก้ไขไม่ได้
+    
+    # เพิ่ม fieldsets เพื่อจัดกลุ่มข้อมูล และทำให้ ManyToManyField (pets) แสดงผลได้ดีขึ้น
+    fieldsets = (
+        (None, {
+            'fields': ('is_approved', ('first_name', 'last_name'), ('email', 'phone_number'))
+        }),
+        ('Address Information', {
+            'fields': ('address', 'subdistrict', 'district', 'province', 'postal_code')
+        }),
+        ('Adoption Details', {
+            'fields': ('household', 'other_pets', 'property_description', 'job_working_hours', 'motivation')
+        }),
+        ('Applied Pets', { # ส่วนสำหรับแสดงและแก้ไขสัตว์เลี้ยงที่สมัคร
+            'fields': ('pets',)
+        }),
+        ('Timestamps', {
+            'fields': ('apply_date',),
+        }),
+    )
+    filter_horizontal = ('pets',) # ทำให้การเลือก pets ในหน้าแก้ไข application ง่ายขึ้น
 
-    # ฟังก์ชันสำหรับแสดงรายชื่อสัตว์เลี้ยงที่เกี่ยวข้องในรายการ
-    def display_pets(self, obj):
-        return ", ".join([pet.name for pet in obj.pets.all()])
-    display_pets.short_description = 'Applied for Pets'
+    def display_applied_pets(self, obj):
+        # แสดงชื่อสัตว์เลี้ยง พร้อม ID หรือแค่ชื่อก็ได้
+        return ", ".join([f"{pet.name} (ID: {pet.id})" for pet in obj.pets.all()])
+        # หรือถ้าต้องการแค่ชื่อ: return ", ".join([pet.name for pet in obj.pets.all()])
+    display_applied_pets.short_description = 'Applied for Pets'
 
+    # เพิ่ม action สำหรับ approve ใบสมัครที่เลือก
+    def approve_selected_applications(self, request, queryset):
+        for application in queryset:
+            if not application.is_approved:
+                application.is_approved = True
+                application.save() # เรียก save() method ของ AdoptionApplication ซึ่งจะไปอัปเดต Pet.is_adopted และ PetStatistics
+        self.message_user(request, f"{queryset.count()} adoption applications were successfully approved.")
+    approve_selected_applications.short_description = "Approve selected applications"
+
+    actions = [approve_selected_applications]

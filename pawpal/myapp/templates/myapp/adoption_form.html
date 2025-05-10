@@ -342,7 +342,7 @@
                 <div class="submit-button-container">
                     {# You can add a hidden input field here to include the selected pet IDs when submitting the form #}
                     {% if selected_pets %}
-                        <input type="hidden" name="selected_pet_ids" value="{{ selected_pets|join:',' }}">
+                            <input type="hidden" name="selected_pet_ids" value="{{ selected_pet_ids_for_form }}">
                     {% endif %}
                     <button type="submit" class="submit-button">Submit</button>
                 </div>

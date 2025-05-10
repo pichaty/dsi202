@@ -151,10 +151,20 @@ class UserFavorite(models.Model):
         unique_together = ('user', 'pet')
 
 
-class AdoptionApplication(models.Model):
-    # หากใช้ระบบผู้ใช้ ให้เพิ่มบรรทัดนี้
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='adoption_applications', null=True, blank=True)
+# work/dsi202/pawpal/myapp/models.py
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+from django.db.models import F # เพิ่ม F object สำหรับ atomic updates
+
+# ... (Pet, DonationCase, DonationSettings, etc.) ...
+# ตรวจสอบว่า PetStatistics ถูก import แล้ว
+# from .models import PetStatistics # ถ้า PetStatistics อยู่ในไฟล์เดียวกัน ไม่ต้อง import ซ้ำ
+
+class AdoptionApplication(models.Model):
+    # ... (fields ของ AdoptionApplication เหมือนเดิม) ...
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
@@ -170,73 +180,96 @@ class AdoptionApplication(models.Model):
     job_working_hours = models.CharField(max_length=255, blank=True, null=True)
     motivation = models.TextField(blank=True, null=True)
     apply_date = models.DateTimeField(auto_now_add=True)
-    is_approved = models.BooleanField(default=False) # ฟิลด์ is_approved ควรมีแค่ครั้งเดียวที่นี่
-
-
-    # เชื่อมใบสมัครกับสัตว์เลี้ยงหลายตัว (ใช้ ManyToManyField)
+    is_approved = models.BooleanField(default=False)
     pets = models.ManyToManyField(Pet, related_name='applications')
 
     def save(self, *args, **kwargs):
-        print("\n--- AdoptionApplication save method START ---") # เพิ่มบรรทัดนี้
-        print(f"  AdoptionApplication PK: {self.pk}, is_approved (before super save): {self.is_approved}") # เพิ่มบรรทัดนี้
+        print(f"\n--- AdoptionApplication save START (ID: {self.pk}) ---")
+        
+        old_is_approved = None
+        is_new_application = self.pk is None # ตรวจสอบว่าเป็น object ใหม่หรือไม่
 
-        is_approved_changed_to_true = False
-        if self.pk: # ตรวจสอบว่า instance นี้มีอยู่ในฐานข้อมูลแล้วหรือยัง
+        if not is_new_application: # ถ้าเป็น object ที่มีอยู่แล้ว
             try:
-                # ดึงข้อมูล instance เก่าจากฐานข้อมูล ถ้ามี pk
                 old_instance = AdoptionApplication.objects.get(pk=self.pk)
-                # ตรวจสอบว่า is_approved เปลี่ยนจาก False เป็น True หรือไม่
-                is_approved_changed_to_true = self.is_approved and not old_instance.is_approved
-                print(f"  is_approved changed from {old_instance.is_approved} to {self.is_approved}") # เพิ่มบรรทัดนี้
-                print(f"  is_approved_changed_to_true is {is_approved_changed_to_true}") # เพิ่มบรรทัดนี้
+                old_is_approved = old_instance.is_approved
+                print(f"  Old approval status for App ID {self.pk}: {old_is_approved}")
             except AdoptionApplication.DoesNotExist:
-                # ถ้าเป็น instance ใหม่ (ยังไม่มีในฐานข้อมูล)
-                print("  Old instance not found (likely creating new).") # เพิ่มบรรทัดนี้
-                pass # ไม่ต้องทำอะไร
+                print(f"  Warning: App ID {self.pk} provided, but old instance not found during save.")
+                # ถ้าหา object เก่าไม่เจอ แต่มี pk อาจจะถือว่าเป็นการเปลี่ยนแปลงสถานะจาก default (False)
+                old_is_approved = False # สมมติว่าสถานะเก่าคือ False
+        else: # ถ้าเป็น object ใหม่
+            old_is_approved = False # สถานะเริ่มต้นของ object ใหม่ (ก่อน save ครั้งแรก) คือยังไม่ approved
+            print(f"  New application is being processed.")
 
-        # เรียก save() ดั้งเดิมก่อน
-        print("  Calling super().save()...") # เพิ่มบรรทัดนี้
+        # เรียก super().save() ก่อน เพื่อให้ self.pk มีค่าแน่นอน และ self.pets.all() ทำงานได้ถูกต้อง
         super().save(*args, **kwargs)
-        print("  super().save() called. Application saved.") # เพิ่มบรรทัดนี้
+        print(f"  AdoptionApplication (ID: {self.pk}) saved. Current is_approved: {self.is_approved}")
 
+        # ตรวจสอบการเปลี่ยนแปลงสถานะ is_approved
+        approval_newly_granted = old_is_approved is False and self.is_approved is True
+        approval_newly_revoked = old_is_approved is True and self.is_approved is False
 
-        # หลังจาก super().save()
-        # ตรวจสอบอีกครั้งว่า is_approved ยังคงเป็น True อยู่
-        if self.is_approved:
-            print("  Application is_approved is True.") # เพิ่มบรรทัดนี้
-            # หากสถานะ is_approved ถูกเปลี่ยนจาก False เป็น True ในการบันทึกครั้งนี้
-            if is_approved_changed_to_true:
-                print("  is_approved_changed_to_true condition met. Proceeding to update pets.") # เพิ่มบรรทัดนี้
-                # วนลูปผ่านสัตว์เลี้ยงทั้งหมดที่เกี่ยวข้องกับใบสมัครนี้
-                pets_in_application = self.pets.all()
-                print(f"  Found {pets_in_application.count()} pet(s) in this application.") # เพิ่มบรรทัดนี้
+        pets_in_application = self.pets.all() # ดึงสัตว์เลี้ยงที่เกี่ยวข้องหลังจาก save แล้ว
 
-                for pet in pets_in_application:
-                    print(f"  Checking pet: {pet.name} (PK: {pet.pk})...") # เพิ่มบรรทัดนี้
-                    print(f"    Current is_adopted status: {pet.is_adopted}") # เพิ่มบรรทัดนี้
+        if approval_newly_granted:
+            print(f"  Approval GRANTED for Application ID: {self.pk}. Processing pets...")
+            pets_marked_adopted_count = 0
+            for pet in pets_in_application:
+                if not pet.is_adopted:
+                    pet.is_adopted = True
+                    pet.save()
+                    pets_marked_adopted_count += 1
+                    print(f"    Pet ID: {pet.id} (Name: {pet.name}) marked as adopted.")
+                else:
+                    print(f"    Pet ID: {pet.id} (Name: {pet.name}) was ALREADY adopted. Skipping.")
+            
+            if pets_marked_adopted_count > 0:
+                stats, created = PetStatistics.objects.get_or_create(pk=1) # หรือเงื่อนไขอื่นในการ get stats
+                stats.adopted_count = F('adopted_count') + pets_marked_adopted_count
+                stats.save()
+                stats.refresh_from_db()
+                print(f"    PetStatistics.adopted_count INCREASED by {pets_marked_adopted_count}. New count: {stats.adopted_count}")
 
-                    # ตรวจสอบอีกครั้งว่าสัตว์เลี้ยงยังไม่ได้ถูกรับเลี้ยง (ป้องกันการเขียนทับสถานะ)
-                    if not pet.is_adopted:
-                        print(f"    Pet {pet.name} is not yet adopted. Attempting to update.") # เพิ่มบรรทัดนี้
-                        pet.is_adopted = True
-                        try:
-                            pet.save() # บันทึกการเปลี่ยนแปลงสถานะของสัตว์เลี้ยงแต่ละตัว
-                            print(f"    SUCCESS: Pet {pet.name} status updated to is_adopted=True.") # เพิ่มบรรทัดนี้
-                        except Exception as e:
-                            print(f"    ERROR: Failed to save pet {pet.name}: {e}") # เพิ่มบรรทัดนี้
-                    else:
-                        print(f"    Pet {pet.name} is already adopted.") # เพิ่มบรรทัดนี้
-            else:
-                print("  is_approved was already True or this is a new application. Pet update skipped.") # เพิ่มบรรทัดนี้
+        elif approval_newly_revoked:
+            print(f"  Approval REVOKED for Application ID: {self.pk}. Reverting pet status...")
+            pets_reverted_count = 0
+            for pet in pets_in_application:
+                # เมื่อยกเลิก approve, เราจะตั้ง is_adopted เป็น False
+                # ไม่ว่าสัตว์เลี้ยงตัวนี้จะถูก adopt โดย application อื่นหรือไม่ก็ตาม
+                # ซึ่งอาจจะต้องพิจารณา logic นี้เพิ่มเติมถ้ามีหลาย application ต่อ 1 สัตว์เลี้ยง
+                # แต่ตาม flow ปัจจุบัน 1 สัตว์เลี้ยงควรจะถูก adopt โดย 1 application ที่ approved เท่านั้น
+                if pet.is_adopted: # เฉพาะตัวที่เคยถูก adopted (อาจจะโดย application นี้)
+                    pet.is_adopted = False
+                    pet.save()
+                    pets_reverted_count += 1
+                    print(f"    Pet ID: {pet.id} (Name: {pet.name}) reverted to NOT adopted.")
+                else:
+                    print(f"    Pet ID: {pet.id} (Name: {pet.name}) was ALREADY NOT adopted. Skipping.")
+
+            if pets_reverted_count > 0:
+                stats, created = PetStatistics.objects.get_or_create(pk=1)
+                # ตรวจสอบว่า adopted_count ไม่ติดลบ
+                current_adopted_count = stats.adopted_count
+                new_adopted_count = max(0, current_adopted_count - pets_reverted_count) # ป้องกันค่าติดลบ
+                stats.adopted_count = new_adopted_count
+                # หรือจะใช้ stats.adopted_count = F('adopted_count') - pets_reverted_count ก็ได้ แต่ต้องมั่นใจว่า F() object จะไม่ทำให้ค่าติดลบ
+                # stats.adopted_count = F('adopted_count') - pets_reverted_count
+                stats.save()
+                stats.refresh_from_db()
+                print(f"    PetStatistics.adopted_count DECREASED by {pets_reverted_count} (from {current_adopted_count} to {new_adopted_count}). Current count: {stats.adopted_count}")
         else:
-            print("  Application is_approved is False. Pet update skipped.") # เพิ่มบรรทัดนี้
+            print(f"  No change in approval status relevant to pet adoption status for App ID: {self.pk}. (is_approved: {self.is_approved}, old_is_approved: {old_is_approved})")
 
-
-        print("--- AdoptionApplication save method END ---\n") # เพิ่มบรรทัดนี้
-
+        print(f"--- AdoptionApplication save END (ID: {self.pk}) ---\n")
 
     def __str__(self):
         return f"Application by {self.first_name} {self.last_name} on {self.apply_date.strftime('%Y-%m-%d')}"
+
+    def __str__(self):
+        return f"Application by {self.first_name} {self.last_name} on {self.apply_date.strftime('%Y-%m-%d')}"
+
+# ... (DonationRecord และโมเดลอื่นๆ) ...
     # ใน myapp/models.py
 
 # เพิ่ม import User ที่ด้านบนสุด ถ้ายังไม่มี

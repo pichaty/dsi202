@@ -13,7 +13,7 @@ from decimal import Decimal # Import Decimal for accurate currency calculations
 # ตรวจสอบว่า import โมเดลครบถ้วน
 from .models import (
     Pet, UserFavorite, BlogPost, AboutContent, PetStatistics, 
-    ContactInfo, DonationCase, AdoptionApplication, DonationRecord, DonationSettings
+    ContactInfo, DonationCase, AdoptionApplication, DonationRecord, DonationSettings,Pet, AdoptionApplication, UserFavorite 
 )
 
 
@@ -299,30 +299,42 @@ def adoption_form_view(request):
         )
         
         selected_pet_ids_str = request.POST.get('selected_pet_ids', '')
+        pet_ids_list_for_application = [] # เก็บ ID ของสัตว์เลี้ยงที่จะผูกกับ application
+
         if selected_pet_ids_str:
             try:
-                pet_ids_list = [int(id_str) for id_str in selected_pet_ids_str.split(',') if id_str.isdigit()]
-                selected_pets_for_save = Pet.objects.filter(id__in=pet_ids_list)
+                pet_ids_list_for_application = [int(id_str) for id_str in selected_pet_ids_str.split(',') if id_str.isdigit()]
+                selected_pets_for_save = Pet.objects.filter(id__in=pet_ids_list_for_application)
                 if selected_pets_for_save.exists():
                     application.pets.set(selected_pets_for_save)
             except ValueError:
-                # จัดการกรณีที่ selected_pet_ids ไม่ใช่ตัวเลข
-                pass
-        
+                pass # จัดการ error ถ้า id ไม่ใช่ตัวเลข
+
+        # หลังจากสร้าง Application และผูกสัตว์เลี้ยงสำเร็จแล้ว
+        # ให้ลบสัตว์เลี้ยงที่อยู่ใน pet_ids_list_for_application ออกจาก UserFavorite ของผู้ใช้ปัจจุบัน
+        if request.user.is_authenticated and pet_ids_list_for_application:
+            UserFavorite.objects.filter(user=request.user, pet_id__in=pet_ids_list_for_application).delete()
+            print(f"DEBUG: Removed pets {pet_ids_list_for_application} from favorites for user {request.user.username}")
+
         return redirect(reverse('adoption_thank_you'))
 
     else: # GET request
-        selected_pet_ids_str = request.GET.get('pets', '')
-        selected_pets = []
+        # ... (โค้ดส่วน GET request เหมือนเดิม) ...
+        selected_pet_ids_str = request.GET.get('pets', '') # จากปุ่ม "Let's Adopt" ใน favorites.html
+        selected_pets_for_display = []
+        hidden_pet_ids_value = '' # สำหรับ input hidden ในฟอร์ม
+
         if selected_pet_ids_str:
             try:
                 pet_ids_list = [int(id_str) for id_str in selected_pet_ids_str.split(',') if id_str.isdigit()]
-                selected_pets = Pet.objects.filter(id__in=pet_ids_list)
+                selected_pets_for_display = Pet.objects.filter(id__in=pet_ids_list)
+                hidden_pet_ids_value = ",".join(map(str, pet_ids_list)) # สร้าง string สำหรับ input hidden
             except ValueError:
-                 pass # หรือจัดการ error
+                 pass
 
         context = {
-            'selected_pets': selected_pets
+            'selected_pets': selected_pets_for_display,
+            'selected_pet_ids_for_form': hidden_pet_ids_value, # ส่งไปให้ template ใช้ใน hidden input
         }
         return render(request, 'myapp/adoption_form.html', context)
 
