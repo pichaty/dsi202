@@ -295,7 +295,7 @@
 .back-button {
     position: absolute;
     left: 20px; /* ระยะห่างจากขอบซ้าย */
-    top: 280;
+    top: 400;
     padding: 8px 12px;
     font-size: 30;
     color: #d55e00;
@@ -620,26 +620,10 @@
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
-                    'X-Requested-With': 'XMLHttpRequest' // <-- Added header for AJAX detection
+                    'X-CSRFToken': getCookie('csrftoken') // Include CSRF token
                 }
             })
-            .then(response => {
-                // Check if the response is JSON before parsing
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    // If not JSON, maybe it's a redirect or other non-JSON response
-                    console.error('Received non-JSON response:', response);
-                    // Handle non-JSON response, e.g., show a generic error or redirect
-                    alert('เกิดข้อผิดพลาดในการสื่อสารกับเซิร์ฟเวอร์');
-                    // Or, if a redirect is expected on success (though we want popup),
-                    // you might handle the redirect here if needed.
-                    // For now, we'll treat non-JSON as an error for the popup flow.
-                    return Promise.reject('Received non-JSON response');
-                }
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Show thank you popup
@@ -655,7 +639,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('เกิดข้อผิดพลาดในการส่งข้อมูล'); // This is the other possible alert
+                alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
             });
         });
 

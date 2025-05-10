@@ -2,112 +2,188 @@
 {% load static %}
 
 {% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@400;600;700&family=Outfit:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
     /* สไตล์สำหรับหน้ารวม Donate */
     body {
-        background-color: #f6f6f1; /* ใช้สีพื้นหลังตามรูป */
-        font-family: Arial, sans-serif; /* ใช้ฟอนต์ตามที่คุณต้องการ */
+        background-color: #f8f7f2; /* สีพื้นหลังสว่างขึ้นเล็กน้อย */
+        font-family: 'Quicksand', sans-serif;
         color: #333;
-        line-height: 1.4;
-        padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างสำหรับ Footer แบบ Fixed */
+        line-height: 1.6;
+        padding-bottom: 60px;
     }
-
 
     .page-header-title {
-        background-color: #5B9B5F; /* สีเขียวตามรูป */
+        background: linear-gradient(135deg, #5B9B5F 0%, #3e7a42 100%); /* ไล่เฉดสีเขียว */
         color: white;
-        padding: 15px 15px;
+        padding: 20px 15px;
         text-align: center;
-        font-size: 20px;
-        font-weight: 1000 ;
-        font-family: Grandstander; /* ใช้ฟอนต์ Grandstander ตามโค้ดที่คุณให้มา */
-
-         margin-top: 160px;
+        font-size: 24px;
+        font-weight: 700;
+        font-family: 'Grandstander', cursive;
+        margin-top: 160px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 1px;
     }
 
-    /* พื้นที่เนื้อหาหลัก เพิ่ม padding รอบๆ */
+    /* พื้นที่เนื้อหาหลัก */
     .content-area {
-        padding: 10px;
-        padding-top: 60px;
+        padding: 20px;
+        padding-top: 40px; /* เพิ่ม padding ด้านบนเพื่อให้ไม่ชิดกับ header ของหน้า */
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
     /* Card Mission Statement */
     .mission-card {
-        background-color: #fff; /* สีขาวตามรูป */
-        border-radius: 8px;
-        margin-bottom: 12px;
+        background-color: #fff;
+        border-radius: 12px;
+        margin-bottom: 25px;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงานิดหน่อย */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+    
+    .mission-card:hover {
+        transform: translateY(-5px);
     }
 
     /* แถวรูปภาพสัตว์เลี้ยงใน Mission Card */
     .pet-images-row {
         display: flex;
-        height: 200px; /* กำหนดความสูง */
+        height: 250px; /* เพิ่มความสูง */
     }
 
-    .pet-image {
-        flex: 1; /* แบ่งพื้นที่เท่าๆ กัน */
+    .pet-image { /* รูปภาพใน mission card */
+        flex: 1;
         overflow: hidden;
+        position: relative;
+    }
+
+    .pet-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .pet-image:hover::after {
+        opacity: 1;
     }
 
     .pet-image img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* ครอบคลุมพื้นที่โดยไม่เสียสัดส่วน */
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .pet-image:hover img {
+        transform: scale(1.05);
     }
 
     /* ข้อความใน Mission Card */
     .mission-text {
-        padding: 12px;
-        /* font-size: 13px; /* ขนาดฟอนต์เดิม */
-        font-size: 16px; /* **ขนาดฟอนต์ใหม่ที่คุณต้องการ** */
-        font-family: 'Quicksand', sans-serif; /* ใช้ฟอนต์ Quicksand ตามที่คุณให้มา */
-        font-weight: 600; /* ใช้ font-weight ตามที่คุณให้มา */
-        /* อาจเพิ่ม color หรือ line-height ถ้าต้องการปรับเพิ่มเติม */
+        padding: 25px;
+        font-size: 17px;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 500;
+        color: #444;
+        line-height: 1.7;
+        text-align: center;
+        background-color: #fff;
+        position: relative;
+    }
+    
+    .mission-text::before {
+        content: '"';
+        font-size: 60px;
+        color: #5B9B5F;
+        opacity: 0.2;
+        position: absolute;
+        top: 0;
+        left: 15px;
+        font-family: serif;
     }
 
-    /* สไตล์สำหรับฟอร์มบริจาค - ปรับปรุงใหม่ */
+    /* สไตล์สำหรับฟอร์มบริจาค */
     .donation-form-card {
-        background-color: #fff; /* สีขาวตามรูป */
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* เพิ่มเงานิดหน่อย */
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .donation-form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #ff8c42, #d55e00);
     }
 
     /* ตัวเลือก Monthly/One-off */
     .radio-options {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
     }
 
     .radio-option {
         display: flex;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 0;
         font-weight: 600;
         font-size: 18px;
-        font-family: 'outfit', sans-serif;
+        font-family: 'Outfit', sans-serif;
+        position: relative;
+        cursor: pointer;
     }
 
     .radio-option input[type="radio"] {
         margin-right: 15px;
-        accent-color: #ff8c42; /* สีส้มตามรูป */
+        accent-color: #ff8c42;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
     }
 
     /* ช่องกรอกจำนวนเงิน */
     .amount-field {
         display: flex;
         align-items: center;
-        background-color: #f9f9f9; /* สีเทาอ่อนตามรูป */
-        border-radius: 8px;
-        padding: 10px 15px;
-        margin-bottom: 15px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border: 2px solid #eee;
+        transition: border-color 0.3s ease;
+    }
+    
+    .amount-field:focus-within {
+        border-color: #ff8c42;
     }
 
     .currency-symbol {
-        margin-right: 10px;
-        font-size: 16px;
+        margin-right: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #666;
     }
 
     .amount-field input {
@@ -115,275 +191,376 @@
         outline: none;
         width: 100%;
         background: transparent;
-        font-size: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        font-family: 'Outfit', sans-serif;
     }
 
     /* ส่วนวิธีการชำระเงิน */
     .payment-section {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
     }
 
     .section-label {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: bold;
-        margin-bottom: 8px;
+        margin-bottom: 15px;
         display: block;
-        font-family: 'Mitr', sans-serif;
+        font-family: 'Outfit', sans-serif;
+        color: #444;
+        text-align: center;
     }
 
     .payment-methods {
         display: flex;
-        flex-wrap: wrap; /* ให้ Wrap ลงบรรทัดใหม่ในจอเล็ก */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
     }
 
     .payment-method {
-        margin-right: 15px;
-        margin-bottom: 10px; /* เพิ่มระยะห่างด้านล่างเมื่อ Wrap */
+        margin-right: 0;
+        margin-bottom: 0;
     }
 
     .payment-method input[type="radio"] {
-        display: none; /* ซ่อน Radio Button เดิม */
+        display: none;
     }
 
     /* Label ของวิธีการชำระเงินที่ทำเป็นปุ่ม */
     .payment-label {
-        display: inline-flex; /* ใช้ inline-flex เพื่อจัดรูปภาพและข้อความให้อยู่กึ่งกลางได้ง่าย */
-        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-        justify-content: center; /* จัดให้อยู่กึ่งกลางแนวนอน */
-        border: 1px solid #ddd;
-        border-radius: 25px; /* เพิ่มความโค้งมน */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ddd;
+        border-radius: 25px;
         cursor: pointer;
         transition: all 0.3s ease;
         background-color: #fff; 
         color: #333; 
         white-space: nowrap;
-        padding: 10px 20px; /* เพิ่ม padding ให้ปุ่มใหญ่ขึ้น (ปรับค่าตามต้องการ) */
-        min-height: 50px;   /* กำหนดความสูงขั้นต่ำ (ปรับค่าตามต้องการ) */
-        min-width: 100px;   /* กำหนดความกว้างขั้นต่ำสำหรับปุ่ม "Other" (ปรับค่าตามต้องการ) */
-        font-size: 16px;    /* เพิ่มขนาดตัวอักษรในปุ่ม "Other" (ปรับค่าตามต้องการ) */
+        padding: 10px 25px;
+        min-height: 55px;
+        min-width: 120px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .payment-label:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-color: #ccc;
     }
 
     /* ปรับ padding สำหรับ Label ที่มีรูป PromptPay */
     .payment-label.promptpay-label {
-         padding: 4px 10px; /* ปรับ padding ให้เหมาะสมกับรูป */
-     }
+        padding: 4px 10px;
+    }
 
     .payment-label.promptpay-label img {
-        height: 80px; /* เพิ่มขนาดรูปภาพ PromptPay (ปรับค่าตามต้องการ) */
-        width: auto;  /* ให้ความกว้างปรับตามสัดส่วนของรูป */
-        display: block; /* ช่วยในการจัดกลาง */
-        margin: auto;   /* ช่วยในการจัดกลาง */
-     }
+        height: 80px;
+        width: auto;
+        display: block;
+        margin: auto;
+    }
 
     /* สไตล์สำหรับวิธีการชำระเงินที่ถูกเลือก */
     input[type="radio"]:checked + .payment-label {
-        background-color: #ff8c42; /* สีส้มตามรูป */
+        background: linear-gradient(135deg, #ff8c42 0%, #d55e00 100%);
         color: white;
+        border-color: #d55e00;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 12px rgba(213, 94, 0, 0.3);
+    }
+
+    /* Styles for QR Code and Slip Upload Section */
+    #promptpay-details-general {
+        display: none;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    #promptpay-details-general img {
+        max-width: 200px;
+        height: auto;
+        margin-bottom: 20px;
+        border: 2px solid #eee;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    
+    #promptpay-details-general img:hover {
+        transform: scale(1.05);
+    }
+
+    #promptpay-details-general .form-group {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    #promptpay-details-general .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #555;
+        font-size: 16px;
+    }
+
+    #promptpay-details-general .form-group input[type="file"] {
+        display: block;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        padding: 8px;
+        background-color: #f9f9f9;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+    
+    #promptpay-details-general .form-group input[type="file"]:hover {
         border-color: #ff8c42;
     }
 
-    /* Styles for QR Code and Slip Upload Section - คัดลอกจาก donate_detail.html */
-     #promptpay-details-general { /* ใช้ id เฉพาะหน้านี้ */
-         display: none; /* Hidden by default */
-         margin-top: 20px;
-         padding-top: 15px;
-         border-top: 1px solid #eee;
-         text-align: center;
-     }
-
-     #promptpay-details-general img { /* ใช้ id เฉพาะหน้านี้ */
-         max-width: 180px; /* Adjust size as needed */
-         height: auto;
-         margin-bottom: 15px;
-         border: 1px solid #ccc; /* Optional: add border */
-         padding: 5px; /* Optional: add padding */
-     }
-
-     #promptpay-details-general .form-group { /* ใช้ id เฉพาะหน้านี้ */
-         margin-bottom: 15px;
-         text-align: left; /* Align label to the left */
-     }
-
-     #promptpay-details-general .form-group label { /* ใช้ id เฉพาะหน้านี้ */
-         display: block;
-         margin-bottom: 5px;
-         font-weight: bold;
-     }
-
-     #promptpay-details-general .form-group input[type="file"] { /* ใช้ id เฉพาะหน้านี้ */
-         display: block; /* Ensure file input takes full width */
-         width: 100%;
-     }
-
     /* ปุ่ม Donate Now */
     .donate-button {
-        background-color: #d55e00; /* สีส้มตามรูป */
+        background: linear-gradient(135deg, #ff8c42 0%, #d55e00 100%);
         color: white;
         border: none;
-        border-radius: 25px; /* ทำให้ปุ่มโค้งมน */
-        padding: 12px;
-        width: 30%; /* ให้เต็มความกว้าง */
-        font-size: 16px;
+        border-radius: 30px;
+        padding: 15px 40px;
+        width: auto;
+        max-width: 250px;
+        font-size: 18px;
         font-weight: bold;
+        font-family: 'Outfit', sans-serif;
         cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่าง */
-        margin-left: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
-        margin-right: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
-        display: block; /* ทำให้สามารถใช้ margin auto ได้ */
-
+        transition: all 0.3s ease;
+        margin: 0 auto 30px;
+        display: block;
+        box-shadow: 0 5px 15px rgba(213, 94, 0, 0.3);
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .donate-button::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+        transition: all 0.8s ease;
     }
 
     .donate-button:hover {
-        background-color: #e0783a; /* สีส้มเข้มขึ้นเมื่อ Hover */
+        background: linear-gradient(135deg, #ff9c52 0%, #e56810 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(213, 94, 0, 0.4);
+    }
+    
+    .donate-button:hover::after {
+        left: 100%;
+    }
+
+    .donate-button:active {
+        transform: translateY(1px);
     }
 
     /* รายการเคสสัตว์เลี้ยง */
     .pet-cases {
-        margin-top: 15px;
+        margin-top: 35px;
+    }
+    
+    .pet-cases-header {
+        text-align: center;
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .pet-cases-header h2 {
+        font-family: 'Grandstander', cursive;
+        color: #444;
+        font-size: 28px;
+        margin: 0;
+    }
+    
+    .pet-cases-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, #5B9B5F, #3e7a42);
+        border-radius: 3px;
     }
 
     .pet-case-card {
         display: flex;
-        background-color: #fcf6e7;
-        border-radius: 10px;
+        background-color: #fff;
+        border-radius: 12px;
         overflow: hidden;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเล็กน้อย */
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        padding: 10px;
-        text-decoration: none; /* **เอาขีดเส้นใต้ออก** */
+        padding: 15px;
+        text-decoration: none;
         color: inherit;
+        border-left: 5px solid #5B9B5F;
     }
 
     .pet-case-card:hover {
-        transform: translateY(-4px); /* ขยับขึ้นเล็กน้อย */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* เพิ่มเงาเมื่อ hover */
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
 
-
-    .pet-photo {
-        width: 100px; /* กำหนดขนาดรูปภาพให้ใหญ่ขึ้นตามรูปใหม่ */
-        height: 100px; /* กำหนดขนาดรูปภาพให้ใหญ่ขึ้นตามรูปใหม่ */
-        flex-shrink: 0; /* ป้องกันรูปภาพถูกย่อ */
-        border-radius: 4px; /* ปรับให้มุมรูปภาพโค้งมน 4px ตามรูปใหม่ */
-        overflow: hidden; /* ซ่อนส่วนเกินของรูปภาพ */
-        margin-right: 15px; /* เพิ่มระยะห่างระหว่างรูปภาพกับข้อมูล */
+    .pet-photo { /* รูปภาพสัตว์เลี้ยงในเคส */
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-right: 20px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        /* CSS สำหรับ pet-photo ในส่วน pet-case-card (Desktop View) */
+        /* ไม่ได้มีการกำหนด display: flex ที่นี่โดยตรง */
     }
 
-    .pet-photo img {
+    .pet-photo img { /* รูปภาพสัตว์เลี้ยงในเคส */
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: cover; /* สำหรับ Desktop View อาจจะยังเป็น cover */
+        transition: transform 0.5s ease;
+    }
+    
+    .pet-case-card:hover .pet-photo img {
+        transform: scale(1.08);
     }
 
-    .pet-info {
-        flex-grow: 1; /* ให้ส่วนข้อมูลขยายเต็มที่ */
-        padding: 0; /* ลบ padding ออก */
+    .pet-info { /* ใน Pet Case Card */
+        flex-grow: 1;
+        padding: 0;
         position: relative;
-        /* เอา align-items: center ออก เพราะจัดการใน .pet-case-card แทนแล้ว (แต่ตอนนี้เอาออกแล้ว) */
     }
 
-    /* สไตล์สำหรับ Header ในส่วนข้อมูล (หมายเลขเคส + ไอคอนเพศ) */
+    /* สไตล์สำหรับ Header ในส่วนข้อมูล */
     .case-header {
         display: flex;
-        justify-content: space-between; /* แยกหมายเลขเคสและไอคอนเพศออกจากกัน */
-        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-        margin-bottom: 5px; /* เพิ่มระยะห่างด้านล่าง header */
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
     }
 
     .case-number {
-        font-size: 17px;
-        font-weight: bold;
-        /* margin-bottom: 5px; /* ย้าย margin-bottom ไปที่ .case-header */
+        font-size: 18px;
+        font-weight: 700;
         display: flex;
         align-items: center;
-        /* position: relative; /* ลบ position: relative ออกจาก case-number */
-        color: #614a2d;
+        color: #5B9B5F;
+        font-family: 'Outfit', sans-serif;
     }
 
     .paw-icon {
-        margin-left: 5px;
-        color: #d99a56; /* สีส้มอ่อนๆ */
-        font-size: 1em; /* ขนาดเดียวกับข้อความ */
+        margin-left: 8px;
+        color: #ff8c42;
+        font-size: 1.1em;
     }
 
-    /* สไตล์สำหรับไอคอนเพศ - ใช้ฟอนต์เดียวกับ Adopt Catalog */
+    /* สไตล์สำหรับไอคอนเพศ */
     .gender-icon {
-         width: 30px; /* กำหนดขนาดวงกลม */
-         height: 30px;
-         border-radius: 50%; /* ทำให้เป็นวงกลม */
-         background-color: #66b0f5;
-         color: #ffffff;
-         font-size: 18px; /* ขนาดสัญลักษณ์เพศ */
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         font-weight: 3000;
-         flex-shrink: 0; /* ป้องกันไอคอนเพศถูกย่อ */
-         font-family: 'font-awesome', sans-serif; /* ใช้ font-family ตามโค้ดที่คุณให้มา */
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #5B9B5F; /* Default for male or unknown */
+        color: #ffffff;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        flex-shrink: 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-     /* ตัวอย่างสีสำหรับเพศหญิง ถ้าต้องการแยกสี */
-     .gender-icon.female {
-         background-color: #ff69b4; /* สีชมพูอ่อน */
-         color: #fdeef5; /* สีชมพู */
-     }
+    .gender-icon.female { /* Specific style for female */
+        background-color: #ff69b4; /* Pink for female */
+    }
+    
+    .condition-section { /* เพิ่ม class นี้เพื่อจัดกลุ่ม */
+        /* margin-top: 10px;  อาจจะไม่จำเป็นถ้า case-header มี margin-bottom เพียงพอ */
+    }
 
     /* สไตล์สำหรับ Label "Description of the condition" และไอคอน */
     .condition-label {
-        display: flex; /* จัดเรียงไอคอนและข้อความในแนวนอน */
-        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+        display: flex;
+        align-items: center;
         font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 8px; /* ระยะห่างด้านล่าง Label */
-        color: #523a28;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #444;
+        font-family: 'Outfit', sans-serif;
     }
 
     /* สไตล์สำหรับไอคอนสมุดโน้ต */
     .notebook-icon {
-        margin-right: 5px; /* ระยะห่างขวาจากไอคอน */
-        /* สามารถใช้รูปภาพ หรือ Font Awesome icon แทนตัวอักษร '📄' */
-        /* ตัวอย่าง Font Awesome icon: <i class="fas fa-book"></i> หรือ <i class="fas fa-file-alt"></i> */
+        margin-right: 8px;
+        color: #5B9B5F;
     }
 
-
     .case-description {
-        font-size: 14px;
-
+        font-size: 15px;
+        line-height: 1.6;
     }
 
     .case-description p {
-         margin: 0;
-         color: #523a28; /* ปรับสีข้อความคำอธิบายเล็กน้อย */
+        margin: 0;
+        color: #555;
     }
-
-    .info-button { /* ลบสไตล์นี้ออก หรือเก็บไว้ถ้ายังมีใช้อยู่ที่อื่น */
-        display: none; /* ซ่อนไอคอน Info เดิมตามรูปใหม่ */
-    }
-
 
     .no-cases {
         text-align: center;
-        padding: 20px;
+        padding: 40px 20px;
         color: #888;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        font-size: 16px;
+        font-style: italic;
     }
 
-    /* Styles for the Thank You Popup - คัดลอกมาจาก donate_detail.html */
+    /* Styles for the Thank You Popup */
     .popup-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.6); /* Dim background */
+        background: rgba(0, 0, 0, 0.7);
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 2000; /* Above other content */
-        visibility: hidden; /* Hidden by default */
+        z-index: 2000;
+        visibility: hidden;
         opacity: 0;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+        backdrop-filter: blur(3px);
     }
 
     .popup-overlay.visible {
@@ -393,67 +570,148 @@
 
     .popup-content {
         background: #fff;
-        padding: 30px;
-        border-radius: 10px;
+        padding: 40px 30px;
+        border-radius: 15px;
         text-align: center;
         position: relative;
-        max-width: 300px; /* Adjust max width */
+        max-width: 350px;
         width: 90%;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transform: scale(0.9);
+        transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+    
+    .popup-overlay.visible .popup-content {
+        transform: scale(1);
     }
 
     .popup-content .close-btn {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
         cursor: pointer;
         color: #aaa;
         border: none;
         background: none;
+        transition: color 0.3s ease;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
     }
 
     .popup-content .close-btn:hover {
-        color: #777;
+        color: #555;
+        background-color: #f5f5f5;
     }
 
     .popup-content .icon {
-        font-size: 40px; /* Icon size */
-        color: var(--accent-red); /* Match heart color */
-        margin-bottom: 15px;
+        font-size: 50px;
+        color: #ff5757; /* สีแดงสำหรับหัวใจ */
+        margin-bottom: 20px;
+        animation: heartBeat 1.3s infinite;
+    }
+    
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        14% { transform: scale(1.15); }
+        28% { transform: scale(1); }
+        42% { transform: scale(1.15); }
+        70% { transform: scale(1); }
     }
 
     .popup-content h4 {
         margin-top: 0;
         color: #333;
-        font-size: 1.2em; /* Adjust font size */
+        font-size: 22px;
+        font-family: 'Grandstander', cursive;
+        margin-bottom: 15px;
     }
 
     .popup-content p {
         color: #555;
-        line-height: 1.6;
+        line-height: 1.7;
+        font-size: 16px;
     }
-
-
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .pet-images-row { /* รูปใน mission card */
+            height: 200px;
+        }
+        
+        .pet-case-card {
+            flex-direction: column;
+            padding: 12px;
+        }
+        
+        .pet-photo { /* รูปใน pet-case-card (Mobile View) */
+            width: 100%;
+            height: 180px; 
+            margin-right: 0;
+            margin-bottom: 15px;
+            display: flex; /* เพิ่มเพื่อให้ align-items และ justify-content ทำงาน */
+            align-items: center; /* จัดรูปให้อยู่กลางแนวตั้ง */
+            justify-content: center; /* จัดรูปให้อยู่กลางแนวนอน */
+            /* background-color: #f0f0f0; */ /* Optional: หากต้องการสีพื้นหลังเมื่อรูปไม่เต็ม */
+        }
+        .pet-photo img { /* รูปใน pet-case-card (Mobile View) */
+             width: 100%; /* ให้รูปภาพปรับตาม parent */
+             height: 100%; /* ให้รูปภาพปรับตาม parent */
+             object-fit: contain; /* เปลี่ยนเป็น contain เพื่อไม่ให้ครอป */
+             /* max-width: 100%; */ /* อาจจะไม่จำเป็น */
+             /* max-height: 100%; */ /* อาจจะไม่จำเป็น */
+        }
+        
+        .radio-options {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .payment-methods {
+            justify-content: space-between;
+        }
+        
+        .payment-method {
+            flex: 0 0 48%; /* ให้มี 2 ปุ่มต่อแถว */
+        }
+        
+        .payment-label {
+            width: 100%; /* ทำให้ปุ่มเต็มความกว้างของ parent (.payment-method) */
+        }
+        
+        .donate-button {
+            width: 80%;
+        }
+        
+        .section-label { /* ปรับ section label ในส่วน payment ให้ชิดซ้ายบนจอเล็ก */
+            text-align: left;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .payment-method { /* ให้มี 1 ปุ่มต่อแถวบนจอมือถือ */
+            flex: 0 0 100%;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
     {# ส่วน Header จะมาจาก base.html โดยอัตโนมัติ #}
 
-    {# Header "Donate" ที่จะ Fixed #}
     <div class="page-header-title">
-        Donate
+        <i class="fas fa-heart" style="margin-right: 8px;"></i> Donate & Support Our Animals
     </div>
 
-    {# พื้นที่เนื้อหาหลักทั้งหมด จะมี padding ด้านบนเพิ่มขึ้น #}
     <div class="content-area">
-        {# ... เนื้อหาอื่นๆ ในหน้า Donate ทั้งหมดจะอยู่ใน div นี้ ... #}
-
         <div class="mission-card">
             <div class="pet-images-row">
                 <div class="pet-image">
-                    {# ตรวจสอบให้แน่ใจว่ามีรูปภาพและ path ถูกต้องใน static files ของคุณ #}
                     <img src="{% static 'myapp/images/dog1.jpg' %}" alt="Rescue Dog">
                 </div>
                 <div class="pet-image">
@@ -465,14 +723,13 @@
             </div>
             <div class="mission-text">
                 <p>We rescue stray dogs and cats, give them medical care and help them find loving homes.
-                With your support, we can cover their food and cover treatment costs for animals in need.
+                With your support, we can cover their food and treatment costs for animals in need.
                 Every donation makes a difference. Thank you for helping to give them a second chance.</p>
             </div>
         </div>
 
-        {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'donate' ของหน้านี้เอง #}
-       <form id="general-donation-form" method="post" enctype="multipart/form-data"> {# เพิ่ม id ให้ form #}
-            {% csrf_token %} {# เพิ่ม CSRF token สำหรับความปลอดภัย #}
+       <form id="general-donation-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
             <div class="donation-form-card">
                 <div class="radio-options">
@@ -487,324 +744,250 @@
                 </div>
 
                 <div class="amount-field">
-                    <span class="currency-symbol">฿</span> {# หรือใช้สัญลักษณ์สกุลเงินของคุณ เช่น ฿ #}
-                    <input type="number" name="donationAmount" value="200" min="10" required> {# เพิ่ม required #}
+                    <span class="currency-symbol">฿</span>
+                    <input type="number" name="donationAmount" value="200" min="10" required>
                 </div>
 
                 <div class="payment-section">
-                    <div class="section-label">Donate By</div>
+                    <div class="section-label">
+                        <i class="fas fa-credit-card" style="margin-right: 8px;"></i> Donate By
+                    </div>
                     <div class="payment-methods">
-
                          <div class="payment-method">
-                             <input type="radio" id="promptPayGeneral" name="paymentMethod" value="PromptPay" checked> {# เพิ่ม id เฉพาะและเลือก PromptPay เป็น default #}
+                             <input type="radio" id="promptPayGeneral" name="paymentMethod" value="PromptPay" checked>
                              <label for="promptPayGeneral" class="payment-label promptpay-label">
-                                 {# ใช้รูป PromptPay #}
                                 <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay">
                             </label>
                          </div>
                          <div class="payment-method">
-                             <input type="radio" id="otherPaymentGeneral" name="paymentMethod" value="Other"> {# เพิ่ม id เฉพาะ #}
-                             <label for="otherPaymentGeneral" class="payment-label">Other</label>
+                             <input type="radio" id="otherPaymentGeneral" name="paymentMethod" value="Other">
+                             <label for="otherPaymentGeneral" class="payment-label">
+                                 <i class="fas fa-wallet" style="margin-right: 8px;"></i> Other
+                             </label>
                          </div>
-
                     </div>
                 </div>
 
-                {# Container for QR Code and Slip Upload #}
-                {# เพิ่มเงื่อนไข check ว่า donation_settings และ promptpay_qr_code มีค่าก่อนแสดง div และรูป #}
                 {% if donation_settings and donation_settings.promptpay_qr_code %}
-                    <div id="promptpay-details-general" style="display: none;"> {# เพิ่ม id เฉพาะและซ่อนไว้ก่อน #}
+                    <div id="promptpay-details-general" style="display: none;">
                          <img src="{{ donation_settings.promptpay_qr_code.url }}" alt="QR Code สำหรับการบริจาค">
 
                          <div class="form-group">
-                             <label for="slip_image_general">แนบสลิป (เฉพาะ PromptPay):</label> {# เพิ่ม id เฉพาะ #}
-                             <input type="file" id="slip_image_general" name="slip_image" accept="image/*"> {# เพิ่ม id เฉพาะ #}
+                             <label for="slip_image_general">
+                                 <i class="fas fa-receipt" style="margin-right: 5px;"></i> แนบสลิป (เฉพาะ PromptPay):
+                             </label>
+                             <input type="file" id="slip_image_general" name="slip_image" accept="image/*">
                          </div>
                     </div>
                  {% else %}
-                    {# แสดงข้อความถ้า QR Code ไม่พร้อมใช้งาน #}
                     <div id="promptpay-details-general" style="display: none; text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
-                        <p>QR Code ไม่พร้อมใช้งานสำหรับการบริจาคทั่วไปในขณะนี้</p>
+                        <p><i class="fas fa-exclamation-circle" style="margin-right: 5px; color: #ff8c42;"></i> QR Code ไม่พร้อมใช้งานสำหรับการบริจาคทั่วไปในขณะนี้</p>
                     </div>
                  {% endif %}
             </div>
 
-            {# ปุ่ม Donate Now อยู่ใน form แล้ว #}
-            <button type="submit" class="donate-button">Donate Now</button>
+            <button type="submit" class="donate-button">
+                <i class="fas fa-heart" style="margin-right: 8px;"></i> Donate Now
+            </button>
         </form>
 
         <div class="pet-cases">
-            {# วนลูปแสดงข้อมูลจาก donation_cases ที่ส่งมาจาก view #}
-            {# สมมติว่า case ใน donation_cases เป็น DonationCase object #}
-           {% for case in donation_cases %}
-               {# สร้าง Link ไปยังหน้ารายละเอียดของเคส โดยใช้ URL ชื่อ 'donate_detail' และส่ง pk ของเคสไปด้วย #}
+            <div class="pet-cases-header">
+                <h2><i class="fas fa-paw" style="margin-right: 10px;"></i> Animals Needing Your Help</h2>
+            </div>
+            
+            {% for case in donation_cases %}
                <a href="{% url 'donate_detail' pk=case.pk %}" class="pet-case-card">
                    <div class="pet-photo">
-                       {# แสดงรูปภาพของเคส ถ้ามี ถ้าไม่มีให้ใช้รูปภาพของ Pet ที่เกี่ยวข้อง ถ้า Pet ไม่มีรูปให้ใช้รูป default #}
                        {% if case.image %}
                            <img src="{{ case.image.url }}" alt="{{ case.title }}">
-                       {% elif case.pet.photo %} {# Fallback ไปใช้รูปภาพ Pet ถ้า case.image ไม่มี #}
+                       {% elif case.pet.photo %}
                            <img src="{{ case.pet.photo.url }}" alt="{{ case.pet.name }}">
                        {% else %}
-                           {# รูปภาพ default ถ้าไม่มีรูปเลย #}
                            <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">
                        {% endif %}
                    </div>
-                   {# ส่วนข้อมูลด้านขวา #}
                    <div class="pet-info">
                        <div class="case-header">
-                           <div class="case-number">No. {{ case.case_id }} <span class="paw-icon">🐾</span></div> {# แสดง case_id พร้อมไอคอนอุ้งเท้า #}
-                           {# แสดงไอคอนเพศ #}
+                           <div class="case-number">No. {{ case.case_id }} <span class="paw-icon"><i class="fas fa-paw"></i></span></div>
                            <div class="gender-icon {% if case.pet.gender|lower == 'female' %}female{% endif %}">
-                               {% if case.pet.gender|lower == 'male' %}
-                                   ♂ {# สัญลักษณ์เพศผู้ #}
-                               {% elif case.pet.gender|lower == 'female' %}
-                                    ♀ {# สัญลักษณ์เพศเมีย #}
-                               {% else %}
-                                   ? {# สัญลักษณ์ไม่ทราบเพศ #}
+                               {% if case.pet.gender|lower == 'male' %}♂
+                               {% elif case.pet.gender|lower == 'female' %}♀
+                               {% else %}?
                                {% endif %}
                            </div>
                        </div>
-
-                       {# ส่วนคำอธิบาย Condition #}
-                       <div class="condition-section"> {# เพิ่ม div ใหม่สำหรับส่วน Condition #}
-                            {# ไอคอนสมุดโน้ตและ Description Label #}
+                       <div class="condition-section">
                            <div class="condition-label">
-                               <span class="notebook-icon">📄</span> Description of the condition
+                               <span class="notebook-icon"><i class="fas fa-clipboard-list"></i></span> Description of the condition
                            </div>
-                           {# คำอธิบาย #}
                            <div class="case-description">
-                               {# แสดงคำอธิบายของเคส อาจจะตัดข้อความให้สั้นลงสำหรับหน้ารวม #}
-                               <p>{{ case.description|truncatechars:100 }}</p> {# กลับไปใช้ truncatechars:100 #}
+                               <p>{{ case.description|truncatechars:100 }}</p>
                            </div>
                        </div>
-
-                        {# ลบส่วนปุ่ม Support medical expenses ออก #}
-                        {# <div class="support-button-container"> #}
-                        {#     <button type="button" class="support-button">Support medical expenses</button> #}
-                        {# </div> #}
-
                    </div>
                </a>
            {% empty %}
-               {# แสดงข้อความนี้หากไม่มีเคสบริจาคในระบบ #}
-               <div class="no-cases">No donation cases available at the moment.</div>
+               <div class="no-cases">
+                   <i class="fas fa-info-circle" style="margin-right: 5px; font-size: 20px;"></i>
+                   No donation cases available at the moment.
+               </div>
            {% endfor %}
        </div>
     </div>
 
-    {# Thank You Popup Structure - คัดลอกมาจาก donate_detail.html #}
-    <div id="thank-you-popup-general" class="popup-overlay"> {# เพิ่ม id เฉพาะ #}
+    <div id="thank-you-popup-general" class="popup-overlay">
         <div class="popup-content">
-            <button class="close-btn">&times;</button>
+            <button class="close-btn" onclick="document.getElementById('thank-you-popup-general').classList.remove('visible');">&times;</button>
             <div class="icon">❤️</div>
             <h4>ขอบคุณสำหรับการบริจาคของคุณ!</h4>
             <p>การสนับสนุนของคุณช่วยให้เราดูแลสัตว์ที่ต้องการได้</p>
         </div>
     </div>
 
-
-    {# ส่วน Footer จะมาจาก base.html โดยอัตโนมัติ #}
-
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // เพิ่ม JavaScript สำหรับการเลือกวิธีการชำระเงินเพื่อปรับสไตล์ปุ่ม
-        const paymentMethods = document.querySelectorAll('.payment-method input[type="radio"]');
-        const paymentButtonLabels = document.querySelectorAll('.payment-label'); // ใช้ selector ทั่วไปสำหรับ labels
+        const paymentMethodRadiosGeneral = document.querySelectorAll('#general-donation-form input[name="paymentMethod"]');
+        const promptpayDetailsGeneral = document.getElementById('promptpay-details-general');
+        const donationFormGeneral = document.getElementById('general-donation-form');
+        const thankYouPopupGeneral = document.getElementById('thank-you-popup-general');
+        const closePopupBtnGeneral = thankYouPopupGeneral ? thankYouPopupGeneral.querySelector('.close-btn') : null;
+        const slipImageInputGeneral = document.getElementById('slip_image_general');
 
-        paymentMethods.forEach(method => {
-            method.addEventListener('change', function() {
-                console.log('Payment method changed to:', this.value); // Log การเปลี่ยนแปลง
-
-                // ลบ class 'selected' ออกจากทุก Label
-                paymentButtonLabels.forEach(label => { // ใช้วนลูปผ่าน paymentButtonLabels
-                    label.classList.remove('selected');
-                });
-
-                // เพิ่ม class 'selected' ให้กับ Label ของ Radio Button ที่ถูกเลือก
-                if (this.checked) {
-                    const currentLabel = document.querySelector(`label[for="${this.id}"]`);
-                    if (currentLabel) {
-                         currentLabel.classList.add('selected');
-                         console.log('Added selected class to label for:', this.id); // Log การเพิ่ม class
-                    } else {
-                        console.error('Could not find label for radio button:', this.id); // Error ถ้าหา label ไม่เจอ
-                    }
-                }
-
-                // เรียกฟังก์ชันเพื่อแสดง/ซ่อนส่วน QR Code
-                 togglePromptPayDetailsGeneral();
-            });
-        });
-
-        // กำหนดสไตล์เริ่มต้นสำหรับวิธีการชำระเงินที่ถูกเลือกไว้ตอนแรก
-        const initialChecked = document.querySelector('.payment-method input[type="radio"]:checked');
-        if (initialChecked) {
-             const initialLabel = document.querySelector(`label[for="${initialChecked.id}"]`);
-             if (initialLabel) {
-                 initialLabel.classList.add('selected');
-                 console.log('Initial checked payment method:', initialChecked.value); // Log ค่าเริ่มต้น
-             } else {
-                 console.error('Could not find initial label for radio button:', initialChecked.id);
-             }
-        } else {
-             console.log('No initial payment method checked.'); // Log ถ้าไม่มีค่าเริ่มต้นถูกเลือก
-        }
-
-
-        // --- ส่วน JavaScript สำหรับการแสดง QR Code และ Popup (คัดลอกจาก donate_detail.html) ---
-
-        const paymentMethodRadiosGeneral = document.querySelectorAll('#general-donation-form input[name="paymentMethod"]'); // ใช้ selector ที่เฉพาะเจาะจงกับ form ใหม่
-        const promptpayDetailsGeneral = document.getElementById('promptpay-details-general'); // ใช้ id ใหม่
-        const donationFormGeneral = document.getElementById('general-donation-form'); // ใช้ id form ใหม่
-        const thankYouPopupGeneral = document.getElementById('thank-you-popup-general'); // ใช้ id popup ใหม่
-        const closePopupBtnGeneral = thankYouPopupGeneral ? thankYouPopupGeneral.querySelector('.close-btn') : null; // ใช้ตัวแปร popup ใหม่ในการหาปุ่มปิด
-        const slipImageInputGeneral = document.getElementById('slip_image_general'); // ใช้ id input slip ใหม่
-
-        console.log('promptpayDetailsGeneral element:', promptpayDetailsGeneral); // ตรวจสอบว่าหา element เจอไหม
-
-
-        // Function to show/hide PromptPay details for general donation
         function togglePromptPayDetailsGeneral() {
-            const selectedMethodElement = document.querySelector('#general-donation-form input[name="paymentMethod"]:checked'); // ใช้ selector ที่เฉพาะเจาะจง
+            const selectedMethodElement = document.querySelector('#general-donation-form input[name="paymentMethod"]:checked');
             const selectedMethod = selectedMethodElement ? selectedMethodElement.value : null;
 
-            console.log('togglePromptPayDetailsGeneral called. Selected method:', selectedMethod); // Log การเรียกฟังก์ชันและค่าที่เลือก
-
-            if (promptpayDetailsGeneral) { // ตรวจสอบว่า element promptpayDetailsGeneral มีอยู่จริงก่อนดำเนินการ
+            if (promptpayDetailsGeneral) {
                 if (selectedMethod === 'PromptPay') {
                     promptpayDetailsGeneral.style.display = 'block';
-                    console.log('PromptPay selected. Showing QR code details.'); // Log การแสดง
-                    // Make slip image required for PromptPay if the input element exists
                     if (slipImageInputGeneral) {
                          slipImageInputGeneral.setAttribute('required', 'required');
-                         console.log('Slip image input set to required.');
-                    } else {
-                         console.warn('Slip image input element not found.'); // Warning ถ้าหา input ไม่เจอ
                     }
                 } else {
                     promptpayDetailsGeneral.style.display = 'none';
-                     console.log('Other payment method selected. Hiding QR code details.'); // Log การซ่อน
-                    // Remove required attribute for other payment methods if the input element exists
                     if (slipImageInputGeneral) {
                          slipImageInputGeneral.removeAttribute('required');
-                         console.log('Slip image input required removed.');
                     }
                 }
-            } else {
-                console.error('Error: promptpay-details-general element not found!'); // Error ถ้าหา element ไม่เจอ
             }
         }
 
-        // Add event listeners to payment method radio buttons for general donation form
         paymentMethodRadiosGeneral.forEach(radio => {
             radio.addEventListener('change', togglePromptPayDetailsGeneral);
         });
 
-        // Initial check on page load for general donation form
-        // ใช้ setTimeout เพื่อให้แน่ใจว่า DOM โหลดเสร็จสมบูรณ์แล้ว
-        setTimeout(togglePromptPayDetailsGeneral, 50);
+        const initialPaymentMethod = document.querySelector('#general-donation-form input[name="paymentMethod"]:checked');
+        if (initialPaymentMethod) {
+            const initialLabel = document.querySelector(`label[for="${initialPaymentMethod.id}"]`);
+            if (initialLabel) {
+                 document.querySelectorAll('#general-donation-form .payment-label').forEach(lbl => lbl.classList.remove('selected'));
+                 initialLabel.classList.add('selected');
+            }
+        }
+        togglePromptPayDetailsGeneral(); 
+
+        document.querySelectorAll('#general-donation-form .payment-method input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('#general-donation-form .payment-label').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                if (this.checked) {
+                    const currentLabel = document.querySelector(`label[for="${this.id}"]`);
+                    if (currentLabel) {
+                        currentLabel.classList.add('selected');
+                    }
+                }
+            });
+        });
 
 
-        // Handle general donation form submission with AJAX
-        if (donationFormGeneral) { // ตรวจสอบว่า form element มีอยู่จริง
-            donationFormGeneral.addEventListener('submit', function(event) { // ใช้ id form ใหม่
-                event.preventDefault(); // Prevent default form submission
-
+        if (donationFormGeneral) {
+            donationFormGeneral.addEventListener('submit', function(event) {
+                event.preventDefault();
                 const formData = new FormData(this);
                 const selectedMethod = formData.get('paymentMethod');
+                const donateButton = this.querySelector('.donate-button');
+                const originalButtonText = donateButton.innerHTML;
 
-                // Basic validation for PromptPay slip
                 if (selectedMethod === 'PromptPay') {
                      if (!formData.get('slip_image') || formData.get('slip_image').size === 0) {
                         alert('โปรดแนบสลิปสำหรับการบริจาคด้วย PromptPay');
-                        return; // Stop the submission
+                        return;
                      }
                 }
+                
+                donateButton.disabled = true;
+                donateButton.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Processing...';
 
-                // เพิ่ม indicator หรือ disable ปุ่มขณะส่งข้อมูล (Optional)
-                // const donateButton = this.querySelector('.donate-button');
-                // donateButton.disabled = true;
-                // donateButton.textContent = 'Processing...'; // เปลี่ยนข้อความปุ่ม
 
-                fetch('', { // Submit to the same URL ('donate/')
+                fetch("{% url 'donate' %}", { 
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
-                        'X-Requested-With': 'XMLHttpRequest' // Added header for AJAX detection
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
                 .then(response => {
-                     // ตรวจสอบ Content-Type ก่อนแปลงเป็น JSON
                      const contentType = response.headers.get('content-type');
                      if (contentType && contentType.includes('application/json')) {
                          return response.json();
                      } else {
-                         // ถ้าไม่ใช่ JSON แสดงว่าอาจเกิด Error ที่ฝั่ง Server ก่อนถึงขั้นตอนการคืน JSON หรือมีการ Redirect
                          console.error('Received non-JSON response for general donation:', response);
+                         response.text().then(text => console.error("Response text:", text)); 
                          alert('เกิดข้อผิดพลาดในการสื่อสารกับเซิร์ฟเวอร์');
-                         // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับ
-                         // donateButton.disabled = false;
-                         // donateButton.textContent = 'Donate Now';
-                         return Promise.reject('Received non-JSON response'); // หยุดการทำงาน
+                         return Promise.reject('Received non-JSON response');
                      }
                 })
                 .then(data => {
-                    // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับก่อน
-                    // donateButton.disabled = false;
-                    // donateButton.textContent = 'Donate Now';
-
+                    donateButton.disabled = false;
+                    donateButton.innerHTML = originalButtonText;
                     if (data.success) {
-                        // Show thank you popup
-                        if (thankYouPopupGeneral) { // ตรวจสอบว่า popup element มีอยู่จริง
-                           thankYouPopupGeneral.classList.add('visible'); // ใช้ตัวแปร popup ใหม่
+                        if (thankYouPopupGeneral) {
+                           thankYouPopupGeneral.classList.add('visible');
                         }
-                        // Clear the form (optional)
-                        donationFormGeneral.reset(); // ใช้ id form ใหม่
-                        // Reset the display of PromptPay details
-                         togglePromptPayDetailsGeneral(); // เรียกใช้ฟังก์ชัน toggle ของ form ใหม่
+                        donationFormGeneral.reset();
+                        const defaultPaymentRadio = document.querySelector('#general-donation-form input[name="paymentMethod"][value="PromptPay"]');
+                        if (defaultPaymentRadio) {
+                            defaultPaymentRadio.checked = true; 
+                            document.querySelectorAll('#general-donation-form .payment-label').forEach(label => label.classList.remove('selected'));
+                            const defaultLabel = document.querySelector('label[for="promptPayGeneral"]');
+                            if (defaultLabel) defaultLabel.classList.add('selected');
+                        }
+                        togglePromptPayDetailsGeneral();
                     } else {
-                        // Handle errors if any
-                        alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + data.error);
+                        alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error during general donation submission:', error);
                     alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
-                    // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับ
-                    // donateButton.disabled = false;
-                    // donateButton.textContent = 'Donate Now';
+                    donateButton.disabled = false;
+                    donateButton.innerHTML = originalButtonText;
                 });
             });
-        } else {
-             console.error('Donation form element with ID "general-donation-form" not found!');
         }
 
-
-        // Close popup when close button is clicked
-        if (closePopupBtnGeneral) { // ตรวจสอบว่าปุ่มปิด popup มีอยู่จริง
-            closePopupBtnGeneral.addEventListener('click', function() { // ใช้ตัวแปร popup ใหม่
+        if (closePopupBtnGeneral) {
+            closePopupBtnGeneral.addEventListener('click', function() {
                 if (thankYouPopupGeneral) {
-                   thankYouPopupGeneral.classList.remove('visible'); // ใช้ตัวแปร popup ใหม่
+                   thankYouPopupGeneral.classList.remove('visible');
                 }
             });
         }
 
-         // Close popup when clicking outside the popup content
-         if (thankYouPopupGeneral) { // ตรวจสอบว่า popup element มีอยู่จริง
-             thankYouPopupGeneral.addEventListener('click', function(event) { // ใช้ตัวแปร popup ใหม่
-                 if (event.target === thankYouPopupGeneral) { // ใช้ตัวแปร popup ใหม่
-                     thankYouPopupGeneral.classList.remove('visible'); // ใช้ตัวแปร popup ใหม่
+         if (thankYouPopupGeneral) {
+             thankYouPopupGeneral.addEventListener('click', function(event) {
+                 if (event.target === thankYouPopupGeneral) {
+                     thankYouPopupGeneral.classList.remove('visible');
                  }
              });
          }
 
-
-        // Function to get CSRF token (ยังคงใช้ตัวเดิมได้)
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -819,8 +1002,6 @@
             }
             return cookieValue;
         }
-         // --- สิ้นสุดส่วน JavaScript ที่คัดลอกและปรับแก้ ---
-
     });
 </script>
 {% endblock %}
