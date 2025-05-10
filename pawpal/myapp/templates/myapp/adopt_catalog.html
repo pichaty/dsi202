@@ -163,7 +163,7 @@
     }
     .modal-close-button:hover, .modal-close-button:focus { color: #000; }
 
-    #modalPetContentContainer {
+    #modalPetContentContainer { /* ID นี้ใช้สำหรับ Modal ใน Catalog */
         overflow-y: auto; /* ให้ content ภายใน modal scroll ได้ */
         flex-grow: 1; /* ให้ content ขยายเต็มพื้นที่ที่เหลือใน wrapper */
     }
@@ -199,6 +199,140 @@
     .story-title-popup { font-weight: bold; font-size: 1.05em; margin-bottom: 8px; color: #d55e00;}
     .story-content-popup { font-size: 0.9em; color: #444; line-height: 1.6;}
     /* --- สิ้นสุด CSS สำหรับ Modal --- */
+
+    /* --- CSS สำหรับ Grid Gallery ภายใน Modal --- */
+    .additional-images-grid-section-popup {
+      text-align: left;
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    .additional-images-title-popup {
+      font-weight: bold;
+      font-size: 1em;
+      margin-bottom: 10px;
+      color: #343a40;
+    }
+    .additional-images-grid-popup {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px;
+    }
+    .additional-image-grid-item-popup {
+      text-align: center;
+    }
+    .additional-image-grid-item-popup a {
+      display: block;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+    }
+    .additional-image-grid-thumb-popup {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s ease-in-out;
+    }
+    .additional-image-grid-item-popup a:hover .additional-image-grid-thumb-popup {
+      transform: scale(1.05);
+    }
+    .additional-image-caption-grid-popup {
+      font-size: 0.75em;
+      color: #6c757d;
+      margin-top: 3px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* --- สิ้นสุด CSS สำหรับ Grid Gallery --- */
+
+    /* --- CSS สำหรับ Lightbox รูปภาพ (เหมือนกับใน home.html) --- */
+    .lightbox-overlay-custom { /* ใช้ class เดิมเพื่อแชร์สไตล์ */
+      display: none;
+      position: fixed;
+      z-index: 1002;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.85);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .lightbox-content-custom {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 95%;
+        max-height: 95vh;
+    }
+    .lightbox-overlay-custom img {
+      display: block;
+      margin: auto;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 5px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    .lightbox-close-button-custom {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      color: #f1f1f1;
+      font-size: 45px;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+      line-height: 1;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 5px;
+    }
+    .lightbox-close-button-custom:hover,
+    .lightbox-close-button-custom:focus {
+      color: #bbb;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .lightbox-nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0,0,0,0.3);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 24px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        z-index: 1003;
+    }
+    .lightbox-nav-button:hover {
+        background-color: rgba(0,0,0,0.6);
+    }
+    .lightbox-prev-button {
+        left: 20px;
+    }
+    .lightbox-next-button {
+        right: 20px;
+    }
+    .lightbox-nav-button.hidden {
+        display: none;
+    }
+    /* --- สิ้นสุด CSS สำหรับ Lightbox รูปภาพ --- */
   </style>
 {% endblock %}
 
@@ -218,14 +352,14 @@
 
   <div class="grid" id="petsGrid">
     {% for pet in pets %}
-    <div class="card" 
-         data-pet-id="{{ pet.id }}" 
-         data-pet-name="{{ pet.name|lower }}" 
-         data-pet-breed="{{ pet.breed|lower }}" 
-         data-pet-gender="{{ pet.gender|lower }}" 
+    <div class="card"
+         data-pet-id="{{ pet.id }}"
+         data-pet-name="{{ pet.name|lower }}"
+         data-pet-breed="{{ pet.breed|lower }}"
+         data-pet-gender="{{ pet.gender|lower }}"
          data-pet-detail="{{ pet.detail|lower }}"
-         onclick="openPetDetailModal('{{ pet.id }}')">
-      
+         onclick="openPetDetailModal('{{ pet.id }}')"> {# ID ของ Modal ใน Catalog คือ petDetailModalOverlay #}
+
       <div class="heart-icon" data-pet-id="{{ pet.id }}">
           <i class="fas fa-heart"></i>
       </div>
@@ -251,18 +385,27 @@
     {% endfor %}
   </div>
 
-  {# --- HTML สำหรับ Modal --- #}
-  <div id="petDetailModalOverlay" class="modal-overlay">
+  {# --- HTML สำหรับ Modal Pet Detail (ID: petDetailModalOverlay) --- #}
+  <div id="petDetailModalOverlay" class="modal-overlay"> {# เปลี่ยน ID เป็น petDetailModalOverlay สำหรับ Catalog #}
     <div class="modal-content-wrapper">
-      <span class="modal-close-button" onclick="closePetDetailModal()">&times;</span>
-      <div id="modalPetContentContainer">
-        {# เนื้อหา Pet Detail จะถูกใส่ที่นี่โดย JavaScript #}
-        {# Placeholder ขณะโหลด หรือถ้าไม่มีข้อมูล #}
+      <span class="modal-close-button" onclick="closePetDetailModal()">&times;</span> {# ฟังก์ชันปิด Modal ของ Catalog #}
+      <div id="modalPetContentContainer"> {# Container สำหรับเนื้อหา Modal ใน Catalog #}
         <div style="padding: 50px; text-align: center;">Loading...</div>
       </div>
     </div>
   </div>
   {# --- สิ้นสุด HTML สำหรับ Modal --- #}
+
+  {# --- HTML สำหรับ Lightbox รูปภาพ (ใช้ ID และ function ที่แตกต่างกันสำหรับ Catalog) --- #}
+  <div id="imageLightboxOverlayCatalog" class="lightbox-overlay-custom"> {# ID เฉพาะสำหรับ Catalog #}
+    <div class="lightbox-content-custom">
+      <button class="lightbox-nav-button lightbox-prev-button" onclick="showPrevImageCatalog()">&#10094;</button>
+      <img id="lightboxImageCatalog" src="" alt="Large image preview"> {# ID เฉพาะสำหรับ Catalog #}
+      <button class="lightbox-nav-button lightbox-next-button" onclick="showNextImageCatalog()">&#10095;</button>
+    </div>
+    <span class="lightbox-close-button-custom" onclick="closeImageLightboxCatalog()">&times;</span> {# Function เฉพาะสำหรับ Catalog #}
+  </div>
+  {# --- สิ้นสุด HTML สำหรับ Lightbox รูปภาพ --- #}
 
 {% endblock %}
 
@@ -317,7 +460,7 @@
                       petName.includes(searchTerm) ||
                       petBreed.includes(searchTerm) ||
                       petDetail.includes(searchTerm);
-          
+
           const genderFilterValue = filterButton.dataset.currentFilter || 'all';
           const matchesGender = genderFilterValue === 'all' || petGender === genderFilterValue;
 
@@ -330,7 +473,7 @@
           }
         });
 
-        if (!hasResults && searchTerm !== '') { // แสดง no results ถ้ามีการ search แล้วไม่เจอ
+        if (!hasResults && searchTerm !== '') {
           const noResultsElement = document.createElement('div');
           noResultsElement.className = 'no-results';
           noResultsElement.textContent = 'No pets match your search criteria.';
@@ -338,10 +481,10 @@
         }
         updatePetCount(visibleCount);
       }
-      
+
       if (searchInput) searchInput.addEventListener('input', filterPets);
       if (filterButton) {
-        filterButton.dataset.currentFilter = 'all'; // Initialize filter state
+        filterButton.dataset.currentFilter = 'all';
         filterButton.addEventListener('click', function() {
             if (this.dataset.currentFilter === 'all') { this.dataset.currentFilter = 'male'; this.textContent = '♂'; }
             else if (this.dataset.currentFilter === 'male') { this.dataset.currentFilter = 'female'; this.textContent = '♀'; }
@@ -349,7 +492,7 @@
             filterPets();
         });
       }
-      updatePetCount(); // Initial count
+      updatePetCount();
 
       // --- JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
       function updateCatalogHeartIconUI(iconElement, isFavorite) {
@@ -363,7 +506,6 @@
       function genericToggleFavorite(petId, successCallback, errorCallback) {
         if (!userIsAuthenticated) {
             alert('Please log in to manage favorites.');
-            // Option to redirect: window.location.href = "{% url 'login' %}"; (ensure 'login' URL is resolvable)
             return;
         }
         fetch(`/toggle-favorite/${petId}/`, {
@@ -393,8 +535,6 @@
             }
             if (data.is_favorite !== undefined) {
                 if (successCallback) successCallback(data);
-
-                // Update header favorite count
                 const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
                 if (favCountHeader && data.favorite_count !== undefined) {
                     favCountHeader.textContent = data.favorite_count;
@@ -409,23 +549,21 @@
             if (errorCallback) errorCallback(error);
         });
       }
-      
+
       heartIconsInCatalog.forEach(icon => {
         icon.addEventListener('click', function(e) {
             e.stopPropagation();
             const petId = this.getAttribute('data-pet-id');
-            const catalogIconElement = this; // The div.heart-icon in catalog
-            genericToggleFavorite(petId, 
-                (data) => { // successCallback
+            const catalogIconElement = this;
+            genericToggleFavorite(petId,
+                (data) => {
                     updateCatalogHeartIconUI(catalogIconElement, data.is_favorite);
-                    // If modal is open and showing the same pet, update its heart too
                     const modalHeartIcon = document.querySelector(`#petDetailModalOverlay .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
-                    if (modalHeartIcon) {
+                    if (modalHeartIcon) { // Check if modal is open and showing this pet
                         if (data.is_favorite) modalHeartIcon.classList.add('active');
                         else modalHeartIcon.classList.remove('active');
                     }
                 }
-                // No specific error callback needed here, generic one handles alerts
             );
         });
       });
@@ -466,16 +604,19 @@
       if (heartIconsInCatalog.length > 0) checkInitialCatalogFavorites();
       // --- สิ้นสุด JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
 
-      // --- JavaScript สำหรับ Modal Pet Detail ---
-      const modalOverlay = document.getElementById('petDetailModalOverlay');
-      const modalContentContainer = document.getElementById('modalPetContentContainer');
+      // --- JavaScript สำหรับ Modal Pet Detail ใน Catalog ---
+      const modalOverlay = document.getElementById('petDetailModalOverlay'); // ID ของ Modal ใน Catalog
+      const modalContentContainer = document.getElementById('modalPetContentContainer'); // ID ของ Container ใน Catalog
       let currentModalPetId = null;
+      let catalogLightboxImages = []; // Array สำหรับเก็บรูปภาพใน Lightbox ของ Catalog
+      let catalogCurrentLightboxIndex = 0; // Index ปัจจุบันของ Lightbox ใน Catalog
 
-      window.openPetDetailModal = function(petId) {
+      window.openPetDetailModal = function(petId) { // Function สำหรับ Modal ใน Catalog
         if (!petId) return;
         currentModalPetId = petId;
         modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
         modalOverlay.style.display = 'flex';
+        catalogLightboxImages = []; // Reset lightbox images for the new pet
 
         fetch(`/ajax/get-pet-detail/${petId}/`)
           .then(response => {
@@ -491,8 +632,26 @@
               const pet = data.pet;
               const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
               const photoUrl = pet.photo_url || defaultPhotoUrl;
-              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet, but they are full of love and waiting for a new chapter with you!";
+              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
 
+              let additionalImagesHtml = '';
+              if (pet.additional_images && pet.additional_images.length > 0) {
+                additionalImagesHtml = `
+                  <div class="additional-images-grid-section-popup">
+                    <div class="additional-images-title-popup">More Photos:</div>
+                    <div class="additional-images-grid-popup">`;
+                pet.additional_images.forEach((img, index) => {
+                  catalogLightboxImages.push({ url: img.url, caption: img.caption || pet.name });
+                  additionalImagesHtml += `
+                    <div class="additional-image-grid-item-popup">
+                      <a href="javascript:void(0);" onclick="openImageLightboxCatalog(${index})" title="${img.caption || 'View image'}">
+                        <img src="${img.url}" alt="${img.caption || pet.name}" class="additional-image-grid-thumb-popup">
+                      </a>
+                      ${img.caption ? `<p class="additional-image-caption-grid-popup">${img.caption}</p>` : ''}
+                    </div>`;
+                });
+                additionalImagesHtml += `</div></div>`;
+              }
 
               const petHtml = `
                 <div class="card-detail-popup">
@@ -516,6 +675,7 @@
                     <div class="story-title-popup">My Story:</div>
                     <div class="story-content-popup">${storyHtml}</div>
                   </div>
+                  ${additionalImagesHtml}
                 </div>
               `;
               modalContentContainer.innerHTML = petHtml;
@@ -525,11 +685,10 @@
                 heartIconInModal.addEventListener('click', function(e) {
                   e.stopPropagation();
                   const currentPetIdInModal = this.getAttribute('data-pet-id');
-                  const modalIconElement = this; // The div.heart-icon-detail-popup in modal
-                  genericToggleFavorite(currentPetIdInModal, 
-                    (data) => { // successCallback
+                  const modalIconElement = this;
+                  genericToggleFavorite(currentPetIdInModal,
+                    (data) => {
                         updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
-                        // Update catalog heart if it's the same pet
                         const catalogCardHeart = document.querySelector(`#petsGrid .card[data-pet-id="${currentPetIdInModal}"] .heart-icon`);
                         if (catalogCardHeart) {
                             updateCatalogHeartIconUI(catalogCardHeart, data.is_favorite);
@@ -550,10 +709,11 @@
           });
       }
 
-      window.closePetDetailModal = function() {
+      window.closePetDetailModal = function() { // Function ปิด Modal ของ Catalog
         modalOverlay.style.display = 'none';
-        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>'; // Reset to loading
+        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
         currentModalPetId = null;
+        catalogLightboxImages = []; // Clear lightbox images when catalog modal closes
       }
 
       modalOverlay.addEventListener('click', function(event) {
@@ -563,13 +723,90 @@
         if (event.key === "Escape" && modalOverlay.style.display === 'flex') closePetDetailModal();
       });
 
-      function updateModalHeartIconUI(heartIconElement, isFavorite) { // เฉพาะ i tag
+      function updateModalHeartIconUI(heartIconElement, isFavorite) {
         if (heartIconElement) {
             if (isFavorite) heartIconElement.classList.add('active');
             else heartIconElement.classList.remove('active');
         }
       }
-      // --- สิ้นสุด JavaScript สำหรับ Modal ---
+      // --- สิ้นสุด JavaScript สำหรับ Modal Pet Detail ---
+
+      // --- JavaScript สำหรับ Image Lightbox ของ Catalog ---
+      const imageLightboxOverlayCatalog = document.getElementById('imageLightboxOverlayCatalog');
+      const lightboxImageCatalog = document.getElementById('lightboxImageCatalog');
+      const lightboxPrevButtonCatalog = document.querySelector('#imageLightboxOverlayCatalog .lightbox-prev-button');
+      const lightboxNextButtonCatalog = document.querySelector('#imageLightboxOverlayCatalog .lightbox-next-button');
+
+      function updateCatalogLightboxNavButtons() {
+        if (!lightboxPrevButtonCatalog || !lightboxNextButtonCatalog) return;
+        if (catalogLightboxImages.length <= 1) {
+            lightboxPrevButtonCatalog.classList.add('hidden');
+            lightboxNextButtonCatalog.classList.add('hidden');
+        } else {
+            lightboxPrevButtonCatalog.classList.toggle('hidden', catalogCurrentLightboxIndex === 0);
+            lightboxNextButtonCatalog.classList.toggle('hidden', catalogCurrentLightboxIndex === catalogLightboxImages.length - 1);
+        }
+      }
+
+      function displayCatalogLightboxImage(index) {
+        if (index >= 0 && index < catalogLightboxImages.length) {
+            const imgData = catalogLightboxImages[index];
+            lightboxImageCatalog.src = imgData.url;
+            lightboxImageCatalog.alt = imgData.caption || "Image preview";
+            catalogCurrentLightboxIndex = index;
+            updateCatalogLightboxNavButtons();
+        }
+      }
+
+      window.openImageLightboxCatalog = function(index) {
+        if (catalogLightboxImages.length > 0 && lightboxImageCatalog && imageLightboxOverlayCatalog) {
+          displayCatalogLightboxImage(index);
+          imageLightboxOverlayCatalog.style.display = 'flex';
+        }
+      }
+
+      window.closeImageLightboxCatalog = function() {
+        if (imageLightboxOverlayCatalog) {
+          imageLightboxOverlayCatalog.style.display = 'none';
+          if (lightboxImageCatalog) {
+            lightboxImageCatalog.src = "";
+          }
+        }
+      }
+
+      window.showPrevImageCatalog = function() {
+        if (catalogCurrentLightboxIndex > 0) {
+            displayCatalogLightboxImage(catalogCurrentLightboxIndex - 1);
+        }
+      }
+
+      window.showNextImageCatalog = function() {
+        if (catalogCurrentLightboxIndex < catalogLightboxImages.length - 1) {
+            displayCatalogLightboxImage(catalogCurrentLightboxIndex + 1);
+        }
+      }
+
+      if (imageLightboxOverlayCatalog) {
+        imageLightboxOverlayCatalog.addEventListener('click', function(event) {
+            if (event.target === imageLightboxOverlayCatalog) {
+                closeImageLightboxCatalog();
+            }
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+          if (imageLightboxOverlayCatalog && imageLightboxOverlayCatalog.style.display === 'flex') {
+            if (event.key === "Escape") {
+                closeImageLightboxCatalog();
+            } else if (event.key === "ArrowLeft") {
+                showPrevImageCatalog();
+            } else if (event.key === "ArrowRight") {
+                showNextImageCatalog();
+            }
+          }
+      });
+      // --- สิ้นสุด JavaScript สำหรับ Image Lightbox ของ Catalog ---
+
     });
   </script>
 {% endblock %}
