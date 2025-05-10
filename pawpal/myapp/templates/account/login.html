@@ -1,0 +1,300 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block extra_head %}
+<style>
+    /* ===== START: CSS for Login Page ===== */
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Sarabun', sans-serif; /* แก้ไข: เปลี่ยน font-family */
+        background-color: #f9f4e8;
+    }
+
+    .login-page-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: calc(100vh - 160px - 60px);
+        padding: 20px;
+        box-sizing: border-box;
+        margin-top: 160px;
+        padding-bottom: 160px;
+    }
+
+    .login-box {
+        background-color: #8db38b;
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+    }
+
+    .login-box h1 {
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 30px;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group input[type="text"],
+    .input-group input[type="email"],
+    .input-group input[type="password"],
+    #id_login, /* สำหรับ allauth username/email */
+    #id_password { /* สำหรับ allauth password */
+        width: 100%;
+        padding: 12px 15px;
+        padding-right: 40px; /* เพิ่ม padding-right สำหรับ eye icon ถ้ามี */
+        border: none;
+        border-radius: 25px;
+        background-color: white;
+        font-size: 16px;
+        box-sizing: border-box;
+        color: #333;
+    }
+
+    .input-group input::placeholder,
+    #id_login::placeholder,
+    #id_password::placeholder {
+        color: #aaa;
+    }
+
+    form label[for="id_login"],
+    form label[for="id_password"] {
+        display: none;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        cursor: pointer;
+        user-select: none;
+        font-size: 18px; /* เพิ่มขนาด font-size เพื่อให้ icon ชัดขึ้นเล็กน้อย */
+    }
+
+    .btn-continue {
+        background-color: #d99a56;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px;
+        width: 100%;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn-continue:hover {
+        background-color: #c88a46;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: white;
+        margin: 20px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid white;
+    }
+
+    .divider span {
+        padding: 0 15px;
+        font-size: 14px;
+    }
+
+    .btn-google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        color: #555;
+        border: none;
+        border-radius: 25px;
+        padding: 10px;
+        width: 100%;
+        font-size: 15px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-google:hover {
+        background-color: #f5f5f5;
+    }
+
+    .btn-google img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .signup-link {
+        color: white;
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    .signup-link a {
+        color: #f0e68c;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .signup-link a:hover {
+        text-decoration: underline;
+    }
+
+    .errorlist {
+        list-style-type: none;
+        padding: 0;
+        margin: 0 0 15px 0;
+        color: #ff4d4d;
+        font-size: 0.9em;
+        text-align: left;
+    }
+    .errorlist li {
+        padding: 8px; /* เพิ่ม padding เล็กน้อย */
+        background-color: rgba(255, 220, 220, 0.9); /* เปลี่ยนสีพื้นหลัง error เล็กน้อย */
+        border-left: 3px solid #ff4d4d; /* เพิ่ม border ด้านซ้าย */
+        border-radius: 4px;
+        margin-bottom: 5px;
+    }
+
+    form > ul.errorlist { /* Target non-field errors specifically */
+      list-style-type: none;
+      padding: 0;
+      margin: 0 0 15px 0;
+    }
+    form > ul.errorlist li { /* Style for non-field errors */
+        padding: 8px;
+        background-color: rgba(255, 220, 220, 0.9);
+        border-left: 3px solid #ff4d4d;
+        border-radius: 4px;
+        margin-bottom: 5px;
+        color: #ff4d4d;
+        font-size: 0.9em;
+        text-align: left;
+    }
+    /* ===== END: CSS for Login Page ===== */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page-container">
+    <div class="login-box">
+        <h1>Log in</h1>
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist"> {# allauth non-field errors are typically in form.non_field_errors #}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+
+            <div class="input-group">
+                {% if form.login.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.login.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {{ form.login }} {# This field will be rendered by allauth #}
+            </div>
+
+            <div class="input-group">
+                {% if form.password.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {{ form.password }} {# This field will be rendered by allauth #}
+                <span class="password-toggle" data-target="id_password">👁️</span>
+            </div>
+
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button type="submit" class="btn-continue">Continue</button>
+        </form>
+
+        {% get_providers as socialaccount_providers %}
+        {% if socialaccount_providers %}
+        <div class="divider">
+            <span>or</span>
+        </div>
+            
+             <a href="{% provider_login_url 'google' process='login' %}" class="btn-google">
+                <img src="{% static 'myapp/images/google_icon.png' %}" alt="Google icon">
+                Continue with Google
+            </a> 
+        {% endif %}
+
+        <p class="signup-link">
+            don't have an account yet ? <a href="{% url 'account_signup' %}">Sign Up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                if (passwordInput) {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.textContent = '🙈';
+                    } else {
+                        passwordInput.type = 'password';
+                        this.textContent = '👁️';
+                    }
+                }
+            });
+        });
+
+        // ตั้ง placeholder ให้ input ของ allauth
+        const loginInput = document.getElementById('id_login'); // allauth ใช้ id_login สำหรับ username/email
+        if (loginInput) {
+            loginInput.setAttribute('placeholder', 'Email / Username');
+        }
+        const passwordInput = document.getElementById('id_password'); // allauth ใช้ id_password
+        if (passwordInput) {
+            passwordInput.setAttribute('placeholder', 'Password');
+        }
+    });
+</script>
+{% endblock %}

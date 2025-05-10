@@ -4,163 +4,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawPal</title>
-    {# Ensure Font Awesome is included for icons #}
+    <title>{% block title %}PawPal{% endblock %}</title> {# เพิ่ม block title #}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&display=swap" rel="stylesheet">
-    <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet">  {# Assuming you might have a style.css #}
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    {# หากคุณมีไฟล์ style.css กลาง ให้ uncomment บรรทัดด้านล่าง หรือตรวจสอบว่า path ถูกต้อง #}
+    {# <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet"> #}
 
     <style>
-        /* Add or update your header styles here */
+        /* Base styles for header, body, main, etc. */
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f9f4e8; /* var(--background) */
+            margin: 0;
+            padding-top: 160px; /* Height of fixed header */
+            padding-bottom: 60px; /* Height of fixed footer */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            box-sizing: border-box;
+            display: flex; /* For centering content if needed on some pages */
+            flex-direction: column; /* For centering content */
+        }
+
         header {
-            position: fixed; /* Make the header fixed at the top */
-            top: 0; /* กำหนดให้อยู่ที่ขอบบนสุด */
+            position: fixed;
+            top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000; /* Ensure it's above other content */
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px; /* Match original adopt_catalog padding */
+            padding: 5px 15px; /* Adjusted padding */
             background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Add a subtle shadow */
-            /* ****** เพิ่ม transition สำหรับการเลื่อน ****** */
-            transition: top 0.3s ease-in-out; /* ทำให้การเลื่อนเข้า/ออกดูนุ่มนวล */
-            /* ****************************************** */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: top 0.3s ease-in-out;
+            height: 140px; /* Explicit height for header */
+            box-sizing: border-box;
         }
 
-        /* ****** เพิ่มคลาส CSS สำหรับ Header ที่ซ่อน ****** */
         .header-hidden {
-            /* กำหนด top ให้เป็นค่าลบเท่ากับความสูงของ header เพื่อซ่อน */
-            /* ความสูง header ประมาณ 160px (logo 150 + padding 5+5) */
-            top: -160px; /* ****** อาจต้องปรับค่านี้ให้ตรงกับความสูงจริงของ Header คุณ ****** */
+            top: -160px; /* Match header height */
         }
-        /* ********************************************** */
 
-
-        .header-icon-container {
+        .header-left-content { /* Container for profile icon and logout link */
             display: flex;
             align-items: center;
-            /* Optional: Add fixed width/height if needed for consistent spacing */
+            gap: 15px; /* ระยะห่างระหว่าง profile icon กับ logout link */
         }
 
-        .header-icon-container.right-icons {
-            gap: 10px; /* Space between favorite and notification icons */
-        }
-
-
-        .logo {
-            height: 150px;
-            margin: 0 auto;
+        .profile-icon-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .profile-icon {
-            width: 32px; /* Keep original size */
-            height: 32px; /* Keep original size */
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background-color: #8c6e5d; /* Example color */
+            background-color: #8c6e5d; /* สีน้ำตาลเข้มสำหรับไอคอน */
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em; /* Keep font size */
+            font-size: 1.2em; /* ปรับขนาดตัวอักษรในไอคอน */
+            font-weight: bold;
+            text-transform: uppercase; /* ทำให้เป็นตัวพิมพ์ใหญ่ */
         }
 
-        .favorite-icon-link { /* Renamed class to avoid conflict with pet card favorite icon */
-            display: flex; /* Use flex for centering */
+        .logout-link {
+            color: #d55e00; /* สีส้ม primary */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+            color: #e8605c; /* สีแดง accent เมื่อ hover */
+        }
+
+        .logo-container { /* เพิ่ม container สำหรับ logo เพื่อจัดกึ่งกลางได้ง่ายขึ้น */
+            flex-grow: 1; /* ให้ logo container ยืดเต็มพื้นที่ที่เหลือ */
+            display: flex;
+            justify-content: center; /* จัด logo ให้อยู่กึ่งกลาง */
+        }
+
+        .logo {
+            height: 150px; /* Max height for logo */
+            width: auto;   /* Maintain aspect ratio */
+            object-fit: contain; /* Ensure logo fits without cropping */
+        }
+
+        .header-right-icons { /* เปลี่ยนชื่อ class เพื่อความชัดเจน */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* ระยะห่างระหว่างไอคอนด้านขวา */
+        }
+
+        .favorite-icon-link {
+            display: flex;
             align-items: center;
             justify-content: center;
-            position: relative; /* Added for positioning the count badge */
+            position: relative; /* สำหรับ notification count */
         }
 
         .favorite-icon-img {
-            width: 60px; /* Adjust size of the favorite icon image */
+            width: 60px; /* Adjusted size */
             height: auto;
         }
 
-        .notifications {
-            position: relative;
-            display: flex; /* Use flex for centering */
+        .notifications { /* สำหรับไอคอน Message Box */
+            position: relative; /* ถ้าจะมี notification count ในอนาคต */
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px; /* Give notification container a size */
-            height: 40px;
+            width: 30px;
+            height: 30px;
         }
 
-        .notifications img {
-            height: 24px; /* Keep original notification icon image height */
+        .notifications img { /* รูปภาพภายใน .notifications (Message Box) */
+            height: 24px; /* ปรับขนาดตามความเหมาะสม */
+            width: auto;
         }
 
         .notification-count {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #e8605c; /* Example color */
+            top: -3px;    /* ปรับตำแหน่งให้เหมาะสมกับไอคอน favorite */
+            right: -3px;   /* ปรับตำแหน่งให้เหมาะสมกับไอคอน favorite */
+            background-color: #e8605c; /* สีแดง accent */
             color: white;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7em;
+            width: 16px;
+            height: 16px;
+            font-size: 0.65em;
             display: flex;
             align-items: center;
             justify-content: center;
+            line-height: 1; /* ปรับ line-height ให้พอดี */
+            font-weight: bold;
         }
 
         main {
-            /* Adjust padding-top based on the fixed header height */
-            /* Logo height (150px) + top/bottom padding (5px + 5px) = 160px */
-            padding-top: 160px;
-            padding-bottom: 60px; /* Add padding for the footer */
+            flex-grow: 1; /* Allows main to take up available space */
+            width: 100%;
         }
 
-         /* Styles for the favorite heart icon on pet cards (needed if not in a shared CSS) */
+        /* Favorite icon on pet cards (if not in shared CSS) */
         .favorite-icon {
             position: absolute;
-            top: 10px; /* Adjusted position for better look */
-            right: 10px; /* Adjusted position for better look */
-            background: white; /* White background circle */
+            top: 10px;
+            right: 10px;
+            background: white;
             border-radius: 50%;
-            width: 30px; /* Increased size */
-            height: 30px; /* Increased size */
+            width: 30px;
+            height: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ccc; /* Default color */
+            color: #ccc;
             z-index: 10;
-            cursor: pointer; /* Indicate it's clickable */
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        .favorite-icon i.fas.fa-heart { color: #ccc; }
+        .favorite-icon i.fas.fa-heart.active { color: #e8605c; }
 
-        .favorite-icon i {
-            color: #ccc; /* Default color of the Font Awesome icon */
-        }
-
-        .favorite-icon i.active {
-            color: #e8605c; /* Color when favorited - matches var(--accent-red) */
-        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
     <header>
-        <div class="header-icon-container profile">
-            <div class="profile-icon">👤</div> {# Profile Icon #}
+        <div class="header-left-content"> {# ใช้ class ใหม่สำหรับคุมส่วนซ้าย #}
+            {% if user.is_authenticated %}
+                <a href="#" class="profile-icon-link" title="{{ user.username }}"> {# อาจจะลิงก์ไปหน้า profile #}
+                    <div class="profile-icon">{{ user.username|first }}</div>
+                </a>
+                <a href="{% url 'account_logout' %}" class="logout-link">Logout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="profile-icon-link" title="Login/Sign Up">
+                    <div class="profile-icon">👤</div>
+                </a>
+            {% endif %}
         </div>
-        <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="Logo" class="logo" /> {# Logo #}
-        <div class="header-icon-container right-icons">
-            {# Favorites Icon (Home with Heart) - Linked to favorites page #}
-            <a href="{% url 'favorites' %}" class="favorite-icon-link">
-                {# ใช้แท็ก img แทน icon Font Awesome และใส่ path ไปยังรูปภาพของคุณ #}
+
+        <div class="logo-container"> {# ใช้ class ใหม่สำหรับคุม logo #}
+            <a href="{% url 'home' %}"> {# Make logo a link to home #}
+                <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="PawPal Logo" class="logo" />
+            </a>
+        </div>
+
+        <div class="header-right-icons"> {# ใช้ class ใหม่สำหรับคุมส่วนขวา #}
+            <a href="{% url 'favorites' %}" class="favorite-icon-link" title="My Favorites">
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
-                {% if favorite_count > 0 %} {# Check if favorite_count is greater than 0 to display the count #}
-                    <span class="notification-count">{{ favorite_count }}</span> {# Display the favorite count #}
+                {% if favorite_count > 0 %}
+                    <span class="notification-count">{{ favorite_count }}</span>
                 {% endif %}
             </a>
-            <div class="notifications">
-                <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications" height="24">
-                <span class="notification-count">2</span>
-            </div> {# Notification Icon #}
+            <a href="#" class="notifications" title="Notifications"> {# URL to notifications page #}
+                <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications">
+                {# <span class="notification-count">2</span> #} {# Example notification count #}
+            </a>
         </div>
     </header>
 
@@ -169,42 +214,32 @@
         {% endblock %}
     </main>
 
-    {# Assuming foot.html contains your bottom navigation #}
     {% include 'myapp/foot.html' %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-
-    {% block extra_scripts %}{% endblock %}
-
-    {# ****** เพิ่ม JavaScript สำหรับควบคุมการซ่อน/แสดง Header ****** #}
+    {# หากคุณใช้ Bootstrap JS หรือมี JS กลางอื่นๆ ให้ uncomment หรือตรวจสอบ #}
+    {# <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script> #}
     <script>
-        let lastScrollTop = 0; // ตัวแปรเก็บตำแหน่ง scroll ล่าสุด
-        const header = document.querySelector('header'); // เลือก Header element
-        // หาความสูงของ Header แบบ dynamic เพื่อความแม่นยำ
-        const headerHeight = header.offsetHeight;
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        const headerHeight = header.offsetHeight; // ควรจะเท่ากับ 160px ตาม CSS
 
-        // Event Listener เมื่อมีการ scroll หน้าจอ
         window.addEventListener('scroll', function() {
-            let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop; // ตำแหน่ง scroll ปัจจุบัน
-
-            // ตรวจสอบทิศทางการ scroll
-            // ถ้าเลื่อนลง (ตำแหน่งปัจจุบันมากกว่าตำแหน่งล่าสุด)
-            // และตำแหน่งปัจจุบันเลื่อนลงมาแล้วเกินความสูงของ Header
+            let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
             if (currentScrollTop > lastScrollTop && currentScrollTop > headerHeight) {
-                header.classList.add('header-hidden'); // ซ่อน header โดยเพิ่มคลาส header-hidden
+                // Scroll Down
+                header.classList.add('header-hidden');
             } else {
-                // ถ้าเลื่อนขึ้น หรือ อยู่ที่ด้านบนสุดของหน้าจอ (หรือยังเลื่อนลงไม่เกินความสูง header)
-                header.classList.remove('header-hidden'); // แสดง header โดยลบคลาส header-hidden ออก
+                // Scroll Up
+                header.classList.remove('header-hidden');
             }
-            lastScrollTop = currentScrollTop; // อัปเดตตำแหน่ง scroll ล่าสุด
+            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
 
-            // เพิ่มเงื่อนไขพิเศษ ถ้า scroll กลับไปบนสุด (ตำแหน่ง = 0) ให้แสดง header เสมอ
-            if (currentScrollTop === 0) {
+            // Ensure header is visible when at the top of the page
+             if (currentScrollTop === 0) {
                  header.classList.remove('header-hidden');
             }
         });
     </script>
-    
-
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

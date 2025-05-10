@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1*k4!o(+480)7hj(nqpfh$v1h6rw7#%d^y!otxdl+vo@bc6z4e'
+SECRET_KEY = 'django-insecure-1*k4!o(+480)7hj(nqpfh$v1h6rw7#%d^y!otxdl+vo@bc6z4e' # โปรดเปลี่ยนคีย์นี้ในการใช้งานจริง
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp',
+    'myapp',  # Your application
+    'django.contrib.sites', # Required by allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', # For Google provider
 ]
 
 MIDDLEWARE = [
@@ -50,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware', # Added AccountMiddleware for allauth
 ]
 
 ROOT_URLCONF = 'pawpal.urls'
@@ -57,13 +62,15 @@ ROOT_URLCONF = 'pawpal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Ensure this path is correct
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request', # Important for allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'myapp.context_processors.favorite_count', # Your custom context processor
             ],
         },
     },
@@ -105,9 +112,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us' # หรือ 'th' หากต้องการภาษาไทยเป็นหลัก
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 
@@ -118,12 +125,59 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ BASE_DIR / "static", ]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+# STATIC_ROOT = BASE_DIR / "staticfiles" # Uncomment for production if using collectstatic
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# สำหรับไฟล์รูปภาพ
+
+# Media files (User uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Django Allauth settings
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', # Needed to login by username in Django admin
+    'allauth.account.auth_backends.AuthenticationBackend', # `allauth` specific authentication methods
+]
+
+SITE_ID = 1 # Django-allauth needs this
+
+# --- Key Allauth Settings for Username & Email ---
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email' # Allows login with either username or email
+ACCOUNT_EMAIL_REQUIRED = True                   # Email is still required during signup
+ACCOUNT_USERNAME_REQUIRED = True                # IMPORTANT: Set to True to enable username field in signup
+ACCOUNT_UNIQUE_USERNAME = True                  # Ensures usernames are unique
+ACCOUNT_EMAIL_VERIFICATION = 'none'             # Options: 'none', 'optional', 'mandatory'
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True      # Standard: require password confirmation
+ACCOUNT_SESSION_REMEMBER = True                 # Remember user session
+ACCOUNT_UNIQUE_EMAIL = True                     # Ensures emails are unique
+
+# Logout configuration
+ACCOUNT_LOGOUT_ON_GET = True                    # Logout directly on GET request to logout URL
+
+# Custom Forms (ถ้ามี)
+# ACCOUNT_SIGNUP_FORM_CLASS = 'myapp.forms.CustomSignupForm' # ตัวอย่างถ้าคุณมี custom signup form
+# ACCOUNT_ADAPTER = 'myapp.adapter.MyAccountAdapter' # If you have a custom adapter
+# SOCIALACCOUNT_ADAPTER = 'myapp.adapter.MySocialAccountAdapter' # If you have a custom social adapter
+
+LOGIN_REDIRECT_URL = 'home' # Page to redirect to after successful login
+LOGOUT_REDIRECT_URL = 'home' # Page to redirect to after successful logout
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True, # Recommended for security
+    }
+}
+# SOCIALACCOUNT_LOGIN_ON_GET = True # Uncomment if you want to initiate social login on GET request

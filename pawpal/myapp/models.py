@@ -309,14 +309,4 @@ class DonationRecord(models.Model):
         else:
             return f"บริจาคทั่วไป {self.amount} บาท โดย {self.user.username if self.user else 'ผู้ไม่ประสงค์ออกนาม'}"
         
-class PetImage(models.Model):
-    pet = models.ForeignKey(Pet, related_name='additional_images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='pets/additional/')
-    caption = models.CharField(max_length=255, blank=True, null=True, help_text="Optional caption for the image.")
-    uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Image for {self.pet.name} ({self.id})"
-
-    class Meta:
-        ordering = ['uploaded_at']
