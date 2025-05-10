@@ -11,7 +11,7 @@ from .models import Pet, PetImage
 # Import ValidationError จาก django.core.exceptions ถ้ายังไม่มี
 from django.core.exceptions import ValidationError
 
-
+#test
 class DonationCaseInline(admin.TabularInline):
     model = DonationCase
     extra = 0
