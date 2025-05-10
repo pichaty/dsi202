@@ -1,5 +1,5 @@
-{% extends 'myapp/base.html' %} 
-{% load static %} 
+{% extends 'myapp/base.html' %}
+{% load static %}
 
 {% block extra_head %}
 <style>
@@ -12,7 +12,7 @@
         padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างสำหรับ Footer แบบ Fixed */
     }
 
-    
+
     .page-header-title {
         background-color: #5B9B5F; /* สีเขียวตามรูป */
         color: white;
@@ -21,14 +21,14 @@
         font-size: 20px;
         font-weight: 1000 ;
         font-family: Grandstander; /* ใช้ฟอนต์ Grandstander ตามโค้ดที่คุณให้มา */
-        
-         margin-top: 160px; 
+
+         margin-top: 160px;
     }
 
     /* พื้นที่เนื้อหาหลัก เพิ่ม padding รอบๆ */
     .content-area {
         padding: 10px;
-        padding-top: 60px; 
+        padding-top: 60px;
     }
 
     /* Card Mission Statement */
@@ -67,7 +67,7 @@
         /* อาจเพิ่ม color หรือ line-height ถ้าต้องการปรับเพิ่มเติม */
     }
 
-    /* สไตล์สำหรับฟอร์มบริจาค */
+    /* สไตล์สำหรับฟอร์มบริจาค - ปรับปรุงใหม่ */
     .donation-form-card {
         background-color: #fff; /* สีขาวตามรูป */
         border-radius: 8px;
@@ -91,7 +91,7 @@
     }
 
     .radio-option input[type="radio"] {
-        margin-right: 10px;
+        margin-right: 15px;
         accent-color: #ff8c42; /* สีส้มตามรูป */
     }
 
@@ -147,24 +147,33 @@
 
     /* Label ของวิธีการชำระเงินที่ทำเป็นปุ่ม */
     .payment-label {
-        display: inline-block;
-        padding: 8px 15px;
+        display: inline-flex; /* ใช้ inline-flex เพื่อจัดรูปภาพและข้อความให้อยู่กึ่งกลางได้ง่าย */
+        align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+        justify-content: center; /* จัดให้อยู่กึ่งกลางแนวนอน */
         border: 1px solid #ddd;
-        border-radius: 20px; /* ทำให้เป็นปุ่มโค้ง */
-        font-size: 14px;
+        border-radius: 25px; /* เพิ่มความโค้งมน */
         cursor: pointer;
-        transition: all 0.3s ease; /* เพิ่ม Transition ตอนเลือก */
+        transition: all 0.3s ease;
+        background-color: #fff; 
+        color: #333; 
+        white-space: nowrap;
+        padding: 10px 20px; /* เพิ่ม padding ให้ปุ่มใหญ่ขึ้น (ปรับค่าตามต้องการ) */
+        min-height: 50px;   /* กำหนดความสูงขั้นต่ำ (ปรับค่าตามต้องการ) */
+        min-width: 100px;   /* กำหนดความกว้างขั้นต่ำสำหรับปุ่ม "Other" (ปรับค่าตามต้องการ) */
+        font-size: 16px;    /* เพิ่มขนาดตัวอักษรในปุ่ม "Other" (ปรับค่าตามต้องการ) */
     }
 
-    /* ปรับ padding สำหรับ Label ที่มีรูป UnionPay */
-    .payment-label.unionpay-label {
-        padding: 4px 10px; /* ปรับ padding ให้เหมาะสมกับรูป */
-    }
+    /* ปรับ padding สำหรับ Label ที่มีรูป PromptPay */
+    .payment-label.promptpay-label {
+         padding: 4px 10px; /* ปรับ padding ให้เหมาะสมกับรูป */
+     }
 
-    .payment-label.unionpay-label img {
-        height: 24px; /* กำหนดความสูงรูปภาพ */
-        vertical-align: middle; /* จัดแนวตั้งให้อยู่ตรงกลาง */
-    }
+    .payment-label.promptpay-label img {
+        height: 80px; /* เพิ่มขนาดรูปภาพ PromptPay (ปรับค่าตามต้องการ) */
+        width: auto;  /* ให้ความกว้างปรับตามสัดส่วนของรูป */
+        display: block; /* ช่วยในการจัดกลาง */
+        margin: auto;   /* ช่วยในการจัดกลาง */
+     }
 
     /* สไตล์สำหรับวิธีการชำระเงินที่ถูกเลือก */
     input[type="radio"]:checked + .payment-label {
@@ -172,6 +181,39 @@
         color: white;
         border-color: #ff8c42;
     }
+
+    /* Styles for QR Code and Slip Upload Section - คัดลอกจาก donate_detail.html */
+     #promptpay-details-general { /* ใช้ id เฉพาะหน้านี้ */
+         display: none; /* Hidden by default */
+         margin-top: 20px;
+         padding-top: 15px;
+         border-top: 1px solid #eee;
+         text-align: center;
+     }
+
+     #promptpay-details-general img { /* ใช้ id เฉพาะหน้านี้ */
+         max-width: 180px; /* Adjust size as needed */
+         height: auto;
+         margin-bottom: 15px;
+         border: 1px solid #ccc; /* Optional: add border */
+         padding: 5px; /* Optional: add padding */
+     }
+
+     #promptpay-details-general .form-group { /* ใช้ id เฉพาะหน้านี้ */
+         margin-bottom: 15px;
+         text-align: left; /* Align label to the left */
+     }
+
+     #promptpay-details-general .form-group label { /* ใช้ id เฉพาะหน้านี้ */
+         display: block;
+         margin-bottom: 5px;
+         font-weight: bold;
+     }
+
+     #promptpay-details-general .form-group input[type="file"] { /* ใช้ id เฉพาะหน้านี้ */
+         display: block; /* Ensure file input takes full width */
+         width: 100%;
+     }
 
     /* ปุ่ม Donate Now */
     .donate-button {
@@ -189,7 +231,7 @@
         margin-left: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
         margin-right: auto; /* จัดให้ปุ่มอยู่ตรงกลาง */
         display: block; /* ทำให้สามารถใช้ margin auto ได้ */
-        
+
     }
 
     .donate-button:hover {
@@ -292,7 +334,7 @@
     .condition-label {
         display: flex; /* จัดเรียงไอคอนและข้อความในแนวนอน */
         align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-        font-size: 16px; /* ขนาดฟอนต์ Label */
+        font-size: 16px;
         font-weight: bold;
         margin-bottom: 8px; /* ระยะห่างด้านล่าง Label */
         color: #523a28;
@@ -308,11 +350,11 @@
 
     .case-description {
         font-size: 14px;
-        
+
     }
 
     .case-description p {
-         margin: 0; 
+         margin: 0;
          color: #523a28; /* ปรับสีข้อความคำอธิบายเล็กน้อย */
     }
 
@@ -326,6 +368,72 @@
         padding: 20px;
         color: #888;
     }
+
+    /* Styles for the Thank You Popup - คัดลอกมาจาก donate_detail.html */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Dim background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000; /* Above other content */
+        visibility: hidden; /* Hidden by default */
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .popup-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .popup-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        max-width: 300px; /* Adjust max width */
+        width: 90%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-content .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #aaa;
+        border: none;
+        background: none;
+    }
+
+    .popup-content .close-btn:hover {
+        color: #777;
+    }
+
+    .popup-content .icon {
+        font-size: 40px; /* Icon size */
+        color: var(--accent-red); /* Match heart color */
+        margin-bottom: 15px;
+    }
+
+    .popup-content h4 {
+        margin-top: 0;
+        color: #333;
+        font-size: 1.2em; /* Adjust font size */
+    }
+
+    .popup-content p {
+        color: #555;
+        line-height: 1.6;
+    }
+
 
 </style>
 {% endblock %}
@@ -362,10 +470,10 @@
             </div>
         </div>
 
-        {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'process_donation' #}
-        <form method="post" action="{% url 'process_donation' %}" id="donationForm">
+        {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'donate' ของหน้านี้เอง #}
+       <form id="general-donation-form" method="post" enctype="multipart/form-data"> {# เพิ่ม id ให้ form #}
             {% csrf_token %} {# เพิ่ม CSRF token สำหรับความปลอดภัย #}
-            
+
             <div class="donation-form-card">
                 <div class="radio-options">
                     <div class="radio-option">
@@ -380,23 +488,48 @@
 
                 <div class="amount-field">
                     <span class="currency-symbol">฿</span> {# หรือใช้สัญลักษณ์สกุลเงินของคุณ เช่น ฿ #}
-                    <input type="number" name="donationAmount" value="200" min="10"> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
+                    <input type="number" name="donationAmount" value="200" min="10" required> {# เพิ่ม required #}
                 </div>
 
                 <div class="payment-section">
                     <div class="section-label">Donate By</div>
-                    <div class="payment-methods"> 
+                    <div class="payment-methods">
 
                          <div class="payment-method">
-                             <input type="radio" id="promptPay" name="paymentMethod" value="promptPay">
-                             <label for="promptPay" class="payment-label">PromptPay</label>
+                             <input type="radio" id="promptPayGeneral" name="paymentMethod" value="PromptPay" checked> {# เพิ่ม id เฉพาะและเลือก PromptPay เป็น default #}
+                             <label for="promptPayGeneral" class="payment-label promptpay-label">
+                                 {# ใช้รูป PromptPay #}
+                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay">
+                            </label>
+                         </div>
+                         <div class="payment-method">
+                             <input type="radio" id="otherPaymentGeneral" name="paymentMethod" value="Other"> {# เพิ่ม id เฉพาะ #}
+                             <label for="otherPaymentGeneral" class="payment-label">Other</label>
                          </div>
 
                     </div>
                 </div>
+
+                {# Container for QR Code and Slip Upload #}
+                {# เพิ่มเงื่อนไข check ว่า donation_settings และ promptpay_qr_code มีค่าก่อนแสดง div และรูป #}
+                {% if donation_settings and donation_settings.promptpay_qr_code %}
+                    <div id="promptpay-details-general" style="display: none;"> {# เพิ่ม id เฉพาะและซ่อนไว้ก่อน #}
+                         <img src="{{ donation_settings.promptpay_qr_code.url }}" alt="QR Code สำหรับการบริจาค">
+
+                         <div class="form-group">
+                             <label for="slip_image_general">แนบสลิป (เฉพาะ PromptPay):</label> {# เพิ่ม id เฉพาะ #}
+                             <input type="file" id="slip_image_general" name="slip_image" accept="image/*"> {# เพิ่ม id เฉพาะ #}
+                         </div>
+                    </div>
+                 {% else %}
+                    {# แสดงข้อความถ้า QR Code ไม่พร้อมใช้งาน #}
+                    <div id="promptpay-details-general" style="display: none; text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                        <p>QR Code ไม่พร้อมใช้งานสำหรับการบริจาคทั่วไปในขณะนี้</p>
+                    </div>
+                 {% endif %}
             </div>
-            
-            {# ปุ่ม Donate Now แยกออกจาก card แล้ว #}
+
+            {# ปุ่ม Donate Now อยู่ใน form แล้ว #}
             <button type="submit" class="donate-button">Donate Now</button>
         </form>
 
@@ -460,6 +593,17 @@
        </div>
     </div>
 
+    {# Thank You Popup Structure - คัดลอกมาจาก donate_detail.html #}
+    <div id="thank-you-popup-general" class="popup-overlay"> {# เพิ่ม id เฉพาะ #}
+        <div class="popup-content">
+            <button class="close-btn">&times;</button>
+            <div class="icon">❤️</div>
+            <h4>ขอบคุณสำหรับการบริจาคของคุณ!</h4>
+            <p>การสนับสนุนของคุณช่วยให้เราดูแลสัตว์ที่ต้องการได้</p>
+        </div>
+    </div>
+
+
     {# ส่วน Footer จะมาจาก base.html โดยอัตโนมัติ #}
 
 {% endblock %}
@@ -469,24 +613,214 @@
     document.addEventListener('DOMContentLoaded', function() {
         // เพิ่ม JavaScript สำหรับการเลือกวิธีการชำระเงินเพื่อปรับสไตล์ปุ่ม
         const paymentMethods = document.querySelectorAll('.payment-method input[type="radio"]');
+        const paymentButtonLabels = document.querySelectorAll('.payment-label'); // ใช้ selector ทั่วไปสำหรับ labels
+
         paymentMethods.forEach(method => {
             method.addEventListener('change', function() {
+                console.log('Payment method changed to:', this.value); // Log การเปลี่ยนแปลง
+
                 // ลบ class 'selected' ออกจากทุก Label
-                document.querySelectorAll('.payment-label').forEach(label => {
+                paymentButtonLabels.forEach(label => { // ใช้วนลูปผ่าน paymentButtonLabels
                     label.classList.remove('selected');
                 });
+
                 // เพิ่ม class 'selected' ให้กับ Label ของ Radio Button ที่ถูกเลือก
                 if (this.checked) {
-                    document.querySelector(`label[for="${this.id}"]`).classList.add('selected');
+                    const currentLabel = document.querySelector(`label[for="${this.id}"]`);
+                    if (currentLabel) {
+                         currentLabel.classList.add('selected');
+                         console.log('Added selected class to label for:', this.id); // Log การเพิ่ม class
+                    } else {
+                        console.error('Could not find label for radio button:', this.id); // Error ถ้าหา label ไม่เจอ
+                    }
                 }
+
+                // เรียกฟังก์ชันเพื่อแสดง/ซ่อนส่วน QR Code
+                 togglePromptPayDetailsGeneral();
             });
         });
 
         // กำหนดสไตล์เริ่มต้นสำหรับวิธีการชำระเงินที่ถูกเลือกไว้ตอนแรก
         const initialChecked = document.querySelector('.payment-method input[type="radio"]:checked');
         if (initialChecked) {
-            document.querySelector(`label[for="${initialChecked.id}"]`).classList.add('selected');
+             const initialLabel = document.querySelector(`label[for="${initialChecked.id}"]`);
+             if (initialLabel) {
+                 initialLabel.classList.add('selected');
+                 console.log('Initial checked payment method:', initialChecked.value); // Log ค่าเริ่มต้น
+             } else {
+                 console.error('Could not find initial label for radio button:', initialChecked.id);
+             }
+        } else {
+             console.log('No initial payment method checked.'); // Log ถ้าไม่มีค่าเริ่มต้นถูกเลือก
         }
+
+
+        // --- ส่วน JavaScript สำหรับการแสดง QR Code และ Popup (คัดลอกจาก donate_detail.html) ---
+
+        const paymentMethodRadiosGeneral = document.querySelectorAll('#general-donation-form input[name="paymentMethod"]'); // ใช้ selector ที่เฉพาะเจาะจงกับ form ใหม่
+        const promptpayDetailsGeneral = document.getElementById('promptpay-details-general'); // ใช้ id ใหม่
+        const donationFormGeneral = document.getElementById('general-donation-form'); // ใช้ id form ใหม่
+        const thankYouPopupGeneral = document.getElementById('thank-you-popup-general'); // ใช้ id popup ใหม่
+        const closePopupBtnGeneral = thankYouPopupGeneral ? thankYouPopupGeneral.querySelector('.close-btn') : null; // ใช้ตัวแปร popup ใหม่ในการหาปุ่มปิด
+        const slipImageInputGeneral = document.getElementById('slip_image_general'); // ใช้ id input slip ใหม่
+
+        console.log('promptpayDetailsGeneral element:', promptpayDetailsGeneral); // ตรวจสอบว่าหา element เจอไหม
+
+
+        // Function to show/hide PromptPay details for general donation
+        function togglePromptPayDetailsGeneral() {
+            const selectedMethodElement = document.querySelector('#general-donation-form input[name="paymentMethod"]:checked'); // ใช้ selector ที่เฉพาะเจาะจง
+            const selectedMethod = selectedMethodElement ? selectedMethodElement.value : null;
+
+            console.log('togglePromptPayDetailsGeneral called. Selected method:', selectedMethod); // Log การเรียกฟังก์ชันและค่าที่เลือก
+
+            if (promptpayDetailsGeneral) { // ตรวจสอบว่า element promptpayDetailsGeneral มีอยู่จริงก่อนดำเนินการ
+                if (selectedMethod === 'PromptPay') {
+                    promptpayDetailsGeneral.style.display = 'block';
+                    console.log('PromptPay selected. Showing QR code details.'); // Log การแสดง
+                    // Make slip image required for PromptPay if the input element exists
+                    if (slipImageInputGeneral) {
+                         slipImageInputGeneral.setAttribute('required', 'required');
+                         console.log('Slip image input set to required.');
+                    } else {
+                         console.warn('Slip image input element not found.'); // Warning ถ้าหา input ไม่เจอ
+                    }
+                } else {
+                    promptpayDetailsGeneral.style.display = 'none';
+                     console.log('Other payment method selected. Hiding QR code details.'); // Log การซ่อน
+                    // Remove required attribute for other payment methods if the input element exists
+                    if (slipImageInputGeneral) {
+                         slipImageInputGeneral.removeAttribute('required');
+                         console.log('Slip image input required removed.');
+                    }
+                }
+            } else {
+                console.error('Error: promptpay-details-general element not found!'); // Error ถ้าหา element ไม่เจอ
+            }
+        }
+
+        // Add event listeners to payment method radio buttons for general donation form
+        paymentMethodRadiosGeneral.forEach(radio => {
+            radio.addEventListener('change', togglePromptPayDetailsGeneral);
+        });
+
+        // Initial check on page load for general donation form
+        // ใช้ setTimeout เพื่อให้แน่ใจว่า DOM โหลดเสร็จสมบูรณ์แล้ว
+        setTimeout(togglePromptPayDetailsGeneral, 50);
+
+
+        // Handle general donation form submission with AJAX
+        if (donationFormGeneral) { // ตรวจสอบว่า form element มีอยู่จริง
+            donationFormGeneral.addEventListener('submit', function(event) { // ใช้ id form ใหม่
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(this);
+                const selectedMethod = formData.get('paymentMethod');
+
+                // Basic validation for PromptPay slip
+                if (selectedMethod === 'PromptPay') {
+                     if (!formData.get('slip_image') || formData.get('slip_image').size === 0) {
+                        alert('โปรดแนบสลิปสำหรับการบริจาคด้วย PromptPay');
+                        return; // Stop the submission
+                     }
+                }
+
+                // เพิ่ม indicator หรือ disable ปุ่มขณะส่งข้อมูล (Optional)
+                // const donateButton = this.querySelector('.donate-button');
+                // donateButton.disabled = true;
+                // donateButton.textContent = 'Processing...'; // เปลี่ยนข้อความปุ่ม
+
+                fetch('', { // Submit to the same URL ('donate/')
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                        'X-Requested-With': 'XMLHttpRequest' // Added header for AJAX detection
+                    }
+                })
+                .then(response => {
+                     // ตรวจสอบ Content-Type ก่อนแปลงเป็น JSON
+                     const contentType = response.headers.get('content-type');
+                     if (contentType && contentType.includes('application/json')) {
+                         return response.json();
+                     } else {
+                         // ถ้าไม่ใช่ JSON แสดงว่าอาจเกิด Error ที่ฝั่ง Server ก่อนถึงขั้นตอนการคืน JSON หรือมีการ Redirect
+                         console.error('Received non-JSON response for general donation:', response);
+                         alert('เกิดข้อผิดพลาดในการสื่อสารกับเซิร์ฟเวอร์');
+                         // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับ
+                         // donateButton.disabled = false;
+                         // donateButton.textContent = 'Donate Now';
+                         return Promise.reject('Received non-JSON response'); // หยุดการทำงาน
+                     }
+                })
+                .then(data => {
+                    // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับก่อน
+                    // donateButton.disabled = false;
+                    // donateButton.textContent = 'Donate Now';
+
+                    if (data.success) {
+                        // Show thank you popup
+                        if (thankYouPopupGeneral) { // ตรวจสอบว่า popup element มีอยู่จริง
+                           thankYouPopupGeneral.classList.add('visible'); // ใช้ตัวแปร popup ใหม่
+                        }
+                        // Clear the form (optional)
+                        donationFormGeneral.reset(); // ใช้ id form ใหม่
+                        // Reset the display of PromptPay details
+                         togglePromptPayDetailsGeneral(); // เรียกใช้ฟังก์ชัน toggle ของ form ใหม่
+                    } else {
+                        // Handle errors if any
+                        alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during general donation submission:', error);
+                    alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+                    // ถ้ามี indicator/ปุ่ม disabled ให้คืนค่ากลับ
+                    // donateButton.disabled = false;
+                    // donateButton.textContent = 'Donate Now';
+                });
+            });
+        } else {
+             console.error('Donation form element with ID "general-donation-form" not found!');
+        }
+
+
+        // Close popup when close button is clicked
+        if (closePopupBtnGeneral) { // ตรวจสอบว่าปุ่มปิด popup มีอยู่จริง
+            closePopupBtnGeneral.addEventListener('click', function() { // ใช้ตัวแปร popup ใหม่
+                if (thankYouPopupGeneral) {
+                   thankYouPopupGeneral.classList.remove('visible'); // ใช้ตัวแปร popup ใหม่
+                }
+            });
+        }
+
+         // Close popup when clicking outside the popup content
+         if (thankYouPopupGeneral) { // ตรวจสอบว่า popup element มีอยู่จริง
+             thankYouPopupGeneral.addEventListener('click', function(event) { // ใช้ตัวแปร popup ใหม่
+                 if (event.target === thankYouPopupGeneral) { // ใช้ตัวแปร popup ใหม่
+                     thankYouPopupGeneral.classList.remove('visible'); // ใช้ตัวแปร popup ใหม่
+                 }
+             });
+         }
+
+
+        // Function to get CSRF token (ยังคงใช้ตัวเดิมได้)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+         // --- สิ้นสุดส่วน JavaScript ที่คัดลอกและปรับแก้ ---
+
     });
 </script>
 {% endblock %}

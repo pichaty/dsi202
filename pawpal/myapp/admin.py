@@ -1,9 +1,14 @@
+# ใน work/dsi202/pawpal/myapp/admin.py
+
 from django.contrib import admin
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Pet, DonationCase
+from .models import Pet, DonationCase, DonationSettings, DonationRecord # เพิ่ม DonationSettings, DonationRecord
 from django.contrib import admin
 from .models import Product
+
+# Import ValidationError จาก django.core.exceptions ถ้ายังไม่มี
+from django.core.exceptions import ValidationError
 
 
 class DonationCaseInline(admin.TabularInline):
@@ -32,7 +37,44 @@ class DonationCaseAdmin(admin.ModelAdmin):
     search_fields = ('case_id', 'title', 'description', 'pet__name')
     list_filter = ('hospital',)
 
+@admin.register(DonationSettings)
+class DonationSettingsAdmin(admin.ModelAdmin):
+    """Admin สำหรับตั้งค่าการบริจาคส่วนกลาง"""
+    list_display = ('promptpay_qr_code_preview',) # เพิ่ม preview รูปในรายการ
 
+    def has_add_permission(self, request):
+        # อนุญาตให้เพิ่มได้แค่ 1 รายการเท่านั้น
+        if self.model.objects.exists():
+            return False
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        # ไม่อนุญาตให้ลบ (หรือจะอนุญาตก็ได้ถ้าจำเป็น)
+        # return False # ถ้าต้องการไม่อนุญาตให้ลบเลย
+        return super().has_delete_permission(request, obj)
+
+
+    def promptpay_qr_code_preview(self, obj):
+        if obj.promptpay_qr_code:
+            return format_html('<img src="{}" width="100" height="auto" />', obj.promptpay_qr_code.url)
+        return "No QR Code"
+    promptpay_qr_code_preview.short_description = 'QR Code Preview'
+
+
+# เพิ่ม DonationRecord ใน Admin ด้วย เพื่อดูรายการบริจาคที่เข้ามา
+@admin.register(DonationRecord)
+class DonationRecordAdmin(admin.ModelAdmin):
+    list_display = ('id', 'donation_case', 'user', 'amount', 'payment_method', 'donated_at', 'slip_image_preview')
+    list_filter = ('payment_method', 'donated_at', 'donation_case__title')
+    search_fields = ('donation_case__case_id', 'donation_case__title', 'user__username', 'user__email')
+    readonly_fields = ('donated_at',) # ให้ฟิลด์เวลาบริจาคแก้ไขไม่ได้
+
+    def slip_image_preview(self, obj):
+        if obj.slip_image:
+            # แสดงรูปสลิปขนาดเล็กในรายการ
+            return format_html('<img src="{}" width="50" height="auto" style="max-height: 80px; object-fit: contain;" />', obj.slip_image.url)
+        return "No Slip"
+    slip_image_preview.short_description = 'Slip Image'
 
 
 @admin.register(Product)
@@ -54,7 +96,7 @@ class AboutContentAdmin(admin.ModelAdmin):
             'fields': ('why_we_do_title', 'why_we_do_content', 'why_we_do_content2')
         }),
     )
-    
+
     def has_add_permission(self, request):
         # ป้องกันการสร้างรายการซ้ำ ให้แก้ไขได้เฉพาะข้อมูลที่มีอยู่แล้ว
         if self.model.objects.exists():
@@ -78,7 +120,7 @@ class PetStatisticsAdmin(admin.ModelAdmin):
             'fields': ('neutered_count', 'neutered_label')
         }),
     )
-    
+
     def has_add_permission(self, request):
         # ป้องกันการสร้างรายการซ้ำ ให้แก้ไขได้เฉพาะข้อมูลที่มีอยู่แล้ว
         if self.model.objects.exists():
@@ -129,7 +171,7 @@ class ContactInfoAdmin(admin.ModelAdmin):
             'fields': ('phone', 'opening_hours', 'closing_days', 'description')
         }),
     )
-    
+
     def has_add_permission(self, request):
         # ป้องกันการสร้างรายการซ้ำ ให้แก้ไขได้เฉพาะข้อมูลที่มีอยู่แล้ว
         if self.model.objects.exists():
@@ -155,19 +197,4 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
     def display_pets(self, obj):
         return ", ".join([pet.name for pet in obj.pets.all()])
     display_pets.short_description = 'Applied for Pets'
-
-
-# อย่าลืมลงทะเบียนโมเดลอื่นๆ ที่คุณต้องการใน Admin Site ด้วย (ถ้ายังไม่ได้ทำ)
-# ตัวอย่าง:
-# @admin.register(Pet)
-# class PetAdmin(admin.ModelAdmin):
-#     # ... กำหนด list_display, list_filter ฯลฯ ...
-#     pass
-
-# @admin.register(UserFavorite)
-# class UserFavoriteAdmin(admin.ModelAdmin):
-#      list_display = ('user', 'pet', 'created_at')
-#      list_filter = ('user', 'pet')
-
-from .models import PetStatistics
 

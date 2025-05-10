@@ -19,8 +19,9 @@ urlpatterns = [
     path('adopt/thank-you/', views.adoption_thank_you_view, name='adoption_thank_you'), # URL สำหรับหน้าขอบคุณ
     path('donate/', views.donate, name='donate'),
     path('donate/<int:pk>/', views.donate_detail, name='donate_detail'), # ใช้บรรทัดนี้สำหรับ donate detail
-
+    path('donate/<int:pk>/', views.donate_detail, name='donate_detail'),
+    path('donate/thank-you/', views.donation_thank_you_view, name='donation_thank_you'),
     # เพิ่มบรรทัดนี้เพื่อสร้าง URL pattern ชื่อ 'process_donation'
     # สามารถเลือก URL path ที่เหมาะสมได้ เช่น 'process-donation/' หรือ 'donate/process/'
-    path('process-donation/', views.process_donation_view, name='process_donation'),
+    # path('process-donation/', views.process_donation_view, name='process_donation'),
 ]

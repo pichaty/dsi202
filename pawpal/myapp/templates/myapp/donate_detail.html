@@ -1,6 +1,7 @@
-/* donate_detail.html*/
-{% extends 'myapp/base.html' %} 
-{% load static %} 
+{# in myapp/templates/myapp/donate_detail.html #}
+
+{% extends 'myapp/base.html' %}
+{% load static %}
 
 {% block title %}PAWal - Donation Detail - No. {{ case.case_id }}{% endblock %} {# ตั้ง Title ของหน้า #}
 
@@ -8,8 +9,8 @@
 <style>
     /* สไตล์สำหรับหน้า Detail Donate */
     body {
-        background-color: #f6f6f1; /* ใช้สีพื้นหลังตามรูป */
-        font-family: Arial, sans-serif; /* ใช้ฟอนต์ตามที่คุณต้องการ */
+        background-color: #f6f6f1;
+        font-family: Arial, sans-serif;
         color: #333;
         line-height: 1.4;
         padding-bottom: 60px; /* เพิ่มระยะห่างด้านล่างสำหรับ Footer แบบ Fixed */
@@ -25,7 +26,7 @@
         font-size: 20px;
         font-weight: 1000 ;
         font-family: Grandstander; /* ใช้ฟอนต์ Grandstander ตามโค้ดที่คุณให้มา */
-         margin-top: 160px; 
+         margin-top: 160px;
     }
 
     /* Container สำหรับเนื้อหารายละเอียด กำหนดความกว้างสูงสุดและจัดกึ่งกลาง */
@@ -87,7 +88,7 @@
     /* ส่วนข้อมูลรายละเอียดและรูปภาพสัตว์เลี้ยง */
     .pet-detail-info {
         display: flex;
-        /* align-items: center; /* เอา align-items: center ออกเพื่อให้ข้อมูลชิดบน */ 
+        /* align-items: center; /* เอา align-items: center ออกเพื่อให้ข้อมูลชิดบน */
         margin-bottom : 15px; /* ระยะห่างใต้ส่วนนี้ */
     }
 
@@ -194,7 +195,7 @@
         border: 1px solid #ddd; /* เส้นขอบ */
         border-radius: 4px;
         padding: 8px 12px;
-        /* margin-bottom: 15px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */ 
+        /* margin-bottom: 15px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */
         background-color: #f9f9f9; /* สีพื้นหลังช่องกรอก */
         flex-grow: 1; /* **ให้ช่องกรอกจำนวนเงินยืดขยายได้** */
         min-width: 120px; /* **กำหนดความกว้างขั้นต่ำ เพื่อไม่ให้แคบเกินไปในจอเล็ก** */
@@ -217,13 +218,13 @@
     .payment-options {
         display: flex;
         flex-wrap: wrap; /* ให้ Wrap ลงบรรทัดใหม่ */
-        /* margin-bottom: 20px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */ 
-        /* justify-content: center; /* อาจจะไม่ต้องจัด center แล้ว เพราะจะเรียงตามพื้นที่ */ 
+        /* margin-bottom: 20px; /* ลบ margin-bottom ออก ย้ายไปที่ .amount-and-options gap */
+        /* justify-content: center; /* อาจจะไม่ต้องจัด center แล้ว เพราะจะเรียงตามพื้นที่ */
         gap: 10px; /* **ลด gap ระหว่างปุ่มตัวเลือกการชำระเงินเอง** */
         flex-shrink: 0; /* **ป้องกันตัวเลือกการชำระเงินถูกบีบจนเล็กเกินไป** */
     }
 
-   
+
 
     .payment-option input[type="radio"] {
         display: none; /* ซ่อน Radio Button เดิม */
@@ -285,7 +286,7 @@
         background-color: #e0783a; /* สีส้มเข้มขึ้นเมื่อ Hover */
     }
     /* Back button style */
-  
+
     .back-button-container {
     position: relative;
     height: 50px; /* กำหนดความสูงเพื่อกันพื้นที่สำหรับปุ่ม Back */
@@ -310,25 +311,120 @@
     background-color: #e0783a;
 }
 
+    /* Styles for QR Code and Slip Upload Section */
+    #promptpay-details {
+        display: none; /* Hidden by default */
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+    #promptpay-details img {
+        max-width: 180px; /* Adjust size as needed */
+        height: auto;
+        margin-bottom: 15px;
+        border: 1px solid #ccc; /* Optional: add border */
+        padding: 5px; /* Optional: add padding */
+    }
+
+    #promptpay-details .form-group {
+        margin-bottom: 15px;
+        text-align: left; /* Align label to the left */
+    }
+
+    #promptpay-details .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    #promptpay-details .form-group input[type="file"] {
+        display: block; /* Ensure file input takes full width */
+        width: 100%;
+    }
+
+     /* Styles for the Thank You Popup */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Dim background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000; /* Above other content */
+        visibility: hidden; /* Hidden by default */
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .popup-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .popup-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        max-width: 300px; /* Adjust max width */
+        width: 90%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-content .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #aaa;
+        border: none;
+        background: none;
+    }
+
+    .popup-content .close-btn:hover {
+        color: #777;
+    }
+
+    .popup-content .icon {
+        font-size: 40px; /* Icon size */
+        color: var(--accent-red); /* Match heart color */
+        margin-bottom: 15px;
+    }
+
+    .popup-content h4 {
+        margin-top: 0;
+        color: #333;
+        font-size: 1.2em; /* Adjust font size */
+    }
+
+    .popup-content p {
+        color: #555;
+        line-height: 1.6;
+    }
+
 
 </style>
 
 
 
-/*ส่วนRelatedPetsSectionและNavigationFooterเดิมถูกลบออกไป */
-
-</style>
 {% endblock %}
 
 {% block content %}
 <div class="back-button-container">
     <a href="#" class="back-button" onclick="history.back(); return false;">← </a>
 </div>
-        
-    <div class="page-header-title"> 
+
+    <div class="page-header-title">
             Donate
     </div>
-    
+
 
     <div class="donate-detail-container">
         <div class="pet-detail-card">
@@ -339,7 +435,7 @@
                     {% if case.pet.gender|lower == 'male' %}
                         ♂
                     {% elif case.pet.gender|lower == 'female' %}
-                        ♀ 
+                        ♀
                     {% else %}
                         ? {# สัญลักษณ์ไม่ทราบเพศ #}
                     {% endif %}
@@ -358,7 +454,7 @@
                          <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">
                     {% endif %}
                 </div>
-            
+
 
                 <div class="pet-details">
                     <div class="detail-row">
@@ -374,7 +470,7 @@
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Gender:</span>
-                        {# เข้าถึงข้อมูลเพศจาก Pet ที่เกี่ยวข้อง #}
+                         {# เข้าถึงข้อมูลเพศจาก Pet ที่เกี่ยวข้อง #}
                         <span class="detail-value">{{ case.pet.gender|default:"N/A" }}</span>
                     </div>
                     <div class="detail-row">
@@ -397,35 +493,52 @@
 
         <div class="donation-section">
             <div class="section-heading">Donation</div>
-             {# กำหนด action ของฟอร์มให้ส่งข้อมูลไปที่ URL ที่ชื่อ 'process_donation' #}
-             {# ในฟอร์ม Detail นี้ เราอาจจะต้องส่ง case_id ไปด้วย เพื่อให้ backend รู้ว่าบริจาคให้เคสไหน #}
-            <form method="post" action="{% url 'process_donation' %}">
-                {% csrf_token %} {# เพิ่ม CSRF token #}
-                {# เพิ่ม hidden input เพื่อส่ง case_id ไปกับฟอร์ม #}
+
+            {# Modified form to include ID for JavaScript and remove action/method for AJAX #}
+            <form id="donation-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 <input type="hidden" name="case_id" value="{{ case.pk }}">
 
                 {# **เพิ่ม div ใหม่สำหรับรวมช่องจำนวนเงินและตัวเลือกการชำระเงิน** #}
                 <div class="amount-and-options">
                     <div class="amount-input">
                         <span>฿</span> {# **ใช้สัญลักษณ์ ฿ บาท ตามรูป** #}
-                        <input type="number" name="donationAmount" value="200" min="10"> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
+                        <input type="number" name="donationAmount" value="200" min="10" required> {# กำหนดค่าเริ่มต้นและขั้นต่ำ #}
                     </div>
 
                     <div class="payment-options">
-                         {# ตัวเลือก Credit Card #}
-            
-                        
+
                         <div class="payment-option">
-                            <input type="radio" id="detailPromptPay" name="paymentMethod" value="promptPay" checked> {# เปลี่ยน value เป็น promptPay และ id เป็น detailPromptPay #}
-                             {# ตรวจสอบให้แน่ใจว่ามีรูป promptpay.png ใน static files ของคุณ หรือใช้รูป unionpay.png เดิมก็ได้ถ้าต้องการ #}
-                             <label for="detailPromptPay" class="payment-button promptpay-label"> {# เปลี่ยน class เป็น promptpay-label #}
-                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay"> 
+                            <input type="radio" id="detailPromptPay" name="paymentMethod" value="PromptPay" checked> {# Changed value to "PromptPay" #}
+                             <label for="detailPromptPay" class="payment-button promptpay-label">
+                                <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay">
                             </label>
                         </div>
-                        {# สามารถเพิ่มตัวเลือกการชำระเงินอื่นๆ ได้ที่นี่ #}
+                        {# Add other payment methods here if needed #}
+                         <div class="payment-option">
+                            <input type="radio" id="otherPayment" name="paymentMethod" value="Other">
+                             <label for="otherPayment" class="payment-button">
+                                Other
+                            </label>
+                        </div>
                     </div>
                 </div>
                 {# **สิ้นสุด div สำหรับรวม** #}
+
+                {# Container for QR Code and Slip Upload - Hidden by default #}
+                <div id="promptpay-details">
+                     {# แก้ไขตรงนี้: ดึงรูป QR Code จาก donation_settings แทน case #}
+                     {% if donation_settings and donation_settings.promptpay_qr_code %}
+                         <img src="{{ donation_settings.promptpay_qr_code.url }}" alt="QR Code สำหรับการบริจาค">
+                     {% else %}
+                        <p>QR Code ไม่พร้อมใช้งานสำหรับเคสนี้</p>
+                     {% endif %}
+
+                     <div class="form-group">
+                         <label for="slip_image">แนบสลิป (เฉพาะ PromptPay):</label>
+                         <input type="file" id="slip_image" name="slip_image" accept="image/*" > {# Remove 'required' here, handle validation in JS/View #}
+                     </div>
+                </div>
 
 
                 <div class="donate-button-container">
@@ -438,6 +551,17 @@
 
     </div>
 
+    {# Thank You Popup Structure - Hidden by default #}
+    <div id="thank-you-popup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="close-btn">&times;</button>
+            <div class="icon">❤️</div>
+            <h4>ขอบคุณสำหรับการบริจาคของคุณ!</h4>
+            <p>การสนับสนุนของคุณช่วยให้เราดูแลสัตว์ที่ต้องการได้</p>
+        </div>
+    </div>
+
+
     {# ส่วน Footer จะมาจาก base.html โดยอัตโนมัติ #}
 
 {% endblock %}
@@ -445,29 +569,148 @@
 {% block extra_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // เพิ่ม JavaScript สำหรับการเลือกวิธีการชำระเงินเพื่อปรับสไตล์ปุ่ม (สำหรับฟอร์มในหน้า Detail)
-        const paymentOptions = document.querySelectorAll('.payment-option input[type="radio"]');
-        const paymentLabels = document.querySelectorAll('.payment-button');
+        const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+        const promptpayDetails = document.getElementById('promptpay-details');
+        const donationForm = document.getElementById('donation-form');
+        const thankYouPopup = document.getElementById('thank-you-popup');
+        const closePopupBtn = thankYouPopup.querySelector('.close-btn');
+        const slipImageInput = document.getElementById('slip_image'); // Get the slip input field
 
-        paymentOptions.forEach(option => {
+
+        // Function to show/hide PromptPay details
+        function togglePromptPayDetails() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (selectedMethod === 'PromptPay') {
+                promptpayDetails.style.display = 'block';
+                // Make slip image required for PromptPay
+                slipImageInput.setAttribute('required', 'required');
+            } else {
+                promptpayDetails.style.display = 'none';
+                // Remove required attribute for other payment methods
+                slipImageInput.removeAttribute('required');
+            }
+        }
+
+        // Add event listeners to payment method radio buttons
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', togglePromptPayDetails);
+        });
+
+        // Initial check on page load
+        togglePromptPayDetails();
+
+
+        // Handle form submission with AJAX
+        donationForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this);
+            const selectedMethod = formData.get('paymentMethod');
+
+            // Basic validation for PromptPay slip
+            if (selectedMethod === 'PromptPay') {
+                 if (!formData.get('slip_image') || formData.get('slip_image').size === 0) {
+                    alert('โปรดแนบสลิปสำหรับการบริจาคด้วย PromptPay');
+                    return; // Stop the submission
+                 }
+            }
+
+
+            fetch('', { // Submit to the same URL
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    'X-Requested-With': 'XMLHttpRequest' // <-- Added header for AJAX detection
+                }
+            })
+            .then(response => {
+                // Check if the response is JSON before parsing
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // If not JSON, maybe it's a redirect or other non-JSON response
+                    console.error('Received non-JSON response:', response);
+                    // Handle non-JSON response, e.g., show a generic error or redirect
+                    alert('เกิดข้อผิดพลาดในการสื่อสารกับเซิร์ฟเวอร์');
+                    // Or, if a redirect is expected on success (though we want popup),
+                    // you might handle the redirect here if needed.
+                    // For now, we'll treat non-JSON as an error for the popup flow.
+                    return Promise.reject('Received non-JSON response');
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show thank you popup
+                    thankYouPopup.classList.add('visible');
+                    // Clear the form (optional)
+                    donationForm.reset();
+                    // Reset the display of PromptPay details
+                     togglePromptPayDetails(); // Ensure PromptPay details hide after reset if Other is default
+                } else {
+                    // Handle errors if any
+                    alert('เกิดข้อผิดพลาดในการบันทึกการบริจาค: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการส่งข้อมูล'); // This is the other possible alert
+            });
+        });
+
+        // Close popup when close button is clicked
+        closePopupBtn.addEventListener('click', function() {
+            thankYouPopup.classList.remove('visible');
+        });
+
+         // Close popup when clicking outside the popup content
+         thankYouPopup.addEventListener('click', function(event) {
+             if (event.target === thankYouPopup) {
+                 thankYouPopup.classList.remove('visible');
+             }
+         });
+
+
+        // Function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+         // Add JavaScript for payment method button styling (from previous code)
+        const paymentOptionRadios = document.querySelectorAll('.payment-option input[type="radio"]');
+        const paymentButtonLabels = document.querySelectorAll('.payment-button');
+
+        paymentOptionRadios.forEach(option => {
             option.addEventListener('change', function() {
-                // ลบ class 'selected' ออกจากทุก Label
-                paymentLabels.forEach(label => {
+                paymentButtonLabels.forEach(label => {
                     label.classList.remove('selected');
                 });
 
-                // เพิ่ม class 'selected' ให้กับ Label ของ Radio Button ที่ถูกเลือก
                 if (this.checked) {
                     document.querySelector(`label[for="${this.id}"]`).classList.add('selected');
                 }
             });
         });
 
-        // กำหนดสไตล์เริ่มต้นสำหรับวิธีการชำระเงินที่ถูกเลือกไว้ตอนแรก
         const initialChecked = document.querySelector('.payment-option input[type="radio"]:checked');
         if (initialChecked) {
             document.querySelector(`label[for="${initialChecked.id}"]`).classList.add('selected');
         }
+
+
     });
 </script>
 {% endblock %}

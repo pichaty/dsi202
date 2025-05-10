@@ -2,8 +2,8 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.text import slugify # นำเข้า slugify
-# ตรวจสอบให้แน่ใจว่า Pet model ถูก import แล้ว
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError # นำเข้า ValidationError
 
 class Pet(models.Model):
     is_adopted = models.BooleanField(default=False) # ฟิลด์นี้ถูกต้องแล้ว
@@ -33,8 +33,6 @@ class Pet(models.Model):
     def __str__(self):
         return self.name
 
-    # ลบ __str__ ที่ซ้ำกันตรงนี้ออก
-
 
 class DonationCase(models.Model):
     case_id = models.CharField(max_length=10, unique=True)
@@ -45,9 +43,36 @@ class DonationCase(models.Model):
     amount_needed = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     amount_raised = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     image = models.ImageField(upload_to='donations/', blank=True, null=True)
+    # ลบฟิลด์ qr_code_image ออกจาก DonationCase
+    # qr_code_image = models.ImageField(upload_to='qr_codes/', blank=True, null=True) # ลบบรรทัดนี้
 
     def __str__(self):
         return f"{self.case_id} - {self.title}"
+
+# เพิ่ม Model ใหม่สำหรับเก็บ QR Code ส่วนกลาง
+class DonationSettings(models.Model):
+    promptpay_qr_code = models.ImageField(
+        upload_to='site_settings/qr_codes/', # เปลี่ยน path การเก็บไฟล์
+        blank=True,
+        null=True,
+        verbose_name="PromptPay QR Code Image"
+    )
+
+    class Meta:
+        verbose_name = "Donation Settings"
+        verbose_name_plural = "Donation Settings"
+
+    # จำกัดให้มีได้เพียง 1 instance
+    def clean(self):
+        if not self.pk and DonationSettings.objects.exists():
+            raise ValidationError("Can only have one Donation Settings instance.")
+
+    def save(self, *args, **kwargs):
+        self.clean() # เรียก clean ก่อน save เพื่อตรวจสอบข้อจำกัด
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "Donation Settings"
 
 
 class Product(models.Model):
@@ -152,13 +177,7 @@ class AdoptionApplication(models.Model):
     pets = models.ManyToManyField(Pet, related_name='applications')
 
     def save(self, *args, **kwargs):
-        print("AdoptionApplication save method called.") # เพิ่มบรรทัดนี้
-
-        is_approved = models.BooleanField(default=False)
-    pets = models.ManyToManyField(Pet, related_name='applications')
-
-    def save(self, *args, **kwargs):
-        print("\n--- save method START ---") # เพิ่มบรรทัดนี้
+        print("\n--- AdoptionApplication save method START ---") # เพิ่มบรรทัดนี้
         print(f"  AdoptionApplication PK: {self.pk}, is_approved (before super save): {self.is_approved}") # เพิ่มบรรทัดนี้
 
         is_approved_changed_to_true = False
@@ -213,7 +232,33 @@ class AdoptionApplication(models.Model):
             print("  Application is_approved is False. Pet update skipped.") # เพิ่มบรรทัดนี้
 
 
-        print("--- save method END ---\n") # เพิ่มบรรทัดนี้
+        print("--- AdoptionApplication save method END ---\n") # เพิ่มบรรทัดนี้
+
 
     def __str__(self):
         return f"Application by {self.first_name} {self.last_name} on {self.apply_date.strftime('%Y-%m-%d')}"
+    # ใน myapp/models.py
+
+# เพิ่ม import User ที่ด้านบนสุด ถ้ายังไม่มี
+from django.contrib.auth.models import User
+
+class DonationRecord(models.Model):
+    # แก้ไขบรรทัดนี้: เพิ่ม null=True, blank=True และเปลี่ยน on_delete เป็น models.SET_NULL ถ้าเหมาะสม
+    donation_case = models.ForeignKey(
+        DonationCase, 
+        on_delete=models.SET_NULL,  # หรือ models.PROTECT หรือตามความเหมาะสม
+        null=True, 
+        blank=True, 
+        related_name='records'
+    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=50)
+    slip_image = models.ImageField(upload_to='donation_slips/')
+    donated_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.donation_case:
+            return f"บริจาค {self.amount} บาท ให้เคส {self.donation_case.case_id}"
+        else:
+            return f"บริจาคทั่วไป {self.amount} บาท โดย {self.user.username if self.user else 'ผู้ไม่ประสงค์ออกนาม'}"
