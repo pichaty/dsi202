@@ -345,11 +345,16 @@ def adoption_thank_you_view(request):
 @login_required # แนะนำให้ user login ก่อนจึงจะดู detail ใน popup และสถานะ favorite ได้
 def get_pet_detail_ajax(request, pet_id):
     try:
-        pet = Pet.objects.get(pk=pet_id)
+        pet = Pet.objects.prefetch_related('additional_images').get(pk=pet_id) # ใช้ prefetch_related เพื่อประสิทธิภาพ
         is_favorite = False
         if request.user.is_authenticated:
             is_favorite = UserFavorite.objects.filter(user=request.user, pet=pet).exists()
-
+        additional_images_data = []
+        for img in pet.additional_images.all(): # วนลูปดึงข้อมูลรูปภาพเพิ่มเติม
+            additional_images_data.append({
+                'url': img.image.url,
+                'caption': img.caption or ""
+            })
         pet_data = {
             'id': pet.id,
             'name': pet.name, # หรือ pet.pet_identifier ถ้ามี
@@ -361,8 +366,9 @@ def get_pet_detail_ajax(request, pet_id):
             'personality': pet.personality or "-",
             'detail': pet.detail or "-",
             'story': pet.story or "This pet doesn't have a story written yet...",
-            'photo_url': pet.photo.url if pet.photo else static('myapp/images/default_pet.png'), # ต้อง import static tag ใน template ที่ใช้ JS นี้
+            'photo_url': pet.photo.url if pet.photo else None, # ส่ง None ถ้าไม่มีรูปหลัก
             'is_favorite_by_current_user': is_favorite,
+            'additional_images': additional_images_data # << เพิ่มข้อมูลรูปภาพเพิ่มเติม
         }
         return JsonResponse({'success': True, 'pet': pet_data})
     except Pet.DoesNotExist:

@@ -6,7 +6,8 @@ from django.utils.html import format_html
 from .models import Pet, DonationCase, DonationSettings, DonationRecord # เพิ่ม DonationSettings, DonationRecord
 from django.contrib import admin
 from .models import Product
-
+from django.contrib import admin
+from .models import Pet, PetImage
 # Import ValidationError จาก django.core.exceptions ถ้ายังไม่มี
 from django.core.exceptions import ValidationError
 
@@ -18,12 +19,19 @@ class DonationCaseInline(admin.TabularInline):
     can_delete = False
     show_change_link = True
 
+class PetImageInline(admin.TabularInline): # หรือ admin.StackedInline
+    model = PetImage
+    extra = 1 # จำนวนฟอร์มสำหรับเพิ่มรูปภาพใหม่ที่จะแสดง
+    fields = ('image', 'caption') # ฟิลด์ที่ต้องการให้แสดงใน inline form
+    # readonly_fields = ('uploaded_at',) # ถ้าต้องการแสดงวันที่อัปโหลดแต่ไม่ให้แก้ไข
+
+
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
     list_display = ('name', 'pet_type', 'breed', 'gender', 'age', 'vaccinated', 'image_tag','detail','story')
     list_filter = ('pet_type', 'gender', 'vaccinated','detail','story')
     search_fields = ('name', 'breed', 'story', 'personality','story')
-    inlines = [DonationCaseInline]
+    inlines = [DonationCaseInline, PetImageInline] 
 
     def image_tag(self, obj):
         if obj.photo:
@@ -230,3 +238,5 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
     approve_selected_applications.short_description = "Approve selected applications"
 
     actions = [approve_selected_applications]
+
+

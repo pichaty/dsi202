@@ -22,7 +22,7 @@ urlpatterns = [
     path('donate/<int:pk>/', views.donate_detail, name='donate_detail'),
     path('donate/thank-you/', views.donation_thank_you_view, name='donation_thank_you'),
      path('ajax/get-pet-detail/<int:pet_id>/', views.get_pet_detail_ajax, name='ajax_get_pet_detail'),
-    # เพิ่มบรรทัดนี้เพื่อสร้าง URL pattern ชื่อ 'process_donation'
+    # เพิ่มบรรทัดนี้เพื่อสร้ปURL pattern ชื่อ 'process_donation'
     # สามารถเลือก URL path ที่เหมาะสมได้ เช่น 'process-donation/' หรือ 'donate/process/'
     # path('process-donation/', views.process_donation_view, name='process_donation'),
 ]
