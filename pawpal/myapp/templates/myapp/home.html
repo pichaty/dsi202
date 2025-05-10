@@ -3,9 +3,10 @@
 
 {% block extra_head %}
   <style>
+    /* --- คง CSS เดิมของ Home Page ทั้งหมดไว้ --- */
     /* Home Page Specific Styles */
     .personality-test-banner {
-        background-color: var(--primary);
+        background-color: #d55e00; /* var(--primary) */
         border-radius: 20px;
         padding: 15px;
         margin: 15px;
@@ -14,208 +15,133 @@
         justify-content: space-between;
         align-items: center;
     }
-
-    .banner-content {
-        flex: 1;
-    }
-
-    .banner-content h2 {
-        font-weight: bold;
-        margin-bottom: 5px;
-        font-size: 18px;
-    }
-
-    .banner-content p {
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-
+    .banner-content { flex: 1; }
+    .banner-content h2 { font-weight: bold; margin-bottom: 5px; font-size: 18px; }
+    .banner-content p { margin-bottom: 15px; font-size: 14px; }
     .btn-test {
-        background-color: white;
-        color: black;
-        border-radius: 50px;
-        padding: 5px 15px;
-        border: none;
-        font-size: 14px;
-        font-weight: bold;
+        background-color: white; color: black; border-radius: 50px;
+        padding: 5px 15px; border: none; font-size: 14px; font-weight: bold;
     }
-
-    .banner-image {
-        max-width: 10%;
-    }
+    .banner-image { max-width: 100px; /* ปรับขนาดตามความเหมาะสม */ } /* << แก้ไข max-width ของรูป banner */
 
     .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 15px;
-        margin-top: 25px;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 15px; margin-top: 25px;
     }
-
-    .section-header h3 {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .section-header a {
-        color: var(--primary);
-        text-decoration: none;
-        font-size: 14px;
-    }
+    .section-header h3 { font-size: 18px; font-weight: bold; }
+    .section-header a { color: #d55e00; /* var(--primary) */ text-decoration: none; font-size: 14px; }
 
     .pet-cards {
-        display: flex;
-        overflow-x: auto;
-        padding: 10px 15px;
-        gap: 15px;
-        scrollbar-width: none;
+        display: flex; overflow-x: auto; padding: 10px 15px;
+        gap: 15px; scrollbar-width: none;
     }
-
-    .pet-cards::-webkit-scrollbar {
-        display: none;
-    }
-
+    .pet-cards::-webkit-scrollbar { display: none; }
     .pet-card {
-        min-width: 160px;
-        border-radius: 15px;
-        overflow: hidden;
-        background: white;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        position: relative;
+        min-width: 160px; border-radius: 15px; overflow: hidden;
+        background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        position: relative; cursor: pointer;
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
     }
-
-    .pet-image {
-        height: 160px;
-        object-fit: cover;
-        width: 100%;
-    }
-
-    /* Favorite icon styles for pet cards on home page */
+    .pet-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+    .pet-image { height: 160px; object-fit: cover; width: 100%; }
     .favorite-icon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: white;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10; /* Ensure icon is above the image link */
-        cursor: pointer; /* Indicate clickable */
+        position: absolute; top: 10px; right: 10px; background: white;
+        border-radius: 50%; width: 30px; height: 30px; display: flex;
+        justify-content: center; align-items: center; z-index: 10; cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
-    .favorite-icon i {
-        color: #ccc; /* Default color */
-    }
-
-    .favorite-icon i.active {
-        color: var(--accent-red); /* Color when favorited */
-    }
-
-
-    .pet-info {
-        padding: 10px;
-    }
-
-    .pet-number {
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    .pet-badges {
-        display: flex;
-        gap: 5px;
-        margin-top: 5px;
-    }
-
+    .favorite-icon i.fas.fa-heart { color: #ccc; }
+    .favorite-icon i.fas.fa-heart.active { color: #e8605c; } /* var(--accent-red) */
+    .pet-info { padding: 10px; }
+    .pet-number { font-size: 14px; font-weight: bold; color: #333; }
+    .pet-badges { display: flex; gap: 5px; margin-top: 5px; }
     .badge {
-        background-color: #f0f0f0;
-        border-radius: 20px !important;
-        padding: 3px 8px;
-        font-size: 12px;
-        color: #666!important;
+      background-color: #f0f0f0; border-radius: 20px !important;
+      padding: 3px 8px; font-size: 12px; color: #666 !important;
     }
 
-    /* แก้ไขสไตล์ของส่วน Donate */
+    /* Donate Cards (Horizontal) */
     .donate-cards {
-        padding: 0 15px 50px;
-        display: flex;
-        overflow-x: auto;
-        gap: 15px;
-        scrollbar-width: none;
-        margin: 0;
-        /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
-        background-color: var(--background);
+        padding: 0 15px 50px; display: flex; overflow-x: auto;
+        gap: 15px; scrollbar-width: none; margin: 0;
+        background-color: #f9f4e8; /* var(--background) */
     }
-
-    .donate-cards::-webkit-scrollbar {
-        display: none;
-    }
-
+    .donate-cards::-webkit-scrollbar { display: none; }
     .donate-card.horizontal {
-        display: flex;
-        align-items: center;
-        background: white;
-        min-width: 400px;
-        border-radius: 15px;
-        padding: 20px 20px 20px 15px; /* top right bottom left */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        gap: 10px;
-        margin: 0;
+        display: flex; align-items: center; background: white;
+        min-width: 300px; /* ปรับความกว้าง donate card ให้เหมาะสม */
+        border-radius: 15px; padding: 15px; /* ปรับ padding */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); gap: 10px; margin: 0;
         overflow: hidden;
     }
-
     .donate-image-horizontal {
-        width: 120px;
-        height: 120px;
-        border-radius: 10px;
-        object-fit: cover;
-        flex-shrink: 0;
+        width: 100px; height: 100px; /* ปรับขนาดรูป donate card */
+        border-radius: 10px; object-fit: cover; flex-shrink: 0;
     }
-
-    .donate-content {
-        flex: 1;
-        /* เพิ่มเพื่อให้แน่ใจว่าเนื้อหาไม่ล้นออกมา */
-        overflow: hidden;
-    }
-
-    .donate-card.horizontal h5 {
-        font-size: 16px;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .donate-card.horizontal p {
-        margin: 8px 0;
-        font-size: 14px;
-    }
-
-    .paw-icon {
-        color: var(--light-orange);
-        font-size: 16px;
-        margin-left: 5px;
-    }
-
-    /* แก้ไขปุ่ม Donate */
+    .donate-content { flex: 1; overflow: hidden; }
+    .donate-card.horizontal h5 { font-size: 16px; font-weight: bold; margin: 0; }
+    .donate-card.horizontal p { margin: 8px 0; font-size: 14px; }
+    .paw-icon { color: #d99a56; /* var(--light-orange) */ font-size: 16px; margin-left: 5px; }
     .donate-button.small {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 5px 10px;
-        font-size: 12px;
-        display: inline-block;
-        text-align: center;
-        text-decoration: none;
-        width: auto;
-        margin: 0;
-        box-sizing: border-box;
-        /* เพิ่มเพื่อกำจัดพื้นที่ว่างที่ไม่จำเป็น */
-        white-space: nowrap;
-        line-height: normal;
+        background-color: #d55e00; /* var(--primary) */ color: white; border: none;
+        border-radius: 50px; padding: 5px 10px; font-size: 12px;
+        display: inline-block; text-align: center; text-decoration: none;
+        width: auto; margin: 0; box-sizing: border-box;
+        white-space: nowrap; line-height: normal;
     }
+    .donate-card.horizontal:hover {
+        transform: translateY(-3px); /* <<<< ทำให้ Donate Card เด้งขึ้นเมื่อ hover */
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* <<<< เปลี่ยนเงาของ Donate Card เมื่อ hover */
+    }
+    /* --- สิ้นสุด CSS เดิมของ Home Page --- */
+
+
+    /* --- CSS สำหรับ Modal (คัดลอกจาก adopt_catalog.html หรือ pet_detail.html ที่ปรับแล้ว) --- */
+    .modal-overlay {
+      display: none; position: fixed; z-index: 1001;
+      left: 0; top: 0; width: 100%; height: 100%;
+      overflow-y: auto; background-color: rgba(0,0,0,0.65);
+      align-items: center; justify-content: center;
+    }
+    .modal-content-wrapper {
+      background-color: #f9f4e8; /* หรือสีพื้นหลัง modal ที่คุณต้องการ */
+      margin: 5vh auto; padding: 0;
+      border: none; width: 90%; max-width: 500px; /* ขนาด popup */
+      border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      position: relative; animation: fadeInModal 0.3s ease-out;
+      max-height: 90vh; display: flex; flex-direction: column;
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close-button {
+      color: #777; position: absolute; top: 12px; left:15px;
+      font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;
+      padding: 0; line-height: 1; background: none; border: none;
+    }
+    .modal-close-button:hover, .modal-close-button:focus { color: #000; }
+
+    #modalPetContentContainerHome { /* ใช้ ID แยกสำหรับ Home Page Modal */
+        overflow-y: auto; flex-grow: 1;
+    }
+
+    /* CSS สำหรับ Pet Detail Content ภายใน Modal (สามารถใช้ class เดียวกับของ adopt_catalog ถ้าสไตล์เหมือนกัน) */
+    .card-detail-popup { padding: 20px 25px 25px 25px; text-align: center; position: relative; }
+    .pet-image-container-popup { width: 60%; max-width: 220px; margin: 0 auto 15px auto; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .pet-image-popup { width: 100%; height: 100%; object-fit: cover; }
+    .heart-icon-detail-popup { position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.7); border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 5; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .heart-icon-detail-popup:hover { transform: scale(1.1); }
+    .heart-icon-detail-popup i.fas.fa-heart { font-size: 18px; color: #ccc; transition: color 0.2s ease-in-out; }
+    .heart-icon-detail-popup i.fas.fa-heart.active { color: #e8605c; }
+    .pet-id-popup { font-weight: bold; font-size: 1.1em; margin-bottom: 15px; color: #333; }
+    .pet-info-popup { text-align: left; margin-bottom: 20px; padding-left: 0; }
+    .pet-info-popup p { margin: 8px 0; font-size: 0.9em; color: #555; display: flex; align-items: center; }
+    .pet-info-popup p .icon { margin-right: 8px; color: #8db38b; width: 20px; text-align: center; font-size: 1em;}
+    .story-section-popup { text-align: left; margin-top: 20px; padding: 12px; background-color: #fff; border-radius: 8px;}
+    .story-title-popup { font-weight: bold; font-size: 1.05em; margin-bottom: 8px; color: #d55e00;}
+    .story-content-popup { font-size: 0.9em; color: #444; line-height: 1.6;}
+    /* --- สิ้นสุด CSS สำหรับ Modal --- */
   </style>
 {% endblock %}
 
@@ -236,26 +162,22 @@
 
     <div class="pet-cards">
         {% for pet in adopt_pets %}
-        {# Added data-pet-id to the clickable area or a parent div #}
-        <div class="pet-card" data-pet-id="{{ pet.id }}">
+        <div class="pet-card" data-pet-id="{{ pet.id }}" onclick="openPetDetailModalHome('{{ pet.id }}')">
             <div class="favorite-icon" data-pet-id="{{ pet.id }}">
                 <i class="fas fa-heart"></i>
             </div>
-             {# Wrapped card content in a link to pet detail #}
-            <a href="{% url 'pet_detail' pet.id %}" class="text-decoration-none text-dark">
-                {% if pet.photo %}
-                    <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
-                {% else %}
-                    <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
-                {% endif %}
-                <div class="pet-info">
-                    <div class="pet-number">No. {{ pet.name}}</div>
-                    <div class="pet-badges">
-                        <span class="badge">{{ pet.breed }}</span>
-                        <span class="badge">{{ pet.age }} </span>
-                    </div>
+            {% if pet.photo %}
+                <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="pet-image">
+            {% else %}
+                <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="pet-image">
+            {% endif %}
+            <div class="pet-info">
+                <div class="pet-number">No. {{ pet.name}}</div>
+                <div class="pet-badges">
+                    <span class="badge">{{ pet.breed }}</span>
+                    <span class="badge">{{ pet.age }} </span>
                 </div>
-            </a>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -277,138 +199,247 @@
             {% endif %}
             <div class="donate-content">
                 <h5>No. {{ case.case_id }} <span class="paw-icon">🐾</span></h5>
-                <p>{{ case.description }}</p>
+                <p>{{ case.description|truncatewords:15 }}</p> {# เพิ่ม truncatewords ถ้า description ยาวไป #}
                 <a href="{% url 'donate_detail' case.id %}" class="donate-button small">Support medical expenses</a>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    {# --- HTML สำหรับ Modal (ใช้ ID แยกสำหรับ Home Page) --- #}
+    <div id="petDetailModalOverlayHome" class="modal-overlay">
+      <div class="modal-content-wrapper">
+        <span class="modal-close-button" onclick="closePetDetailModalHome()">&times;</span>
+        <div id="modalPetContentContainerHome">
+          <div style="padding: 50px; text-align: center;">Loading...</div>
+        </div>
+      </div>
+    </div>
+    {# --- สิ้นสุด HTML สำหรับ Modal --- #}
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get all favorite icons within pet cards
-        const favoriteIcons = document.querySelectorAll('.pet-card .favorite-icon');
+      const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
 
-        // Add click event to each favorite icon
-        favoriteIcons.forEach(icon => {
-            icon.addEventListener('click', function(e) {
-                // Prevent the click from bubbling up to parent links
-                e.preventDefault();
-                e.stopPropagation();
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
 
-                // Get the pet ID from the closest parent with data-pet-id
-                const petCard = this.closest('.pet-card[data-pet-id]');
-                if (!petCard) {
-                    console.error("Could not find parent .pet-card with data-pet-id");
-                    return;
-                }
-                const petId = petCard.getAttribute('data-pet-id');
+      const heartIconsInHome = document.querySelectorAll('.pet-cards .pet-card .favorite-icon');
 
-                // Toggle favorite
-                toggleFavorite(petId, this);
-            });
-        });
-
-        // Function to toggle favorite status
-       function toggleFavorite(petId, element) {
-        // Corrected URL to use the standardized toggle view
+      function updateHomeCardHeartIconUI(iconElement, isFavorite) {
+        const heartI = iconElement.querySelector('i.fas.fa-heart');
+        if (heartI) {
+          if (isFavorite) heartI.classList.add('active');
+          else heartI.classList.remove('active');
+        }
+      }
+      
+      function genericToggleFavorite(petId, successCallback, errorCallback) {
+        if (!userIsAuthenticated) {
+            alert('Please log in to manage favorites.');
+            return;
+        }
         fetch(`/toggle-favorite/${petId}/`, {
-             method: 'POST', // Ensure POST method is used
-             headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            },
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => {
-            if (!response.ok) {
-                 // Handle cases like not logged in (status 403 Forbidden)
-                if (response.status === 403) {
-                     console.error('Error: User not authenticated. Cannot favorite.');
-                     alert('โปรดเข้าสู่ระบบเพื่อบันทึกรายการโปรด'); // Show an alert
-                } else {
-                    console.error('Error toggling favorite:', response.statusText);
-                }
-                return Promise.reject('Response not OK'); // Stop processing
+            if (response.redirected && response.url.includes('/accounts/login/')) {
+                window.location.href = response.url;
+                throw new Error('User not authenticated, redirecting to login.');
             }
+            if (!response.ok) throw new Error('Toggle favorite failed');
             return response.json();
         })
         .then(data => {
-            // Update UI based on favorite status received in the response
-            const heartIcon = element.querySelector('i.fas.fa-heart');
-            if (data.is_favorite) { // Use data.is_favorite from the updated view
-                heartIcon.classList.add('active');
-            } else {
-                heartIcon.classList.remove('active');
+            if (data.error) {
+                alert('Error: ' + data.error);
+                if (errorCallback) errorCallback(data.error);
+                return;
             }
-             console.log(`Pet ${petId} favorited status: ${data.is_favorite}`); // Log status
-             // Optional: If the view returns favorite_count, update the header badge here
-             // updateFavoriteCountInHeader(data.favorite_count); // Need this function
+            if (data.is_favorite !== undefined) {
+                if (successCallback) successCallback(data);
+                const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
+                if (favCountHeader && data.favorite_count !== undefined) {
+                    favCountHeader.textContent = data.favorite_count;
+                    favCountHeader.style.display = data.favorite_count > 0 ? 'flex' : 'none';
+                }
+            }
         })
-        .catch(error => console.error('Error:', error));
-    }
-    // ... rest of the script (checkFavoriteStatus function should be fine)
+        .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                 console.error('Error in genericToggleFavorite:', error);
+            }
+            if (errorCallback) errorCallback(error);
+        });
+      }
 
-        // Check if pets are in favorites on page load
-        function checkFavoriteStatus() {
-             // Get all pet cards with data-pet-id
-            const petCardsWithId = document.querySelectorAll('.pet-card[data-pet-id]');
+      heartIconsInHome.forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.stopPropagation(); 
+            const petId = this.getAttribute('data-pet-id');
+            const homeCardIconElement = this;
+            genericToggleFavorite(petId, 
+                (data) => { 
+                    updateHomeCardHeartIconUI(homeCardIconElement, data.is_favorite);
+                    const modalHeartIcon = document.querySelector(`#petDetailModalOverlayHome .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
+                    if (modalHeartIcon && document.getElementById('petDetailModalOverlayHome').style.display === 'flex') {
+                        if (data.is_favorite) modalHeartIcon.classList.add('active');
+                        else modalHeartIcon.classList.remove('active');
+                    }
+                }
+            );
+        });
+      });
 
-            // Extract pet IDs
-            const petIds = Array.from(petCardsWithId).map(card => {
-                return card.getAttribute('data-pet-id');
+      function checkInitialHomeCardFavorites() {
+        if (!userIsAuthenticated || heartIconsInHome.length === 0) return;
+        const petIdsInHome = Array.from(heartIconsInHome).map(icon => icon.getAttribute('data-pet-id')).filter(id => id);
+        if (petIdsInHome.length === 0) return;
+
+        fetch('/check-favorites/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            body: JSON.stringify({ pet_ids: petIdsInHome })
+        })
+        .then(response => {
+             if (response.redirected && response.url.includes('/accounts/login/')) {
+                throw new Error('User not authenticated, redirecting to login.');
+            }
+            if(!response.ok) throw new Error('Failed to check favorites');
+            return response.json();
+        })
+        .then(data => {
+          if (data.favorites) {
+            heartIconsInHome.forEach(icon => {
+              const petId = icon.getAttribute('data-pet-id');
+              if (data.favorites[petId] !== undefined) {
+                updateHomeCardHeartIconUI(icon, data.favorites[petId]);
+              }
             });
+          }
+        })
+        .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error checking home card favorites:', error);
+            }
+        });
+      }
+      if (heartIconsInHome.length > 0) checkInitialHomeCardFavorites();
 
-            // If no pets, return
-            if (petIds.length === 0) return;
+      const modalOverlayHome = document.getElementById('petDetailModalOverlayHome');
+      const modalContentContainerHome = document.getElementById('modalPetContentContainerHome');
+      let currentModalPetIdHome = null;
 
-            // Fetch favorite status for all pets
-            fetch('/check-favorites/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ pet_ids: petIds })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Update UI based on response
-                for (const [petId, isFavorite] of Object.entries(data.favorites)) {
-                    // Find the favorite icon for the specific pet ID
-                    const favoriteIcon = document.querySelector(`.pet-card[data-pet-id="${petId}"] .favorite-icon`);
-                    if (favoriteIcon) {
-                        const heartIcon = favoriteIcon.querySelector('i.fas.fa-heart');
-                        if (isFavorite) {
-                            heartIcon.classList.add('active');
-                        } else {
-                            heartIcon.classList.remove('active');
+      window.openPetDetailModalHome = function(petId) {
+        if (!petId) return;
+        currentModalPetIdHome = petId;
+        modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+        modalOverlayHome.style.display = 'flex';
+
+        fetch(`/ajax/get-pet-detail/${petId}/`)
+          .then(response => {
+            if (response.redirected && response.url.includes('/accounts/login/')) {
+                window.location.href = response.url;
+                throw new Error('User not authenticated, redirecting to login.');
+            }
+            if (!response.ok) throw new Error(`Failed to fetch pet details (${response.status})`);
+            return response.json();
+          })
+          .then(data => {
+            if (data.success && data.pet) {
+              const pet = data.pet;
+              const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
+              const photoUrl = pet.photo_url || defaultPhotoUrl;
+              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
+
+              const petHtml = `
+                <div class="card-detail-popup">
+                  <div class="heart-icon-detail-popup" data-pet-id="${pet.id}">
+                      <i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i>
+                  </div>
+                  <div class="pet-image-container-popup"><img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup"></div>
+                  <div class="pet-id-popup">No. ${pet.name}</div>
+                  <div class="pet-info-popup">
+                    <p><span class="icon">🐕</span>Breed: ${pet.breed}</p>
+                    <p><span class="icon">🚻</span>Gender: ${pet.gender_display}</p>
+                    <p><span class="icon">📅</span>Age: ${pet.age}</p>
+                    <p><span class="icon">💉</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
+                    <p><span class="icon">♿</span>Disability: ${pet.disability}</p>
+                    <p><span class="icon">😊</span>Personality: ${pet.personality}</p>
+                    <p><span class="icon">✍️</span>Detail: ${pet.detail}</p>
+                  </div>
+                  <div class="story-section-popup">
+                    <div class="story-title-popup">My Story:</div>
+                    <div class="story-content-popup">${storyHtml}</div>
+                  </div>
+                </div>`;
+              modalContentContainerHome.innerHTML = petHtml;
+
+              const heartIconInModalHome = modalContentContainerHome.querySelector('.heart-icon-detail-popup');
+              if (heartIconInModalHome) {
+                heartIconInModalHome.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  const currentPetIdInModal = this.getAttribute('data-pet-id');
+                  const modalIconElement = this;
+                  genericToggleFavorite(currentPetIdInModal,
+                    (data) => {
+                        updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
+                        const homeCardHeart = document.querySelector(`.pet-cards .pet-card[data-pet-id="${currentPetIdInModal}"] .favorite-icon`);
+                        if (homeCardHeart) {
+                            updateHomeCardHeartIconUI(homeCardHeart, data.is_favorite);
                         }
                     }
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        // Get CSRF token from cookies
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+                  );
+                });
+              }
+            } else {
+              modalContentContainerHome.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
             }
-            return cookieValue;
-        }
+          })
+          .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error in openPetDetailModalHome:', error);
+                modalContentContainerHome.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
+            }
+          });
+      }
 
-        // Check favorite status on page load
-        // Add a small delay to ensure all elements are rendered
-        setTimeout(checkFavoriteStatus, 100);
+      window.closePetDetailModalHome = function() {
+        modalOverlayHome.style.display = 'none';
+        modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+        currentModalPetIdHome = null;
+      }
+
+      modalOverlayHome.addEventListener('click', function(event) {
+        if (event.target === modalOverlayHome) closePetDetailModalHome();
+      });
+      document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape" && modalOverlayHome.style.display === 'flex') {
+          closePetDetailModalHome();
+        }
+      });
+
+      function updateModalHeartIconUI(heartIconElement, isFavorite) {
+        if (heartIconElement) {
+            if (isFavorite) heartIconElement.classList.add('active');
+            else heartIconElement.classList.remove('active');
+        }
+      }
     });
 </script>
 {% endblock %}

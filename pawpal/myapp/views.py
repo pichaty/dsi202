@@ -341,3 +341,31 @@ def adoption_form_view(request):
 # 14. FBV: Adoption Thank You Page
 def adoption_thank_you_view(request):
     return render(request, 'myapp/adoption_thank_you.html')
+
+@login_required # แนะนำให้ user login ก่อนจึงจะดู detail ใน popup และสถานะ favorite ได้
+def get_pet_detail_ajax(request, pet_id):
+    try:
+        pet = Pet.objects.get(pk=pet_id)
+        is_favorite = False
+        if request.user.is_authenticated:
+            is_favorite = UserFavorite.objects.filter(user=request.user, pet=pet).exists()
+
+        pet_data = {
+            'id': pet.id,
+            'name': pet.name, # หรือ pet.pet_identifier ถ้ามี
+            'breed': pet.breed,
+            'gender_display': pet.get_gender_display(),
+            'age': pet.age,
+            'vaccinated': pet.vaccinated,
+            'disability': pet.disability or "-",
+            'personality': pet.personality or "-",
+            'detail': pet.detail or "-",
+            'story': pet.story or "This pet doesn't have a story written yet...",
+            'photo_url': pet.photo.url if pet.photo else static('myapp/images/default_pet.png'), # ต้อง import static tag ใน template ที่ใช้ JS นี้
+            'is_favorite_by_current_user': is_favorite,
+        }
+        return JsonResponse({'success': True, 'pet': pet_data})
+    except Pet.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Pet not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

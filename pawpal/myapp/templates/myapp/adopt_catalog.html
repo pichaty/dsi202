@@ -2,22 +2,18 @@
 {% load static %}
 
 {% block extra_head %}
+  {# Font Awesome ควรจะถูก include ใน base.html แล้ว #}
   <style>
-    /* Page specific styles for adopt_catalog.html */
-    /* Remove body styles as they are handled by base.html */
-
-    /* Search Bar */
+    /* CSS เดิมของ adopt_catalog.html (Search, Filter, Grid, Card) */
     .search-container {
       display: flex;
       padding: 10px;
-      background-color: #8db38b;
+      background-color: #8db38b; /* var(--green) */
     }
-
     .search-bar {
       flex: 1;
       position: relative;
     }
-
     .search-bar input {
       width: 100%;
       padding: 8px 12px;
@@ -25,17 +21,15 @@
       border: 1px solid #ccc;
       font-size: 0.9em;
     }
-
     .search-icon {
       position: absolute;
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: #8db38b;
+      color: #8db38b; /* var(--green) */
     }
-
     .filter-button {
-      background-color: #4e7857;
+      background-color: #4e7857; /* Darker green */
       color: white;
       border: none;
       border-radius: 5px;
@@ -43,147 +37,172 @@
       margin-left: 10px;
       display: flex;
       align-items: center;
+      cursor: pointer;
     }
-
-    /* Section Title */
     .section-title-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #e8605c;
+      background-color: #e8605c; /* var(--accent-red) */
       color: white;
-      padding: 0.5em;
+      padding: 0.5em 1em; /* เพิ่ม padding ซ้ายขวา */
       font-weight: bold;
       font-size: 1em;
     }
-
     .pet-count {
       font-size: 0.8em;
       font-weight: normal;
     }
-
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      padding: 20px;
-      /* padding-bottom is handled by main's padding-bottom in base.html */
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ปรับ minmax เล็กน้อย */
+      gap: 15px; /* เพิ่ม gap */
+      padding: 15px; /* ปรับ padding */
     }
-
-    /* Updated Card Style with Original Border Radius */
     .card {
       background-color: white;
       border-radius: 12px;
-      padding: 0.5em;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 0.8em; /* ปรับ padding */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* ปรับเงา */
       position: relative;
+      cursor: pointer; /* ทำให้รู้ว่าคลิกได้ */
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
     }
-
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
     .card img {
       width: 100%;
       aspect-ratio: 1/1;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 8px; /* ปรับมุมรูป */
+      margin-bottom: 8px; /* เพิ่มระยะห่างใต้รูป */
     }
-
-    .card a {
-      text-decoration: none;
-      color: inherit;
-    }
-
     .pet-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: 4px;
     }
-
     .pet-name {
       font-weight: bold;
       font-size: 0.9em;
       margin: 0;
+      color: #333;
     }
-
     .pet-gender {
-      width: 18px;
-      height: 18px;
+      width: 20px; /* เพิ่มขนาด */
+      height: 20px; /* เพิ่มขนาด */
       border-radius: 50%;
       text-align: center;
-      line-height: 18px;
-      font-size: 0.8em;
+      line-height: 20px; /* ปรับให้ตรงกับ height */
+      font-size: 0.85em; /* ปรับขนาดตัวอักษร */
       color: white;
+      font-weight: bold;
     }
-
-    .pet-gender.male {
-      background-color: #4088c9;
-    }
-
-    .pet-gender.female {
-      background-color: #ff69b4;
-    }
-
+    .pet-gender.male { background-color: #4088c9; }
+    .pet-gender.female { background-color: #ff69b4; }
     .pet-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
+      gap: 5px; /* เพิ่ม gap */
+      margin-top: 6px; /* เพิ่ม margin */
     }
-
     .badge {
       background-color: #f0f0f0;
       border-radius: 20px !important;
-      padding: 3px 8px;
-      font-size: 0.75em;
-      color: #666 !important;
-      max-width: 100%;
-      white-space: normal;
-      word-break: break-word;
-      box-sizing: border-box;
+      padding: 4px 10px; /* เพิ่ม padding */
+      font-size: 0.7em; /* ลดขนาดฟอนต์ badge เล็กน้อย */
+      color: #555 !important; /* ปรับสี */
     }
-
-    /* Styling for the clickable heart icon */
-    .heart-icon {
+    .heart-icon { /* Favorite icon บน Card ใน Catalog */
         position: absolute;
-        top: 10px; /* Adjusted position for better look */
-        right: 10px; /* Adjusted position for better look */
-        background: white; /* White background circle */
-        border-radius: 50%;
-        width: 30px; /* Increased size */
-        height: 30px; /* Increased size */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #ccc; /* Default color */
-        z-index: 10;
-        cursor: pointer; /* Indicate it's clickable */
+        top: 10px; right: 10px;
+        background: white; border-radius: 50%;
+        width: 30px; height: 30px;
+        display: flex; justify-content: center; align-items: center;
+        color: #ccc; z-index: 10; cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
-    .heart-icon i {
-        color: #ccc; /* Default color of the Font Awesome icon */
-    }
-
-    .heart-icon i.active {
-        color: #e8605c; /* Color when favorited (matches accent-red) */
-    }
-
-    /* No results message */
+    .heart-icon i.fas.fa-heart { color: #ccc; }
+    .heart-icon i.fas.fa-heart.active { color: #e8605c; }
     .no-results {
-      grid-column: span 3; /* Adjust span if your grid changes */
-      text-align: center;
-      padding: 20px;
-      font-size: 1em;
-      color: #8c6e5d;
+      grid-column: 1 / -1; /* ให้ span เต็ม grid */
+      text-align: center; padding: 30px; font-size: 1.1em; color: #777;
     }
 
-    /* Remove footer styles as it's included via base.html */
-    /* Remove active-nav styles as they are in foot.html included by base.html */
+    /* --- CSS สำหรับ Modal --- */
+    .modal-overlay {
+      display: none; position: fixed; z-index: 1001;
+      left: 0; top: 0; width: 100%; height: 100%;
+      overflow-y: auto; /* ให้ scroll เฉพาะ modal ถ้า content ยาว */
+      background-color: rgba(0,0,0,0.65); /* เพิ่มความเข้ม overlay */
+      align-items: center; justify-content: center; /* จัดกลาง */
+    }
+    .modal-content-wrapper {
+      background-color: #fcf8ee; /* สีพื้นหลังเดียวกับ body */
+      margin: 5vh auto; /* ปรับ margin ให้มีช่องว่างบนล่าง */
+      padding: 0; border: none;
+      width: 90%; max-width: 500px; /* ลด max-width ของ popup ลงเล็กน้อย */
+      border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      position: relative;
+      animation: fadeInModal 0.3s ease-out;
+      max-height: 90vh; /* จำกัดความสูง popup */
+      display: flex; /* เพิ่มเพื่อให้ content ภายใน scroll ได้ถ้าสูงเกิน */
+      flex-direction: column; /* เพิ่มเพื่อให้ content ภายใน scroll ได้ถ้าสูงเกิน */
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close-button {
+      color: #777; position: absolute; top: 12px; left:15px;
+      font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;
+      padding: 5px; line-height: 1;
+    }
+    .modal-close-button:hover, .modal-close-button:focus { color: #000; }
 
+    #modalPetContentContainer {
+        overflow-y: auto; /* ให้ content ภายใน modal scroll ได้ */
+        flex-grow: 1; /* ให้ content ขยายเต็มพื้นที่ที่เหลือใน wrapper */
+    }
+
+    /* --- CSS สำหรับ Pet Detail Content ภายใน Modal (คัดลอกจาก pet_detail.html เดิม และปรับปรุง) --- */
+    .card-detail-popup {
+      padding: 20px 25px 25px 25px; /* top | horiz | bottom */
+      text-align: center;
+      position: relative;
+    }
+    .pet-image-container-popup {
+        width: 60%; max-width: 220px; margin: 0 auto 15px auto;
+        aspect-ratio: 1 / 1; overflow: hidden; border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .pet-image-popup { width: 100%; height: 100%; object-fit: cover; }
+
+    .heart-icon-detail-popup {
+      position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%; width: 35px; height: 35px; display: flex;
+      justify-content: center; align-items: center; cursor: pointer; z-index: 5;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .heart-icon-detail-popup:hover { transform: scale(1.1); }
+    .heart-icon-detail-popup i.fas.fa-heart { font-size: 18px; color: #ccc; transition: color 0.2s ease-in-out; }
+    .heart-icon-detail-popup i.fas.fa-heart.active { color: #e8605c; }
+
+    .pet-id-popup { font-weight: bold; font-size: 1.1em; margin-bottom: 15px; color: #333; }
+    .pet-info-popup { text-align: left; margin-bottom: 20px; padding-left: 0; }
+    .pet-info-popup p { margin: 8px 0; font-size: 0.9em; color: #555; display: flex; align-items: center; }
+    .pet-info-popup p .icon { margin-right: 8px; color: #8db38b; width: 20px; text-align: center; font-size: 1em;}
+    .story-section-popup { text-align: left; margin-top: 20px; padding: 12px; background-color: #fff; border-radius: 8px;}
+    .story-title-popup { font-weight: bold; font-size: 1.05em; margin-bottom: 8px; color: #d55e00;}
+    .story-content-popup { font-size: 0.9em; color: #444; line-height: 1.6;}
+    /* --- สิ้นสุด CSS สำหรับ Modal --- */
   </style>
 {% endblock %}
 
 {% block content %}
-  {# Header is now part of base.html #}
-
   <div class="search-container">
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="search...">
@@ -199,108 +218,109 @@
 
   <div class="grid" id="petsGrid">
     {% for pet in pets %}
-    <div class="card" data-pet-name="{{ pet.name|lower }}" data-pet-breed="{{ pet.breed|lower }}" data-pet-gender="{{ pet.gender|lower }}" data-pet-detail="{{ pet.detail|lower }}">
-      {# Updated heart icon div with data-pet-id and Font Awesome icon #}
+    <div class="card" 
+         data-pet-id="{{ pet.id }}" 
+         data-pet-name="{{ pet.name|lower }}" 
+         data-pet-breed="{{ pet.breed|lower }}" 
+         data-pet-gender="{{ pet.gender|lower }}" 
+         data-pet-detail="{{ pet.detail|lower }}"
+         onclick="openPetDetailModal('{{ pet.id }}')">
+      
       <div class="heart-icon" data-pet-id="{{ pet.id }}">
           <i class="fas fa-heart"></i>
       </div>
-      <a href="{% url 'pet_detail' pet.id %}">
-        <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
-        <div class="pet-info">
-          <p class="pet-name">No. {{ pet.name }}</p>
-          {% if pet.gender|lower == 'male' %}
-            <span class="pet-gender male">♂</span>
-          {% elif pet.gender|lower == 'female' %}
-            <span class="pet-gender female">♀</span>
-          {% else %}
-            <span class="pet-gender">?</span>
-          {% endif %}
-        </div>
-        <div class="pet-badges">
-          <span class="badge">{{ pet.breed }}</span>
-          <span class="badge">{{ pet.age }} </span>
-          <span class="badge">{{ pet.detail }} </span>
-        </div>
-      </a>
+      <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
+      <div class="pet-info">
+        <p class="pet-name">No. {{ pet.name }}</p>
+        {% if pet.gender|lower == 'male' %}
+          <span class="pet-gender male">♂</span>
+        {% elif pet.gender|lower == 'female' %}
+          <span class="pet-gender female">♀</span>
+        {% else %}
+          <span class="pet-gender">?</span>
+        {% endif %}
+      </div>
+      <div class="pet-badges">
+        <span class="badge">{{ pet.breed }}</span>
+        <span class="badge">{{ pet.age }}</span>
+        <span class="badge">{{ pet.detail|default_if_none:"" }}</span> {# เพิ่ม default_if_none #}
+      </div>
     </div>
     {% empty %}
-    <div class="no-results">ไม่พบสัตว์เลี้ยงที่รอการรับเลี้ยง</div>
+    <div class="no-results">No pets available for adoption at the moment.</div>
     {% endfor %}
   </div>
 
-  {# Footer is now included via base.html #}
+  {# --- HTML สำหรับ Modal --- #}
+  <div id="petDetailModalOverlay" class="modal-overlay">
+    <div class="modal-content-wrapper">
+      <span class="modal-close-button" onclick="closePetDetailModal()">&times;</span>
+      <div id="modalPetContentContainer">
+        {# เนื้อหา Pet Detail จะถูกใส่ที่นี่โดย JavaScript #}
+        {# Placeholder ขณะโหลด หรือถ้าไม่มีข้อมูล #}
+        <div style="padding: 50px; text-align: center;">Loading...</div>
+      </div>
+    </div>
+  </div>
+  {# --- สิ้นสุด HTML สำหรับ Modal --- #}
 
 {% endblock %}
 
 {% block extra_scripts %}
-  {# Add the JavaScript for search, filter, and favorite functionality #}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get all elements we need
       const searchInput = document.getElementById('searchInput');
       const filterButton = document.getElementById('filterButton');
       const petsGrid = document.getElementById('petsGrid');
-      const petCards = document.querySelectorAll('.card');
+      const allPetCardsInCatalog = Array.from(document.querySelectorAll('#petsGrid .card'));
       const petCountElement = document.getElementById('petCount');
-      // Select heart icons specifically within pet cards
-      const heartIcons = document.querySelectorAll('.card .heart-icon');
+      const heartIconsInCatalog = document.querySelectorAll('#petsGrid .card .heart-icon');
+      const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
 
-      // Set initial pet count
-      updatePetCount();
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
 
-      // Add event listener for search input
-      searchInput.addEventListener('input', function() {
-        filterPets();
-      });
-
-      // Add event listener for filter button (we'll just toggle gender filter for now)
-      let currentFilter = 'all';
-      filterButton.addEventListener('click', function() {
-        // Cycle through filter options: all -> male -> female -> all
-        if (currentFilter === 'all') {
-          currentFilter = 'male';
-          filterButton.textContent = '♂';
-        } else if (currentFilter === 'male') {
-          currentFilter = 'female';
-          filterButton.textContent = '♀';
-        } else {
-          currentFilter = 'all';
-          filterButton.textContent = '≡';
+      function updatePetCount(count) {
+        if (count === undefined) {
+            count = allPetCardsInCatalog.filter(card => card.style.display !== 'none').length;
         }
+        petCountElement.textContent = `Displaying ${count} pet(s)`;
+      }
 
-        filterPets();
-      });
-
-      // Function to filter pets based on search input and gender filter
       function filterPets() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
         let hasResults = false;
 
-        // Remove any existing "no results" message
-        const existingNoResults = document.querySelector('.no-results');
-        if (existingNoResults) {
-          existingNoResults.remove();
-        }
+        const existingNoResults = petsGrid.querySelector('.no-results');
+        if (existingNoResults) existingNoResults.remove();
 
-        // Loop through all pet cards and filter them
-        petCards.forEach(card => {
-          const petName = card.getAttribute('data-pet-name');
-          const petBreed = card.getAttribute('data-pet-breed');
-          const petGender = card.getAttribute('data-pet-gender');
-          const petDetail = card.getAttribute('data-pet-detail');
+        allPetCardsInCatalog.forEach(card => {
+          const petName = card.getAttribute('data-pet-name') || '';
+          const petBreed = card.getAttribute('data-pet-breed') || '';
+          const petGender = card.getAttribute('data-pet-gender') || '';
+          const petDetail = card.getAttribute('data-pet-detail') || '';
 
-          // Check if the card matches both search term and gender filter
           const matchesSearch = searchTerm === '' ||
                       petName.includes(searchTerm) ||
                       petBreed.includes(searchTerm) ||
                       petDetail.includes(searchTerm);
+          
+          const genderFilterValue = filterButton.dataset.currentFilter || 'all';
+          const matchesGender = genderFilterValue === 'all' || petGender === genderFilterValue;
 
-          const matchesGender = currentFilter === 'all' ||
-                              (currentFilter === 'male' && petGender === 'male') ||
-                              (currentFilter === 'female' && petGender === 'female');
-
-          // Show or hide the card
           if (matchesSearch && matchesGender) {
             card.style.display = '';
             visibleCount++;
@@ -310,133 +330,246 @@
           }
         });
 
-        // Add "no results" message if needed
-        if (!hasResults) {
+        if (!hasResults && searchTerm !== '') { // แสดง no results ถ้ามีการ search แล้วไม่เจอ
           const noResultsElement = document.createElement('div');
           noResultsElement.className = 'no-results';
-          noResultsElement.textContent = 'ไม่พบสัตว์เลี้ยงที่ตรงกับการค้นหา';
+          noResultsElement.textContent = 'No pets match your search criteria.';
           petsGrid.appendChild(noResultsElement);
         }
-
-        // Update the pet count
         updatePetCount(visibleCount);
       }
+      
+      if (searchInput) searchInput.addEventListener('input', filterPets);
+      if (filterButton) {
+        filterButton.dataset.currentFilter = 'all'; // Initialize filter state
+        filterButton.addEventListener('click', function() {
+            if (this.dataset.currentFilter === 'all') { this.dataset.currentFilter = 'male'; this.textContent = '♂'; }
+            else if (this.dataset.currentFilter === 'male') { this.dataset.currentFilter = 'female'; this.textContent = '♀'; }
+            else { this.dataset.currentFilter = 'all'; this.textContent = '≡'; }
+            filterPets();
+        });
+      }
+      updatePetCount(); // Initial count
 
-      // Function to update the pet count display
-      function updatePetCount(count) {
-        if (count === undefined) {
-          count = petCards.length;
+      // --- JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
+      function updateCatalogHeartIconUI(iconElement, isFavorite) {
+        const heartI = iconElement.querySelector('i.fas.fa-heart');
+        if (heartI) {
+          if (isFavorite) heartI.classList.add('active');
+          else heartI.classList.remove('active');
         }
-        petCountElement.textContent = `แสดง ${count} ตัว`;
       }
 
-        // Add click event to each heart icon
-        heartIcons.forEach(icon => {
-            icon.addEventListener('click', function(e) {
-                // Prevent the default link behavior
-                e.preventDefault();
-                e.stopPropagation();
-
-                const petId = this.getAttribute('data-pet-id');
-                toggleFavorite(petId, this);
-            });
-        });
-
-        // Function to toggle favorite status
-        function toggleFavorite(petId, element) {
-            fetch(`/toggle-favorite/${petId}/`, { // Use the specific favorite toggle URL
-                method: 'POST',
-                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-            })
-            .then(response => {
-                if (!response.ok) {
-                    // Handle cases like not logged in (status 403 Forbidden)
-                    if (response.status === 403) {
-                        console.error('Error: User not authenticated. Cannot favorite.');
-                         alert('โปรดเข้าสู่ระบบเพื่อบันทึกรายการโปรด'); // Show an alert
-                    } else {
-                        console.error('Error toggling favorite:', response.statusText);
-                    }
-                    return Promise.reject('Response not OK'); // Stop processing
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Update UI based on favorite status
-                const heartIcon = element.querySelector('i.fas.fa-heart');
-                if (data.favorited) {
-                    heartIcon.classList.add('active');
-                } else {
-                    heartIcon.classList.remove('active');
-                }
-            })
-            .catch(error => console.error('Error:', error));
+      function genericToggleFavorite(petId, successCallback, errorCallback) {
+        if (!userIsAuthenticated) {
+            alert('Please log in to manage favorites.');
+            // Option to redirect: window.location.href = "{% url 'login' %}"; (ensure 'login' URL is resolvable)
+            return;
         }
+        fetch(`/toggle-favorite/${petId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.redirected && response.url.includes('/accounts/login/')) {
+                window.location.href = response.url;
+                throw new Error('User not authenticated, redirecting to login.');
+            }
+            if (!response.ok) {
+                console.error('Toggle favorite failed:', response.status, response.statusText);
+                alert('An error occurred. Please try again.');
+                throw new Error('Network response was not ok.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+                if (errorCallback) errorCallback(data.error);
+                return;
+            }
+            if (data.is_favorite !== undefined) {
+                if (successCallback) successCallback(data);
 
-         // Check if pets are in favorites on page load
-        function checkFavoriteStatus() {
-            // Get all pet card heart icons with pet IDs
-            const heartIconsWithId = document.querySelectorAll('.card .heart-icon[data-pet-id]');
-
-
-            // Extract pet IDs
-            const petIds = Array.from(heartIconsWithId).map(icon => {
-                return icon.getAttribute('data-pet-id');
-            });
-
-            // If no pets, return
-            if (petIds.length === 0) return;
-
-            // Fetch favorite status for all pets
-            fetch('/check-favorites/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ pet_ids: petIds })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Update UI based on response
-                for (const [petId, isFavorite] of Object.entries(data.favorites)) {
-                    const heartIconContainer = document.querySelector(`.card .heart-icon[data-pet-id="${petId}"]`);
-                    if (heartIconContainer) {
-                        const heartIcon = heartIconContainer.querySelector('i.fas.fa-heart');
-                        if (isFavorite) {
-                            heartIcon.classList.add('active');
-                        } else {
-                            heartIcon.classList.remove('active');
-                        }
-                    }
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        // Get CSRF token from cookies
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+                // Update header favorite count
+                const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
+                if (favCountHeader && data.favorite_count !== undefined) {
+                    favCountHeader.textContent = data.favorite_count;
+                    favCountHeader.style.display = data.favorite_count > 0 ? 'flex' : 'none';
                 }
             }
-            return cookieValue;
+        })
+        .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                 console.error('Error in genericToggleFavorite:', error);
+            }
+            if (errorCallback) errorCallback(error);
+        });
+      }
+      
+      heartIconsInCatalog.forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const petId = this.getAttribute('data-pet-id');
+            const catalogIconElement = this; // The div.heart-icon in catalog
+            genericToggleFavorite(petId, 
+                (data) => { // successCallback
+                    updateCatalogHeartIconUI(catalogIconElement, data.is_favorite);
+                    // If modal is open and showing the same pet, update its heart too
+                    const modalHeartIcon = document.querySelector(`#petDetailModalOverlay .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
+                    if (modalHeartIcon) {
+                        if (data.is_favorite) modalHeartIcon.classList.add('active');
+                        else modalHeartIcon.classList.remove('active');
+                    }
+                }
+                // No specific error callback needed here, generic one handles alerts
+            );
+        });
+      });
+
+      function checkInitialCatalogFavorites() {
+        if (!userIsAuthenticated) return;
+        const petIdsInCatalog = Array.from(heartIconsInCatalog).map(icon => icon.getAttribute('data-pet-id')).filter(id => id);
+        if (petIdsInCatalog.length === 0) return;
+
+        fetch('/check-favorites/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            body: JSON.stringify({ pet_ids: petIdsInCatalog })
+        })
+        .then(response => {
+            if (response.redirected && response.url.includes('/accounts/login/')) {
+                throw new Error('User not authenticated, redirecting to login.');
+            }
+            if(!response.ok) throw new Error('Failed to check favorites');
+            return response.json();
+        })
+        .then(data => {
+          if (data.favorites) {
+            heartIconsInCatalog.forEach(icon => {
+              const petId = icon.getAttribute('data-pet-id');
+              if (data.favorites[petId] !== undefined) {
+                updateCatalogHeartIconUI(icon, data.favorites[petId]);
+              }
+            });
+          }
+        })
+        .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error checking catalog favorites:', error);
+            }
+        });
+      }
+      if (heartIconsInCatalog.length > 0) checkInitialCatalogFavorites();
+      // --- สิ้นสุด JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
+
+      // --- JavaScript สำหรับ Modal Pet Detail ---
+      const modalOverlay = document.getElementById('petDetailModalOverlay');
+      const modalContentContainer = document.getElementById('modalPetContentContainer');
+      let currentModalPetId = null;
+
+      window.openPetDetailModal = function(petId) {
+        if (!petId) return;
+        currentModalPetId = petId;
+        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+        modalOverlay.style.display = 'flex';
+
+        fetch(`/ajax/get-pet-detail/${petId}/`)
+          .then(response => {
+            if (response.redirected && response.url.includes('/accounts/login/')) {
+                window.location.href = response.url;
+                throw new Error('User not authenticated, redirecting to login.');
+            }
+            if (!response.ok) throw new Error(`Failed to fetch pet details (${response.status})`);
+            return response.json();
+          })
+          .then(data => {
+            if (data.success && data.pet) {
+              const pet = data.pet;
+              const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
+              const photoUrl = pet.photo_url || defaultPhotoUrl;
+              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet, but they are full of love and waiting for a new chapter with you!";
+
+
+              const petHtml = `
+                <div class="card-detail-popup">
+                  <div class="heart-icon-detail-popup" data-pet-id="${pet.id}">
+                      <i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i>
+                  </div>
+                  <div class="pet-image-container-popup">
+                      <img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup">
+                  </div>
+                  <div class="pet-id-popup">No. ${pet.name}</div>
+                  <div class="pet-info-popup">
+                    <p><span class="icon">🐕</span>Breed: ${pet.breed}</p>
+                    <p><span class="icon">🚻</span>Gender: ${pet.gender_display}</p>
+                    <p><span class="icon">📅</span>Age: ${pet.age}</p>
+                    <p><span class="icon">💉</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
+                    <p><span class="icon">♿</span>Disability: ${pet.disability}</p>
+                    <p><span class="icon">😊</span>Personality: ${pet.personality}</p>
+                    <p><span class="icon">✍️</span>Detail: ${pet.detail}</p>
+                  </div>
+                  <div class="story-section-popup">
+                    <div class="story-title-popup">My Story:</div>
+                    <div class="story-content-popup">${storyHtml}</div>
+                  </div>
+                </div>
+              `;
+              modalContentContainer.innerHTML = petHtml;
+
+              const heartIconInModal = modalContentContainer.querySelector('.heart-icon-detail-popup');
+              if (heartIconInModal) {
+                heartIconInModal.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  const currentPetIdInModal = this.getAttribute('data-pet-id');
+                  const modalIconElement = this; // The div.heart-icon-detail-popup in modal
+                  genericToggleFavorite(currentPetIdInModal, 
+                    (data) => { // successCallback
+                        updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
+                        // Update catalog heart if it's the same pet
+                        const catalogCardHeart = document.querySelector(`#petsGrid .card[data-pet-id="${currentPetIdInModal}"] .heart-icon`);
+                        if (catalogCardHeart) {
+                            updateCatalogHeartIconUI(catalogCardHeart, data.is_favorite);
+                        }
+                    }
+                  );
+                });
+              }
+            } else {
+              modalContentContainer.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
+            }
+          })
+          .catch(error => {
+            if (error.message && !error.message.startsWith('User not authenticated')) {
+                console.error('Error in openPetDetailModal:', error);
+                modalContentContainer.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
+            }
+          });
+      }
+
+      window.closePetDetailModal = function() {
+        modalOverlay.style.display = 'none';
+        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>'; // Reset to loading
+        currentModalPetId = null;
+      }
+
+      modalOverlay.addEventListener('click', function(event) {
+        if (event.target === modalOverlay) closePetDetailModal();
+      });
+      document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape" && modalOverlay.style.display === 'flex') closePetDetailModal();
+      });
+
+      function updateModalHeartIconUI(heartIconElement, isFavorite) { // เฉพาะ i tag
+        if (heartIconElement) {
+            if (isFavorite) heartIconElement.classList.add('active');
+            else heartIconElement.classList.remove('active');
         }
-
-        // Check favorite status on page load
-        // Add a small delay to ensure all elements are rendered
-        setTimeout(checkFavoriteStatus, 100);
-
-
+      }
+      // --- สิ้นสุด JavaScript สำหรับ Modal ---
     });
   </script>
 {% endblock %}
