@@ -375,3 +375,4 @@ def get_pet_detail_ajax(request, pet_id):
         return JsonResponse({'success': False, 'error': 'Pet not found.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
