@@ -262,15 +262,15 @@
                         <small>{{ user.email }}</small>
                     </div>
                     <ul>
-                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>ข้อมูลผู้ใช้งาน</a></li>
-                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>สถานะการรับเลี้ยง</a></li>
-                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>สัตว์เลี้ยงของฉัน</a></li>
-                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>รายการโปรด</a></li>
-                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>ประวัติการบริจาค</a></li>
-                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>การตั้งค่าบัญชี</a></li>
-                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>การแจ้งเตือน</a></li> {# Placeholder URL #}
+                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>User Profile</a></li>
+                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>Adoption Status</a></li>
+                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>My paws</a></li>
+                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>Favorites</a></li>
+                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>My Donations</a></li>
+                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>Settings</a></li>
+                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>Notifications</a></li> {# Placeholder URL #}
                         <li class="dropdown-divider"></li>
-                        <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>ออกจากระบบ</a></li>
+                        <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
                     </ul>
                 </div>
             {% else %}

@@ -2,3 +2,4 @@ Django>=4.2
 gunicorn
 Pillow
 django-allauth
+promptpay==1.1.9
