@@ -159,6 +159,8 @@ ACCOUNT_UNIQUE_EMAIL = True                     # Ensures emails are unique
 
 # Logout configuration
 ACCOUNT_LOGOUT_ON_GET = True                    # Logout directly on GET request to logout URL
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_SIGNUP_ON_GET = True
 
 # Custom Forms (ถ้ามี)
 # ACCOUNT_SIGNUP_FORM_CLASS = 'myapp.forms.CustomSignupForm' # ตัวอย่างถ้าคุณมี custom signup form

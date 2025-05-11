@@ -342,7 +342,7 @@ def adoption_form_view(request):
 def adoption_thank_you_view(request):
     return render(request, 'myapp/adoption_thank_you.html')
 
-@login_required # แนะนำให้ user login ก่อนจึงจะดู detail ใน popup และสถานะ favorite ได้
+
 def get_pet_detail_ajax(request, pet_id):
     try:
         pet = Pet.objects.prefetch_related('additional_images').get(pk=pet_id) # ใช้ prefetch_related เพื่อประสิทธิภาพ
