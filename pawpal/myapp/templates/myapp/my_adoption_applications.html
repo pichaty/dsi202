@@ -5,53 +5,210 @@
 
 {% block extra_head %}
 <style>
-    .applications-container { max-width: 800px; margin: 20px auto; padding: 20px; }
-    .applications-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
-    .application-card { background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
-    .application-card h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em; }
-    .application-card p { font-size: 0.9em; margin-bottom: 5px; }
-    .status-pending { color: orange; font-weight: bold; }
-    .status-approved { color: green; font-weight: bold; }
-    .status-rejected { color: red; font-weight: bold; } /* Assuming you might have a rejected status */
-    .no-applications { text-align: center; color: #777; margin-top: 30px; }
-    .pet-list { list-style: none; padding-left: 0; }
-    .pet-list li { background-color: #f9f9f9; padding: 5px 10px; border-radius: 4px; margin-top: 5px; display: inline-block; margin-right: 5px;}
+    /* Inherits styles from base.html including color variables */
+    .page-container {
+        max-width: 750px; /* อาจจะปรับความกว้างได้อีกตามความเหมาะสม */
+        margin: 20px auto;
+        padding: 0;
+    }
+
+    .section-header {
+        background-color: var(--green);
+        color: white;
+        padding: 15px 20px; /* ลด padding หัวข้อลงเล็กน้อย */
+        border-radius: 10px 10px 0 0; /* ปรับความมน */
+        text-align: center;
+        font-size: 1.5em; /* ปรับขนาดฟอนต์หัวข้อ */
+        font-weight: bold;
+        font-family: 'Grandstander', cursive;
+        margin-bottom: 0;
+    }
+
+    .content-box {
+        background-color: #fff;
+        padding: 20px; /* ลด padding โดยรวมของ content box */
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .application-card {
+        display: flex; /* --- ใช้ Flexbox เพื่อจัดรูปกับข้อมูล --- */
+        align-items: flex-start; /* --- จัดให้อยู่บนสุดของ flex container --- */
+        background-color: #fdfdfd;
+        border: 1px solid #e8e8e8; /* ปรับสีขอบให้อ่อนลง */
+        border-left: 4px solid var(--green);
+        border-radius: 8px;
+        margin-bottom: 15px; /* ลด margin ล่าง */
+        padding: 15px; /* ลด padding ภายในการ์ด */
+        box-shadow: 0 1px 6px rgba(0,0,0,0.05); /* ลดเงาลง */
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+    .application-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .pet-image-container { /* --- Container สำหรับรูปภาพ --- */
+        flex-shrink: 0; /* ไม่ให้รูปถูกบีบ */
+        margin-right: 15px; /* ระยะห่างระหว่างรูปกับข้อมูล */
+        width: 90px; /* --- ขนาดรูปภาพ (ปรับได้) --- */
+        height: 90px; /* --- ขนาดรูปภาพ (ปรับได้) --- */
+        border-radius: 6px;
+        overflow: hidden; /* ซ่อนส่วนเกินของรูป */
+        background-color: #f0f0f0; /* สีพื้นหลังเผื่อรูปไม่โหลด */
+    }
+    .pet-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* ให้รูปเต็มกรอบโดยไม่เสียสัดส่วน */
+    }
+
+    .application-details { /* --- Container สำหรับข้อมูล --- */
+        flex-grow: 1; /* ให้ข้อมูลขยายเต็มพื้นที่ที่เหลือ */
+    }
+
+    .application-card h5 { /* หัวข้อ "คำขอสำหรับ" */
+        margin-top: 0;
+        margin-bottom: 8px; /* ลด margin */
+        color: var(--secondary);
+        font-size: 1.05em; /* ลดขนาดฟอนต์ */
+        font-weight: 600;
+        border-bottom: 1px dashed #eaeaea;
+        padding-bottom: 8px; /* ลด padding */
+    }
+
+    .application-card p {
+        font-size: 0.9em; /* ลดขนาดฟอนต์ของรายละเอียด */
+        margin-bottom: 6px; /* ลด margin */
+        line-height: 1.5;
+        color: #454545;
+    }
+    .application-card p strong {
+        color: #333;
+        min-width: 90px; /* ปรับความกว้าง label */
+        display: inline-block;
+    }
+
+    /* Status Tags Styling (เหมือนเดิม หรือปรับขนาด padding/font-size เล็กน้อย) */
+    .status-tag {
+        padding: 4px 10px; /* ลด padding ของ tag */
+        border-radius: 12px;
+        font-size: 0.8em; /* ลดขนาดฟอนต์ tag */
+        font-weight: bold;
+        color: white;
+        display: inline-block;
+        text-transform: capitalize;
+    }
+    .status-pending { background-color: #ffc107; color: #333; border: 1px solid #e0a800;}
+    .status-approved { background-color: #28a745; color: white; border: 1px solid #1e7e34;}
+    .status-rejected { background-color: #dc3545; color: white; border: 1px solid #b02a37;}
+    .status-under_review { background-color: #17a2b8; color: white; border: 1px solid #117a8b;}
+    .status-default { background-color: #6c757d; color: white; border: 1px solid #545b62;}
+
+
+    .no-applications {
+        text-align: center;
+        color: #777;
+        margin-top: 25px; /* ลด margin */
+        font-size: 1em; /* ลดขนาดฟอนต์ */
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+    .no-applications i {
+        font-size: 1.4em;
+        margin-bottom: 8px;
+        color: var(--green);
+    }
+
+    .pet-list-in-card { /* เปลี่ยนชื่อ class เพื่อไม่ให้ชนกับ .pet-list อื่นๆ ถ้ามี */
+        list-style: none;
+        padding-left: 0;
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+    .pet-list-in-card li {
+        background-color: #e9f5e9;
+        padding: 5px 10px; /* ลด padding */
+        border-radius: 15px;
+        display: inline-block;
+        margin-right: 6px;
+        margin-bottom: 4px;
+        font-size: 0.8em; /* ลดขนาดฟอนต์ */
+        color: var(--green_dark, #38783a);
+        border: 1px solid var(--green_light, #a7d7a9);
+    }
+    .pet-list-in-card li i {
+        margin-right: 4px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="applications-container">
-    <h1>สถานะการรับเลี้ยงสัตว์ของคุณ</h1>
-    {% if applications %}
-        {% for app in applications %}
-            <div class="application-card">
-                <h5>คำขอสำหรับ:
-                    {% if app.pets.all %}
-                        <ul class="pet-list">
-                        {% for pet in app.pets.all %}
-                            <li>{{ pet.name }} ({{ pet.breed }})</li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                        <span>ไม่มีข้อมูลสัตว์เลี้ยง</span>
-                    {% endif %}
-                </h5>
-                <p><strong>วันที่ยื่นคำขอ:</strong> {{ app.apply_date|date:"d M Y, H:i" }}</p>
-                <p><strong>สถานะ:</strong>
-                    {% if app.is_approved %}
-                        <span class="status-approved">ได้รับการอนุมัติแล้ว</span>
-                    {% else %}
-                        <span class="status-pending">รอดำเนินการ</span>
-                        {# คุณอาจจะมีสถานะอื่นๆ เช่น 'ถูกปฏิเสธ' เพื่อแสดงผลต่างกัน #}
-                    {% endif %}
-                </p>
-                <p><strong>รายละเอียดผู้สมัคร:</strong> {{ app.first_name }} {{ app.last_name }}</p>
-                <p><strong>อีเมล:</strong> {{ app.email }}</p>
-                {# เพิ่มรายละเอียดอื่นๆ ของ application ที่ต้องการแสดง #}
+<div class="page-container">
+    <h1 class="section-header"><i class="fas fa-file-alt" style="margin-right: 10px;"></i>สถานะการรับเลี้ยงสัตว์</h1>
+    <div class="content-box">
+        {% if applications %}
+            {% for app in applications %}
+                <div class="application-card">
+                    {# --- ส่วนแสดงรูปภาพสัตว์เลี้ยง (แสดงรูปแรกในรายการ pets ของ application นี้) --- #}
+                    {% with first_pet=app.pets.first %}
+                        <div class="pet-image-container">
+                            {% if first_pet and first_pet.photo %}
+                                <img src="{{ first_pet.photo.url }}" alt="{{ first_pet.name }}">
+                            {% else %}
+                                <img src="{% static 'myapp/images/default_pet.png' %}" alt="ไม่มีรูปภาพ">
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+
+                    <div class="application-details">
+                        <h5>คำขอสำหรับ:
+                            {% if app.pets.all %}
+                                <ul class="pet-list-in-card">
+                                {% for pet_item in app.pets.all %}
+                                    <li>
+                                        {% if pet_item.pet_type == 'dog' %}
+                                            <i class="fas fa-dog"></i>
+                                        {% elif pet_item.pet_type == 'cat' %}
+                                            <i class="fas fa-cat"></i>
+                                        {% else %}
+                                            <i class="fas fa-paw"></i>
+                                        {% endif %}
+                                        {{ pet_item.name }}
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span style="font-style: italic; color: #888; font-size:0.9em;">ไม่มีข้อมูลสัตว์เลี้ยงที่ระบุ</span>
+                            {% endif %}
+                        </h5>
+                        <p><strong>หมายเลขคำขอ:</strong> APP-{{ app.id|stringformat:"05d" }}</p>
+                        <p><strong>วันที่ยื่นคำขอ:</strong> {{ app.apply_date|date:"d M Y, H:i" }}</p>
+                        <p><strong>สถานะ:</strong>
+                            {% if app.status == app.STATUS_APPROVED %}
+                                <span class="status-tag status-approved">{{ app.get_status_display }}</span>
+                            {% elif app.status == app.STATUS_REJECTED %}
+                                <span class="status-tag status-rejected">{{ app.get_status_display }}</span>
+                            {% elif app.status == app.STATUS_PENDING %}
+                                <span class="status-tag status-pending">{{ app.get_status_display }}</span>
+                            {% elif app.status == app.STATUS_UNDER_REVIEW %}
+                                <span class="status-tag status-under_review">{{ app.get_status_display }}</span>
+                            {% else %}
+                                <span class="status-tag status-default">{{ app.get_status_display }}</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>ผู้ยื่นคำขอ:</strong> {{ app.first_name }} {{ app.last_name }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-applications">
+                <i class="fas fa-folder-open"></i>
+                <p>คุณยังไม่มีคำขอรับเลี้ยงสัตว์ที่ยื่นไปในขณะนี้</p>
+                <p><a href="{% url 'adopt_catalog' %}" class="button" style="background-color: var(--primary); color:white; padding: 10px 20px; border-radius: 20px; text-decoration:none; display:inline-block; margin-top:10px;">ดูสัตว์เลี้ยงสำหรับรับอุปการะ</a></p>
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-applications">คุณยังไม่มีคำขอรับเลี้ยงสัตว์ที่ยื่นไป</p>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

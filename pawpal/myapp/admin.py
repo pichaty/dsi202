@@ -190,22 +190,24 @@ class ContactInfoAdmin(admin.ModelAdmin):
 
 # ใน work/dsi202/pawpal/myapp/admin.py
 
+# ใน work/dsi202/pawpal/myapp/admin.py
+
 from django.contrib import admin
-# ตรวจสอบว่าได้ import โมเดล AdoptionApplication แล้ว
 from .models import AdoptionApplication, Pet # ตรวจสอบว่า Pet ก็ถูก import ด้วยถ้ายังไม่มี
 
 @admin.register(AdoptionApplication)
 class AdoptionApplicationAdmin(admin.ModelAdmin):
-    list_display = ('id','first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_applied_pets', 'is_approved') # เปลี่ยนชื่อ method เล็กน้อยเพื่อความชัดเจน
-    list_filter = ('is_approved', 'apply_date')
-    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation', 'pets__name', 'pets__id') # เพิ่มการ search จากชื่อหรือ ID ของ Pet
+    # แก้ไข list_display โดยเปลี่ยน 'is_approved' เป็น 'status'
+    list_display = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_applied_pets', 'status') # <--- แก้ไขตรงนี้
+    list_filter = ('status', 'apply_date') # <--- เปลี่ยน 'is_approved' เป็น 'status'
+    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation', 'pets__name', 'pets__id')
     date_hierarchy = 'apply_date'
-    readonly_fields = ('apply_date',) # ทำให้วันที่สมัครแก้ไขไม่ได้
-    
-    # เพิ่ม fieldsets เพื่อจัดกลุ่มข้อมูล และทำให้ ManyToManyField (pets) แสดงผลได้ดีขึ้น
+    readonly_fields = ('apply_date',)
+
     fieldsets = (
         (None, {
-            'fields': ('is_approved', ('first_name', 'last_name'), ('email', 'phone_number'))
+            # แก้ไข fieldsets โดยเปลี่ยน 'is_approved' เป็น 'status'
+            'fields': ('status', ('first_name', 'last_name'), ('email', 'phone_number')) # <--- แก้ไขตรงนี้
         }),
         ('Address Information', {
             'fields': ('address', 'subdistrict', 'district', 'province', 'postal_code')
@@ -213,30 +215,32 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
         ('Adoption Details', {
             'fields': ('household', 'other_pets', 'property_description', 'job_working_hours', 'motivation')
         }),
-        ('Applied Pets', { # ส่วนสำหรับแสดงและแก้ไขสัตว์เลี้ยงที่สมัคร
+        ('Applied Pets', {
             'fields': ('pets',)
         }),
         ('Timestamps', {
             'fields': ('apply_date',),
         }),
     )
-    filter_horizontal = ('pets',) # ทำให้การเลือก pets ในหน้าแก้ไข application ง่ายขึ้น
+    filter_horizontal = ('pets',)
 
     def display_applied_pets(self, obj):
-        # แสดงชื่อสัตว์เลี้ยง พร้อม ID หรือแค่ชื่อก็ได้
         return ", ".join([f"{pet.name} (ID: {pet.id})" for pet in obj.pets.all()])
-        # หรือถ้าต้องการแค่ชื่อ: return ", ".join([pet.name for pet in obj.pets.all()])
     display_applied_pets.short_description = 'Applied for Pets'
 
-    # เพิ่ม action สำหรับ approve ใบสมัครที่เลือก
+    # หากมี action approve_selected_applications ให้ปรับปรุง logic ตรงนี้
     def approve_selected_applications(self, request, queryset):
+        updated_count = 0
         for application in queryset:
-            if not application.is_approved:
-                application.is_approved = True
-                application.save() # เรียก save() method ของ AdoptionApplication ซึ่งจะไปอัปเดต Pet.is_adopted และ PetStatistics
-        self.message_user(request, f"{queryset.count()} adoption applications were successfully approved.")
+            if application.status != AdoptionApplication.STATUS_APPROVED: # ตรวจสอบสถานะปัจจุบัน
+                application.status = AdoptionApplication.STATUS_APPROVED  # เปลี่ยนสถานะเป็น approved
+                application.save() # เรียก save() method ของ AdoptionApplication
+                updated_count +=1
+        if updated_count > 0:
+            self.message_user(request, f"{updated_count} adoption applications were successfully approved.")
+        else:
+            self.message_user(request, "No applications were updated (they might have been already approved).")
+
     approve_selected_applications.short_description = "Approve selected applications"
 
     actions = [approve_selected_applications]
-
-

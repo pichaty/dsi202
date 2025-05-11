@@ -148,24 +148,31 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1 # Django-allauth needs this
 
 # --- Key Allauth Settings for Username & Email ---
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email' # Allows login with either username or email
-ACCOUNT_EMAIL_REQUIRED = True                   # Email is still required during signup
-ACCOUNT_USERNAME_REQUIRED = True                # IMPORTANT: Set to True to enable username field in signup
+# ACCOUNT_AUTHENTICATION_METHOD = 'username_email' # Deprecated
+ACCOUNT_LOGIN_METHODS = ['username', 'email'] # New setting for login methods
+ACCOUNT_LOGIN_BY_USERNAME = True # Explicitly allow login by username
+ACCOUNT_LOGIN_BY_EMAIL = True    # Explicitly allow login by email
+
+# ACCOUNT_EMAIL_REQUIRED = True                   # Deprecated
+# ACCOUNT_USERNAME_REQUIRED = True                # Deprecated
+# ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True      # Deprecated
+# Replace the above three with ACCOUNT_SIGNUP_FIELDS
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password*'] # '*' means required. 'password1*' and 'password2*' will be handled if password_confirmation is needed.
+# If you want password confirmation, allauth will handle it by default if password input is present.
+# You can customize further if you have a custom signup form.
+
 ACCOUNT_UNIQUE_USERNAME = True                  # Ensures usernames are unique
 ACCOUNT_EMAIL_VERIFICATION = 'none'             # Options: 'none', 'optional', 'mandatory'
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True      # Standard: require password confirmation
 ACCOUNT_SESSION_REMEMBER = True                 # Remember user session
 ACCOUNT_UNIQUE_EMAIL = True                     # Ensures emails are unique
 
+
 # Logout configuration
 ACCOUNT_LOGOUT_ON_GET = True                    # Logout directly on GET request to logout URL
-SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_SIGNUP_ON_GET = True
+
+# Email backend (for development, prints emails to console)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ACCOUNT_EMAIL_REQUIRED = True
-
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
 # Custom Forms (ถ้ามี)
 # ACCOUNT_SIGNUP_FORM_CLASS = 'myapp.forms.CustomSignupForm' # ตัวอย่างถ้าคุณมี custom signup form
 # ACCOUNT_ADAPTER = 'myapp.adapter.MyAccountAdapter' # If you have a custom adapter
@@ -174,6 +181,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 LOGIN_REDIRECT_URL = 'home' # Page to redirect to after successful login
 LOGOUT_REDIRECT_URL = 'home' # Page to redirect to after successful logout
 
+# Social Account Settings (Google example)
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -186,13 +194,4 @@ SOCIALACCOUNT_PROVIDERS = {
         'OAUTH_PKCE_ENABLED': True, # Recommended for security
     }
 }
-# SOCIALACCOUNT_LOGIN_ON_GET = True # Uncomment if you want to initiate social login on GET request
-
-
-# pawpal/settings.py
-
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '192.168.1.111'  # IP Address ของคอมพิวเตอร์ที่รัน Django server
-]
+# SOCIALACCOUNT_LOGIN_ON_GET = True # No longer recommended, use provider_login_url template tag with POST

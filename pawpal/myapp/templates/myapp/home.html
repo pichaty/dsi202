@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block extra_head %}
-  <style>
-    /* --- CSS เดิมของ Home Page ทั้งหมด --- */
+<style>
+    /* --- CSS for Personality Test Banner (Enhanced) --- */
     .personality-test-banner {
-        background-color: #d55e00;
+        background-color: #d55e00; /* สีพื้นหลังหลัก */
         border-radius: 20px;
         padding: 15px;
         margin: 15px;
@@ -13,16 +13,186 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: relative; 
+        overflow: hidden; 
     }
-    .banner-content { flex: 1; }
-    .banner-content h2 { font-weight: bold; margin-bottom: 5px; font-size: 18px; }
-    .banner-content p { margin-bottom: 15px; font-size: 14px; }
+    .banner-content { 
+        flex: 1; 
+        position: relative; 
+        z-index: 5; 
+    }
+    .banner-content h2 { 
+        font-weight: bold; 
+        margin-bottom: 5px; 
+        font-size: 18px; 
+    }
+    .banner-content p { 
+        margin-bottom: 15px; 
+        font-size: 14px; 
+    }
     .btn-test {
-        background-color: white; color: black; border-radius: 50px;
-        padding: 5px 15px; border: none; font-size: 14px; font-weight: bold;
+        background-color: white; 
+        color: black; 
+        border-radius: 50px;
+        padding: 5px 15px; 
+        border: none; 
+        font-size: 14px; 
+        font-weight: bold;
+        transition: all 0.3s ease; 
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        z-index: 5; /* ให้ปุ่มอยู่บนสุด */
     }
-    .banner-image { max-width: 100px; }
+    .btn-test:hover {
+        transform: scale(1.05);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+    .banner-image { 
+        max-width: 120px; /* ปรับตามขนาดรูปภาพใหม่ */
+        position: relative; 
+        z-index: 5; 
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    /* --- Animated Decorations (Paw, Bubble) --- */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); } /* ลดการเด้ง */
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; } /* ปรับ opacity */
+        50% { transform: scale(1.03); opacity: 0.8; } /* ลดการขยาย */
+    }
+    .paw-decoration {
+        position: absolute;
+        opacity: 0.12; /* ลดความเข้ม */
+        z-index: 1; /* อยู่หลัง sparkles */
+        color: rgba(255, 255, 255, 0.7); /* ทำให้ขาวขึ้นเล็กน้อย */
+    }
+    .paw-1 { top: 10%; left: 10%; font-size: 20px; animation: spin 10s linear infinite; }
+    .paw-2 { bottom: 15%; left: 20%; font-size: 16px; animation: bounce 6s ease-in-out infinite 0.5s; }
+    .paw-3 { top: 15%; right: 30%; font-size: 18px; animation: pulse 7s ease-in-out infinite 1s; }
+    .paw-4 { bottom: 10%; right: 15%; font-size: 22px; animation: float 9s ease-in-out infinite 1.5s; }
+    
+    .bubble-decoration {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.08); /* ลดความเข้ม */
+        border-radius: 50%;
+        z-index: 1; /* อยู่หลัง sparkles */
+    }
+    .bubble-1 { width: 28px; height: 28px; top: 20%; left: 30%; animation: float 7s ease-in-out infinite; }
+    .bubble-2 { width: 18px; height: 18px; bottom: 30%; left: 40%; animation: float 9s ease-in-out infinite 1s; }
+    .bubble-3 { width: 23px; height: 23px; top: 40%; right: 20%; animation: float 8s ease-in-out infinite 0.5s; }
+    
+    /* Sparkle effect for the button */
+    .btn-test::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(60deg, transparent, rgba(255,255,255,0.1), transparent); /* ลด opacity */
+        transform: rotate(45deg);
+        animation: shine 5s infinite linear; /* ช้าลง */
+        z-index: 0; 
+    }
+    @keyframes shine {
+        0% { transform: translateX(-75%) translateY(-75%) rotate(45deg); }
+        100% { transform: translateX(75%) translateY(75%) rotate(45deg); }
+    }
 
+    /* --- Sparkles ("Wink Wink") --- */
+    .sparkle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        /* สร้างประกายแบบมีแฉกเล็กน้อย */
+        background-image: 
+            radial-gradient(circle at center, white 15%, transparent 16%),
+            linear-gradient(to bottom, transparent 40%, white 40%, white 60%, transparent 60%),
+            linear-gradient(to right, transparent 40%, white 40%, white 60%, transparent 60%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        opacity: 0;
+        animation: wink-effect 2.2s infinite ease-in-out;
+        z-index: 2; /* อยู่บน paw/bubble และคลื่น แต่หลัง content หลัก */
+        pointer-events: none;
+        filter: drop-shadow(0 0 2px gold); /* เพิ่มเงาเรืองแสงสีทอง */
+    }
+
+    .sparkle-s1 { top: 18%; left: 7%; animation-delay: 0.1s; transform: scale(0.7); }
+    .sparkle-s2 { top: 35%; left: 3%; animation-delay: 0.7s; transform: scale(1.0); }
+    .sparkle-s3 { bottom: 22%; left: 12%; animation-delay: 1.2s; transform: scale(0.8); }
+    .sparkle-s4 { top: 45%; left: 22%; animation-delay: 0.4s; transform: scale(0.9); }
+    .sparkle-s5 { top: 12%; right: 38%; animation-delay: 0.9s; transform: scale(0.6); }
+    .sparkle-s6 { bottom: 30%; right: 42%; animation-delay: 1.5s; transform: scale(1.1); }
+    /* เพิ่ม Sparkle อีก */
+    .sparkle-s7 { top: 60%; left: 5%; animation-delay: 0.25s; transform: scale(0.75); }
+    .sparkle-s8 { top: 25%; right: 45%; animation-delay: 1.1s; transform: scale(0.95); }
+
+
+    @keyframes wink-effect { /* ปรับปรุง keyframes */
+        0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+        30% { opacity: 1; transform: scale(1.0) rotate(10deg); }
+        60% { opacity: 0.5; transform: scale(0.6) rotate(-5deg); }
+        80% { opacity: 1; transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* --- Wavy Background Effect (REVISED for softer look) --- */
+    .personality-test-banner::before,
+    .personality-test-banner::after {
+        content: '';
+        position: absolute;
+        left: -50%; 
+        width: 200%; 
+        height: 160px; /* เพิ่มความสูงของคลื่นเล็กน้อย */
+        z-index: 0; 
+        border-radius: 45% 55% 60% 40% / 50% 50% 50% 50% ; /* ทำให้โค้งไม่สมมาตร ดูเป็นธรรมชาติ */
+        animation: subtleWave 20s linear infinite alternate; 
+        filter: blur(2px); /* เพิ่มความเบลอเล็กน้อย */
+    }
+
+    .personality-test-banner::before {
+        bottom: -105px; 
+        background: #E76F51; /* สีส้มอ่อน (เหมือนพระอาทิตย์ตก) */
+        opacity: 0.35; /* ปรับความโปร่งแสง */
+        animation-duration: 22s;
+    }
+
+    .personality-test-banner::after {
+        bottom: -120px; 
+        background: #F4A261; /* สีส้มเหลือง */
+        opacity: 0.25; /* ปรับความโปร่งแสง */
+        animation-duration: 28s;
+        animation-delay: -7s; 
+    }
+
+    @keyframes subtleWave {
+        0% {
+            transform: translateX(0%) translateY(0%) rotate(-3deg);
+            border-radius: 45% 55% 60% 40% / 50% 50% 50% 50% ;
+        }
+        50% {
+            transform: translateX(-5%) translateY(2%) rotate(0deg);
+        }
+        100% {
+            transform: translateX(-10%) translateY(-2%) rotate(3deg);
+            border-radius: 55% 45% 40% 60% / 50% 50% 50% 50% ;
+        }
+    }
+
+    /* --- CSS from Original File 1 (Modal, Pet Cards, etc. - REMAIN UNCHANGED FROM PREVIOUS MERGE) --- */
+    /* ... (โค้ด CSS ส่วนที่เหลือทั้งหมดจากไฟล์ที่แล้ว: .section-header, .pet-cards, modals, lightbox etc. ให้คงไว้เหมือนเดิม) ... */
     .section-header {
         display: flex; justify-content: space-between; align-items: center;
         padding: 0 15px; margin-top: 25px;
@@ -43,7 +213,7 @@
     }
     .pet-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
     .pet-image { height: 160px; object-fit: cover; width: 100%; }
-    .favorite-icon { /* Favorite icon บน pet-card */
+    .favorite-icon {
         position: absolute; top: 10px; right: 10px; background: white;
         border-radius: 50%; width: 30px; height: 30px; display: flex;
         justify-content: center; align-items: center; z-index: 10; cursor: pointer;
@@ -55,8 +225,8 @@
     .pet-number { font-size: 14px; font-weight: bold; color: #333; }
     .pet-badges { display: flex; gap: 5px; margin-top: 5px; }
     .badge {
-      background-color: #f0f0f0; border-radius: 20px !important;
-      padding: 3px 8px; font-size: 12px; color: #666 !important;
+        background-color: #f0f0f0; border-radius: 20px !important;
+        padding: 3px 8px; font-size: 12px; color: #666 !important;
     }
 
     .donate-cards {
@@ -91,36 +261,34 @@
         transform: translateY(-3px);
         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
-    /* --- สิ้นสุด CSS เดิมของ Home Page --- */
-
 
     /* --- CSS สำหรับ Modal --- */
     .modal-overlay {
-      display: none; position: fixed; z-index: 1001;
-      left: 0; top: 0; width: 100%; height: 100%;
-      overflow-y: auto; background-color: rgba(0,0,0,0.65);
-      align-items: center; justify-content: center;
+        display: none; position: fixed; z-index: 1001;
+        left: 0; top: 0; width: 100%; height: 100%;
+        overflow-y: auto; background-color: rgba(0,0,0,0.65);
+        align-items: center; justify-content: center;
     }
     .modal-content-wrapper {
-      background-color: #f9f4e8; /* หรือสีพื้นหลัง modal ที่คุณต้องการ */
-      margin: 5vh auto; padding: 0;
-      border: none; width: 90%; max-width: 500px; /* ขนาด popup */
-      border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      position: relative; animation: fadeInModal 0.3s ease-out;
-      max-height: 90vh; display: flex; flex-direction: column;
+        background-color: #f9f4e8;
+        margin: 5vh auto; padding: 0;
+        border: none; width: 90%; max-width: 500px;
+        border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        position: relative; animation: fadeInModal 0.3s ease-out;
+        max-height: 90vh; display: flex; flex-direction: column;
     }
     @keyframes fadeInModal {
-      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+        from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .modal-close-button {
-      color: #777; position: absolute; top: 12px; left:15px; /* แก้ไข: ให้ปุ่มปิดอยู่ซ้ายบน */
-      font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10; /* z-index สูงเพื่อให้กดได้ */
-      padding: 0; line-height: 1; background: none; border: none;
+        color: #777; position: absolute; top: 12px; left:15px;
+        font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;
+        padding: 0; line-height: 1; background: none; border: none;
     }
     .modal-close-button:hover, .modal-close-button:focus { color: #000; }
 
-    #modalPetContentContainerHome { /* ID สำหรับ content ใน modal ของ Home */
+    #modalPetContentContainerHome {
         overflow-y: auto; flex-grow: 1;
     }
 
@@ -128,11 +296,11 @@
     .card-detail-popup { padding: 20px 25px 25px 25px; text-align: center; position: relative; }
     .pet-image-container-popup { width: 60%; max-width: 220px; margin: 0 auto 15px auto; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
     .pet-image-popup { width: 100%; height: 100%; object-fit: cover; }
-    .heart-icon-detail-popup { /* Favorite icon ภายใน popup */
-        position: absolute; top: 15px; right: 15px; /* ย้ายไปขวาบน */
+    .heart-icon-detail-popup {
+        position: absolute; top: 15px; right: 15px;
         background: rgba(255, 255, 255, 0.7); border-radius: 50%;
         width: 35px; height: 35px; display: flex;
-        justify-content: center; align-items: center; cursor: pointer; z-index: 5; /* z-index ต่ำกว่าปุ่มปิด */
+        justify-content: center; align-items: center; cursor: pointer; z-index: 5;
         box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
     .heart-icon-detail-popup:hover { transform: scale(1.1); }
@@ -146,111 +314,110 @@
     .story-title-popup { font-weight: bold; font-size: 1.05em; margin-bottom: 8px; color: #d55e00;}
     .story-content-popup { font-size: 0.9em; color: #444; line-height: 1.6;}
 
-    /* --- CSS ใหม่สำหรับ Grid Gallery --- */
+    /* CSS ใหม่สำหรับ Grid Gallery */
     .additional-images-grid-section-popup {
-      text-align: left;
-      margin-top: 20px;
-      padding: 12px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
+        text-align: left;
+        margin-top: 20px;
+        padding: 12px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
     }
     .additional-images-title-popup {
-      font-weight: bold;
-      font-size: 1em;
-      margin-bottom: 10px;
-      color: #343a40;
+        font-weight: bold;
+        font-size: 1em;
+        margin-bottom: 10px;
+        color: #343a40;
     }
     .additional-images-grid-popup {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
     }
     .additional-image-grid-item-popup {
-      text-align: center;
+        text-align: center;
     }
     .additional-image-grid-item-popup a {
-      display: block;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid #dee2e6;
-      cursor: pointer;
+        display: block;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+        cursor: pointer;
     }
     .additional-image-grid-thumb-popup {
-      width: 100%;
-      height: 80px;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.2s ease-in-out;
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.2s ease-in-out;
     }
     .additional-image-grid-item-popup a:hover .additional-image-grid-thumb-popup {
-      transform: scale(1.05);
+        transform: scale(1.05);
     }
     .additional-image-caption-grid-popup {
-      font-size: 0.75em;
-      color: #6c757d;
-      margin-top: 3px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+        font-size: 0.75em;
+        color: #6c757d;
+        margin-top: 3px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-    /* --- สิ้นสุด CSS สำหรับ Modal --- */
 
     /* --- CSS สำหรับ Lightbox รูปภาพ --- */
     .lightbox-overlay-custom {
-      display: none;
-      position: fixed;
-      z-index: 1002;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.85);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      box-sizing: border-box;
+        display: none;
+        position: fixed;
+        z-index: 1002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.85);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
     }
-    .lightbox-content-custom { /* เพิ่ม div นี้เพื่อครอบรูปและปุ่ม */
+    .lightbox-content-custom {
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        max-width: 95%; /* กำหนดความกว้างสูงสุดของ content */
-        max-height: 95vh; /* กำหนดความสูงสูงสุดของ content */
+        max-width: 95%;
+        max-height: 95vh;
     }
     .lightbox-overlay-custom img {
-      display: block;
-      margin: auto; /* จัดให้อยู่กลางถ้า .lightbox-content-custom ไม่มี flex */
-      max-width: 100%; /* รูปภาพไม่เกินความกว้างของ .lightbox-content-custom */
-      max-height: 100%; /* รูปภาพไม่เกินความสูงของ .lightbox-content-custom */
-      border-radius: 5px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        display: block;
+        margin: auto;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
     }
     .lightbox-close-button-custom {
-      position: absolute;
-      top: -5px; /* ปรับตำแหน่งให้อยู่เหนือรูปเล็กน้อย หรือตามชอบ */
-      right: -5px; /* ปรับตำแหน่งให้อยู่เหนือรูปเล็กน้อย หรือตามชอบ */
-      color: #f1f1f1;
-      font-size: 45px;
-      font-weight: bold;
-      transition: 0.3s;
-      cursor: pointer;
-      line-height: 1;
-      background-color: rgba(0,0,0,0.3); /* เพิ่มพื้นหลังให้เห็นชัดขึ้น */
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-bottom: 5px; /* ปรับให้กากบาทอยู่กลางๆ */
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        color: #f1f1f1;
+        font-size: 45px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+        line-height: 1;
+        background-color: rgba(0,0,0,0.3);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 5px;
     }
     .lightbox-close-button-custom:hover,
     .lightbox-close-button-custom:focus {
-      color: #bbb;
-      background-color: rgba(0,0,0,0.5);
+        color: #bbb;
+        background-color: rgba(0,0,0,0.5);
     }
     .lightbox-nav-button {
         position: absolute;
@@ -264,7 +431,7 @@
         cursor: pointer;
         border-radius: 5px;
         transition: background-color 0.3s;
-        z-index: 1003; /* ให้อยู่เหนือรูป */
+        z-index: 1003;
     }
     .lightbox-nav-button:hover {
         background-color: rgba(0,0,0,0.6);
@@ -275,22 +442,37 @@
     .lightbox-next-button {
         right: 20px;
     }
-    .lightbox-nav-button.hidden { /* สำหรับซ่อนปุ่มเมื่อไม่มีรูปก่อนหน้า/ถัดไป */
+    .lightbox-nav-button.hidden {
         display: none;
     }
-    /* --- สิ้นสุด CSS สำหรับ Lightbox รูปภาพ --- */
-
-  </style>
+</style>
 {% endblock %}
 
 {% block content %}
     <div class="personality-test-banner">
+        <span class="paw-decoration paw-1">🐾</span>
+        <span class="paw-decoration paw-2">🐾</span>
+        <span class="paw-decoration paw-3">🐾</span>
+        <span class="paw-decoration paw-4">🐾</span>
+        <div class="bubble-decoration bubble-1"></div>
+        <div class="bubble-decoration bubble-2"></div>
+        <div class="bubble-decoration bubble-3"></div>
+
+        <span class="sparkle sparkle-s1"></span>
+        <span class="sparkle sparkle-s2"></span>
+        <span class="sparkle sparkle-s3"></span>
+        <span class="sparkle sparkle-s4"></span>
+        <span class="sparkle sparkle-s5"></span>
+        <span class="sparkle sparkle-s6"></span>
+        <span class="sparkle sparkle-s7"></span>
+        <span class="sparkle sparkle-s8"></span>
+        
         <div class="banner-content">
-            <h2>Personality Test</h2>
-            <p>Find your paw</p>
-            <button class="btn-test">🎮Take test</button>
+            <h2>Find Your Perfect Pet Match!</h2> 
+            <p>Take our fun personality test to discover which furry friend suits you best</p> 
+            <button class="btn-test">🎮 Take the test!</button> 
         </div>
-        <img src="{% static 'myapp/images/person_with_dog.png' %}" alt="Person with dog" class="banner-image">
+        <img src="{% static 'myapp/images/person_with_dog.png' %}" alt="Woman with dog" class="banner-image">
     </div>
 
     <div class="section-header">
@@ -346,23 +528,23 @@
 
     {# --- HTML สำหรับ Modal (ใช้ ID แยกสำหรับ Home Page) --- #}
     <div id="petDetailModalOverlayHome" class="modal-overlay">
-      <div class="modal-content-wrapper">
-        <span class="modal-close-button" onclick="closePetDetailModalHome()">&times;</span>
-        <div id="modalPetContentContainerHome">
-          <div style="padding: 50px; text-align: center;">Loading...</div>
+        <div class="modal-content-wrapper">
+            <span class="modal-close-button" onclick="closePetDetailModalHome()">&times;</span>
+            <div id="modalPetContentContainerHome">
+                <div style="padding: 50px; text-align: center;">Loading...</div>
+            </div>
         </div>
-      </div>
     </div>
     {# --- สิ้นสุด HTML สำหรับ Modal --- #}
 
     {# --- HTML สำหรับ Lightbox รูปภาพ (ปรับปรุงให้มีปุ่ม nav) --- #}
     <div id="imageLightboxOverlayCustom" class="lightbox-overlay-custom">
-      <div class="lightbox-content-custom"> {# Div ครอบรูปและปุ่ม nav #}
-        <button class="lightbox-nav-button lightbox-prev-button" onclick="showPrevImageCustom()">&#10094;</button>
-        <img id="lightboxImageCustom" src="" alt="Large image preview">
-        <button class="lightbox-nav-button lightbox-next-button" onclick="showNextImageCustom()">&#10095;</button>
-      </div>
-      <span class="lightbox-close-button-custom" onclick="closeImageLightboxCustom()">&times;</span>
+        <div class="lightbox-content-custom"> {# Div ครอบรูปและปุ่ม nav #}
+            <button class="lightbox-nav-button lightbox-prev-button" onclick="showPrevImageCustom()">&#10094;</button>
+            <img id="lightboxImageCustom" src="" alt="Large image preview">
+            <button class="lightbox-nav-button lightbox-next-button" onclick="showNextImageCustom()">&#10095;</button>
+        </div>
+        <span class="lightbox-close-button-custom" onclick="closeImageLightboxCustom()">&times;</span>
     </div>
     {# --- สิ้นสุด HTML สำหรับ Lightbox รูปภาพ --- #}
 
@@ -370,332 +552,327 @@
 
 {% block extra_scripts %}
 <script>
+    // All JavaScript from original File 1 (remains unchanged)
     document.addEventListener('DOMContentLoaded', function() {
-      const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
+        const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
 
-      function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
-          }
-          return cookieValue;
-      }
-
-      const heartIconsInHome = document.querySelectorAll('.pet-cards .pet-card .favorite-icon');
-
-      function updateHomeCardHeartIconUI(iconElement, isFavorite) {
-        const heartI = iconElement.querySelector('i.fas.fa-heart');
-        if (heartI) {
-          if (isFavorite) heartI.classList.add('active');
-          else heartI.classList.remove('active');
-        }
-      }
-
-      function genericToggleFavorite(petId, successCallback, errorCallback) {
-        if (!userIsAuthenticated) {
-            alert('Please log in to manage favorites.');
-            return;
-        }
-        fetch(`/toggle-favorite/${petId}/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => {
-            if (response.redirected && response.url.includes('/accounts/login/')) {
-                window.location.href = response.url;
-                throw new Error('User not authenticated, redirecting to login.');
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
-            if (!response.ok) throw new Error('Toggle favorite failed');
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                alert('Error: ' + data.error);
-                if (errorCallback) errorCallback(data.error);
+            return cookieValue;
+        }
+
+        const heartIconsInHome = document.querySelectorAll('.pet-cards .pet-card .favorite-icon');
+
+        function updateHomeCardHeartIconUI(iconElement, isFavorite) {
+            const heartI = iconElement.querySelector('i.fas.fa-heart');
+            if (heartI) {
+                if (isFavorite) heartI.classList.add('active');
+                else heartI.classList.remove('active');
+            }
+        }
+
+        function genericToggleFavorite(petId, successCallback, errorCallback) {
+            if (!userIsAuthenticated) {
+                alert('Please log in to manage favorites.');
                 return;
             }
-            if (data.is_favorite !== undefined) {
-                if (successCallback) successCallback(data);
-                const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
-                if (favCountHeader && data.favorite_count !== undefined) {
-                    favCountHeader.textContent = data.favorite_count;
-                    favCountHeader.style.display = data.favorite_count > 0 ? 'flex' : 'none';
+            fetch(`/toggle-favorite/${petId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (response.redirected && response.url.includes('/accounts/login/')) {
+                    window.location.href = response.url;
+                    throw new Error('User not authenticated, redirecting to login.');
                 }
-            }
-        })
-        .catch(error => {
-            if (error.message && !error.message.startsWith('User not authenticated')) {
-                 console.error('Error in genericToggleFavorite:', error);
-            }
-            if (errorCallback) errorCallback(error);
-        });
-      }
-
-      heartIconsInHome.forEach(icon => {
-        icon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const petId = this.getAttribute('data-pet-id');
-            const homeCardIconElement = this;
-            genericToggleFavorite(petId,
-                (data) => {
-                    updateHomeCardHeartIconUI(homeCardIconElement, data.is_favorite);
-                    const modalHeartIcon = document.querySelector(`#petDetailModalOverlayHome .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
-                    if (modalHeartIcon && document.getElementById('petDetailModalOverlayHome').style.display === 'flex') {
-                        if (data.is_favorite) modalHeartIcon.classList.add('active');
-                        else modalHeartIcon.classList.remove('active');
+                if (!response.ok) throw new Error('Toggle favorite failed');
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    if (errorCallback) errorCallback(data.error);
+                    return;
+                }
+                if (data.is_favorite !== undefined) {
+                    if (successCallback) successCallback(data);
+                    const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .notification-count');
+                    if (favCountHeader && data.favorite_count !== undefined) {
+                        favCountHeader.textContent = data.favorite_count;
+                        favCountHeader.style.display = data.favorite_count > 0 ? 'flex' : 'none';
                     }
                 }
-            );
-        });
-      });
-
-      function checkInitialHomeCardFavorites() {
-        if (!userIsAuthenticated || heartIconsInHome.length === 0) return;
-        const petIdsInHome = Array.from(heartIconsInHome).map(icon => icon.getAttribute('data-pet-id')).filter(id => id);
-        if (petIdsInHome.length === 0) return;
-
-        fetch('/check-favorites/', {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-            body: JSON.stringify({ pet_ids: petIdsInHome })
-        })
-        .then(response => {
-             if (response.redirected && response.url.includes('/accounts/login/')) {
-                throw new Error('User not authenticated, redirecting to login.');
-            }
-            if(!response.ok) throw new Error('Failed to check favorites');
-            return response.json();
-        })
-        .then(data => {
-          if (data.favorites) {
-            heartIconsInHome.forEach(icon => {
-              const petId = icon.getAttribute('data-pet-id');
-              if (data.favorites[petId] !== undefined) {
-                updateHomeCardHeartIconUI(icon, data.favorites[petId]);
-              }
+            })
+            .catch(error => {
+                if (error.message && !error.message.startsWith('User not authenticated')) {
+                    console.error('Error in genericToggleFavorite:', error);
+                }
+                if (errorCallback) errorCallback(error);
             });
-          }
-        })
-        .catch(error => {
-            if (error.message && !error.message.startsWith('User not authenticated')) {
-                console.error('Error checking home card favorites:', error);
-            }
-        });
-      }
-      if (heartIconsInHome.length > 0) checkInitialHomeCardFavorites();
+        }
 
-      const modalOverlayHome = document.getElementById('petDetailModalOverlayHome');
-      const modalContentContainerHome = document.getElementById('modalPetContentContainerHome');
-      let currentModalPetIdHome = null;
-      let currentLightboxImages = []; // <-- ตัวแปรเก็บ URL และ caption ของรูปใน lightbox ปัจจุบัน
-      let currentLightboxIndex = 0; // <-- Index ของรูปที่แสดงใน lightbox ปัจจุบัน
-
-      window.openPetDetailModalHome = function(petId) {
-        if (!petId) return;
-        currentModalPetIdHome = petId;
-        modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
-        modalOverlayHome.style.display = 'flex';
-
-        fetch(`/ajax/get-pet-detail/${petId}/`)
-          .then(response => {
-            if (response.redirected && response.url.includes('/accounts/login/')) {
-                window.location.href = response.url;
-                throw new Error('User not authenticated, redirecting to login.');
-            }
-            if (!response.ok) throw new Error(`Failed to fetch pet details (${response.status})`);
-            return response.json();
-          })
-          .then(data => {
-            if (data.success && data.pet) {
-              const pet = data.pet;
-              const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
-              const photoUrl = pet.photo_url || defaultPhotoUrl;
-              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
-
-              currentLightboxImages = []; // Reset lightbox images for the new pet
-              // --- HTML สำหรับ Grid Gallery ---
-              let additionalImagesHtml = '';
-              if (pet.additional_images && pet.additional_images.length > 0) {
-                additionalImagesHtml = `
-                  <div class="additional-images-grid-section-popup">
-                    <div class="additional-images-title-popup">More Photos:</div>
-                    <div class="additional-images-grid-popup">`;
-                pet.additional_images.forEach((img, index) => { // เพิ่ม index เข้ามา
-                  currentLightboxImages.push({ url: img.url, caption: img.caption || pet.name }); // เก็บข้อมูลรูปภาพ
-                  additionalImagesHtml += `
-                    <div class="additional-image-grid-item-popup">
-                      <a href="javascript:void(0);" onclick="openImageLightboxCustom(${index})" title="${img.caption || 'View image'}">
-                        <img src="${img.url}" alt="${img.caption || pet.name}" class="additional-image-grid-thumb-popup">
-                      </a>
-                      ${img.caption ? `<p class="additional-image-caption-grid-popup">${img.caption}</p>` : ''}
-                    </div>`;
-                });
-                additionalImagesHtml += `
-                    </div>
-                  </div>`;
-              }
-              // --- สิ้นสุด HTML สำหรับ Grid Gallery ---
-
-              const petHtml = `
-                <div class="card-detail-popup">
-                  <div class="heart-icon-detail-popup" data-pet-id="${pet.id}">
-                      <i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i>
-                  </div>
-                  <div class="pet-image-container-popup"><img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup"></div>
-                  <div class="pet-id-popup">No. ${pet.name}</div>
-                  <div class="pet-info-popup">
-                    <p><span class="icon">🐕</span>Breed: ${pet.breed}</p>
-                    <p><span class="icon">🚻</span>Gender: ${pet.gender_display}</p>
-                    <p><span class="icon">📅</span>Age: ${pet.age}</p>
-                    <p><span class="icon">💉</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
-                    <p><span class="icon">♿</span>Disability: ${pet.disability}</p>
-                    <p><span class="icon">😊</span>Personality: ${pet.personality}</p>
-                    <p><span class="icon">✍️</span>Detail: ${pet.detail}</p>
-                  </div>
-                  <div class="story-section-popup">
-                    <div class="story-title-popup">My Story:</div>
-                    <div class="story-content-popup">${storyHtml}</div>
-                  </div>
-                  ${additionalImagesHtml}
-                </div>`;
-              modalContentContainerHome.innerHTML = petHtml;
-
-              const heartIconInModalHome = modalContentContainerHome.querySelector('.heart-icon-detail-popup');
-              if (heartIconInModalHome) {
-                heartIconInModalHome.addEventListener('click', function(e) {
-                  e.stopPropagation();
-                  const currentPetIdInModal = this.getAttribute('data-pet-id');
-                  const modalIconElement = this;
-                  genericToggleFavorite(currentPetIdInModal,
+        heartIconsInHome.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const petId = this.getAttribute('data-pet-id');
+                const homeCardIconElement = this;
+                genericToggleFavorite(petId,
                     (data) => {
-                        updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
-                        const homeCardHeart = document.querySelector(`.pet-cards .pet-card[data-pet-id="${currentPetIdInModal}"] .favorite-icon`);
-                        if (homeCardHeart) {
-                            updateHomeCardHeartIconUI(homeCardHeart, data.is_favorite);
+                        updateHomeCardHeartIconUI(homeCardIconElement, data.is_favorite);
+                        const modalHeartIcon = document.querySelector(`#petDetailModalOverlayHome .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
+                        if (modalHeartIcon && document.getElementById('petDetailModalOverlayHome').style.display === 'flex') {
+                            if (data.is_favorite) modalHeartIcon.classList.add('active');
+                            else modalHeartIcon.classList.remove('active');
                         }
                     }
-                  );
+                );
+            });
+        });
+
+        function checkInitialHomeCardFavorites() {
+            if (!userIsAuthenticated || heartIconsInHome.length === 0) return;
+            const petIdsInHome = Array.from(heartIconsInHome).map(icon => icon.getAttribute('data-pet-id')).filter(id => id);
+            if (petIdsInHome.length === 0) return;
+
+            fetch('/check-favorites/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                body: JSON.stringify({ pet_ids: petIdsInHome })
+            })
+            .then(response => {
+                if (response.redirected && response.url.includes('/accounts/login/')) {
+                    throw new Error('User not authenticated, redirecting to login.');
+                }
+                if(!response.ok) throw new Error('Failed to check favorites');
+                return response.json();
+            })
+            .then(data => {
+                if (data.favorites) {
+                    heartIconsInHome.forEach(icon => {
+                        const petId = icon.getAttribute('data-pet-id');
+                        if (data.favorites[petId] !== undefined) {
+                            updateHomeCardHeartIconUI(icon, data.favorites[petId]);
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                if (error.message && !error.message.startsWith('User not authenticated')) {
+                    console.error('Error checking home card favorites:', error);
+                }
+            });
+        }
+        if (heartIconsInHome.length > 0) checkInitialHomeCardFavorites();
+
+        const modalOverlayHome = document.getElementById('petDetailModalOverlayHome');
+        const modalContentContainerHome = document.getElementById('modalPetContentContainerHome');
+        let currentModalPetIdHome = null;
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        window.openPetDetailModalHome = function(petId) {
+            if (!petId) return;
+            currentModalPetIdHome = petId;
+            modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+            modalOverlayHome.style.display = 'flex';
+
+            fetch(`/ajax/get-pet-detail/${petId}/`)
+                .then(response => {
+                    if (response.redirected && response.url.includes('/accounts/login/')) {
+                        window.location.href = response.url;
+                        throw new Error('User not authenticated, redirecting to login.');
+                    }
+                    if (!response.ok) throw new Error(`Failed to fetch pet details (${response.status})`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.pet) {
+                        const pet = data.pet;
+                        const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
+                        const photoUrl = pet.photo_url || defaultPhotoUrl;
+                        const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
+
+                        currentLightboxImages = [];
+                        let additionalImagesHtml = '';
+                        if (pet.additional_images && pet.additional_images.length > 0) {
+                            additionalImagesHtml = `
+                                <div class="additional-images-grid-section-popup">
+                                    <div class="additional-images-title-popup">More Photos:</div>
+                                    <div class="additional-images-grid-popup">`;
+                            pet.additional_images.forEach((img, index) => {
+                                currentLightboxImages.push({ url: img.url, caption: img.caption || pet.name });
+                                additionalImagesHtml += `
+                                    <div class="additional-image-grid-item-popup">
+                                        <a href="javascript:void(0);" onclick="openImageLightboxCustom(${index})" title="${img.caption || 'View image'}">
+                                            <img src="${img.url}" alt="${img.caption || pet.name}" class="additional-image-grid-thumb-popup">
+                                        </a>
+                                        ${img.caption ? `<p class="additional-image-caption-grid-popup">${img.caption}</p>` : ''}
+                                    </div>`;
+                            });
+                            additionalImagesHtml += `
+                                    </div>
+                                </div>`;
+                        }
+
+                        const petHtml = `
+                            <div class="card-detail-popup">
+                                <div class="heart-icon-detail-popup" data-pet-id="${pet.id}">
+                                    <i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i>
+                                </div>
+                                <div class="pet-image-container-popup"><img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup"></div>
+                                <div class="pet-id-popup">No. ${pet.name}</div>
+                                <div class="pet-info-popup">
+                                    <p><span class="icon">🐕</span>Breed: ${pet.breed}</p>
+                                    <p><span class="icon">🚻</span>Gender: ${pet.gender_display}</p>
+                                    <p><span class="icon">📅</span>Age: ${pet.age}</p>
+                                    <p><span class="icon">💉</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
+                                    <p><span class="icon">♿</span>Disability: ${pet.disability}</p>
+                                    <p><span class="icon">😊</span>Personality: ${pet.personality}</p>
+                                    <p><span class="icon">✍️</span>Detail: ${pet.detail}</p>
+                                </div>
+                                <div class="story-section-popup">
+                                    <div class="story-title-popup">My Story:</div>
+                                    <div class="story-content-popup">${storyHtml}</div>
+                                </div>
+                                ${additionalImagesHtml}
+                            </div>`;
+                        modalContentContainerHome.innerHTML = petHtml;
+
+                        const heartIconInModalHome = modalContentContainerHome.querySelector('.heart-icon-detail-popup');
+                        if (heartIconInModalHome) {
+                            heartIconInModalHome.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                const currentPetIdInModal = this.getAttribute('data-pet-id');
+                                const modalIconElement = this;
+                                genericToggleFavorite(currentPetIdInModal,
+                                    (data) => {
+                                        updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
+                                        const homeCardHeart = document.querySelector(`.pet-cards .pet-card[data-pet-id="${currentPetIdInModal}"] .favorite-icon`);
+                                        if (homeCardHeart) {
+                                            updateHomeCardHeartIconUI(homeCardHeart, data.is_favorite);
+                                        }
+                                    }
+                                );
+                            });
+                        }
+                    } else {
+                        modalContentContainerHome.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
+                    }
+                })
+                .catch(error => {
+                    if (error.message && !error.message.startsWith('User not authenticated')) {
+                        console.error('Error in openPetDetailModalHome:', error);
+                        modalContentContainerHome.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
+                    }
                 });
-              }
-            } else {
-              modalContentContainerHome.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
-            }
-          })
-          .catch(error => {
-            if (error.message && !error.message.startsWith('User not authenticated')) {
-                console.error('Error in openPetDetailModalHome:', error);
-                modalContentContainerHome.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
-            }
-          });
-      }
-
-      window.closePetDetailModalHome = function() {
-        modalOverlayHome.style.display = 'none';
-        modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
-        currentModalPetIdHome = null;
-        currentLightboxImages = []; // Clear lightbox images when modal closes
-      }
-
-      modalOverlayHome.addEventListener('click', function(event) {
-        if (event.target === modalOverlayHome) closePetDetailModalHome();
-      });
-      document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape" && modalOverlayHome.style.display === 'flex') {
-          closePetDetailModalHome();
         }
-      });
 
-      function updateModalHeartIconUI(heartIconElement, isFavorite) {
-        if (heartIconElement) {
-            if (isFavorite) heartIconElement.classList.add('active');
-            else heartIconElement.classList.remove('active');
+        window.closePetDetailModalHome = function() {
+            modalOverlayHome.style.display = 'none';
+            modalContentContainerHome.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+            currentModalPetIdHome = null;
+            currentLightboxImages = [];
         }
-      }
 
-      // --- JavaScript สำหรับ Image Lightbox (ปรับปรุง) ---
-      const imageLightboxOverlayCustom = document.getElementById('imageLightboxOverlayCustom');
-      const lightboxImageCustom = document.getElementById('lightboxImageCustom');
-      const lightboxPrevButton = document.querySelector('.lightbox-prev-button');
-      const lightboxNextButton = document.querySelector('.lightbox-next-button');
-
-
-      function updateLightboxNavButtons() {
-        if (!lightboxPrevButton || !lightboxNextButton) return;
-        if (currentLightboxImages.length <= 1) {
-            lightboxPrevButton.classList.add('hidden');
-            lightboxNextButton.classList.add('hidden');
-        } else {
-            lightboxPrevButton.classList.toggle('hidden', currentLightboxIndex === 0);
-            lightboxNextButton.classList.toggle('hidden', currentLightboxIndex === currentLightboxImages.length - 1);
-        }
-      }
-
-      function displayLightboxImage(index) {
-        if (index >= 0 && index < currentLightboxImages.length) {
-            const imgData = currentLightboxImages[index];
-            lightboxImageCustom.src = imgData.url;
-            lightboxImageCustom.alt = imgData.caption || "Image preview";
-            currentLightboxIndex = index;
-            updateLightboxNavButtons();
-        }
-      }
-
-      window.openImageLightboxCustom = function(index) { // รับ index แทน URL โดยตรง
-        if (currentLightboxImages.length > 0 && lightboxImageCustom && imageLightboxOverlayCustom) {
-          displayLightboxImage(index);
-          imageLightboxOverlayCustom.style.display = 'flex';
-        }
-      }
-
-      window.closeImageLightboxCustom = function() {
-        if (imageLightboxOverlayCustom) {
-          imageLightboxOverlayCustom.style.display = 'none';
-          if (lightboxImageCustom) {
-            lightboxImageCustom.src = "";
-          }
-        }
-      }
-
-      window.showPrevImageCustom = function() {
-        if (currentLightboxIndex > 0) {
-            displayLightboxImage(currentLightboxIndex - 1);
-        }
-      }
-
-      window.showNextImageCustom = function() {
-        if (currentLightboxIndex < currentLightboxImages.length - 1) {
-            displayLightboxImage(currentLightboxIndex + 1);
-        }
-      }
-
-      if (imageLightboxOverlayCustom) {
-        imageLightboxOverlayCustom.addEventListener('click', function(event) {
-            if (event.target === imageLightboxOverlayCustom) {
-                closeImageLightboxCustom();
+        modalOverlayHome.addEventListener('click', function(event) {
+            if (event.target === modalOverlayHome) closePetDetailModalHome();
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modalOverlayHome.style.display === 'flex') {
+                closePetDetailModalHome();
             }
         });
-      }
 
-      document.addEventListener('keydown', function(event) {
-          if (imageLightboxOverlayCustom && imageLightboxOverlayCustom.style.display === 'flex') {
-            if (event.key === "Escape") {
-                closeImageLightboxCustom();
-            } else if (event.key === "ArrowLeft") {
-                showPrevImageCustom();
-            } else if (event.key === "ArrowRight") {
-                showNextImageCustom();
+        function updateModalHeartIconUI(heartIconElement, isFavorite) {
+            if (heartIconElement) {
+                if (isFavorite) heartIconElement.classList.add('active');
+                else heartIconElement.classList.remove('active');
             }
-          }
-      });
-      // --- สิ้นสุด JavaScript สำหรับ Image Lightbox ---
+        }
 
+        const imageLightboxOverlayCustom = document.getElementById('imageLightboxOverlayCustom');
+        const lightboxImageCustom = document.getElementById('lightboxImageCustom');
+        const lightboxPrevButton = document.querySelector('.lightbox-prev-button');
+        const lightboxNextButton = document.querySelector('.lightbox-next-button');
+
+        function updateLightboxNavButtons() {
+            if (!lightboxPrevButton || !lightboxNextButton) return;
+            if (currentLightboxImages.length <= 1) {
+                lightboxPrevButton.classList.add('hidden');
+                lightboxNextButton.classList.add('hidden');
+            } else {
+                lightboxPrevButton.classList.toggle('hidden', currentLightboxIndex === 0);
+                lightboxNextButton.classList.toggle('hidden', currentLightboxIndex === currentLightboxImages.length - 1);
+            }
+        }
+
+        function displayLightboxImage(index) {
+            if (index >= 0 && index < currentLightboxImages.length) {
+                const imgData = currentLightboxImages[index];
+                lightboxImageCustom.src = imgData.url;
+                lightboxImageCustom.alt = imgData.caption || "Image preview";
+                currentLightboxIndex = index;
+                updateLightboxNavButtons();
+            }
+        }
+
+        window.openImageLightboxCustom = function(index) {
+            if (currentLightboxImages.length > 0 && lightboxImageCustom && imageLightboxOverlayCustom) {
+                displayLightboxImage(index);
+                imageLightboxOverlayCustom.style.display = 'flex';
+            }
+        }
+
+        window.closeImageLightboxCustom = function() {
+            if (imageLightboxOverlayCustom) {
+                imageLightboxOverlayCustom.style.display = 'none';
+                if (lightboxImageCustom) {
+                    lightboxImageCustom.src = "";
+                }
+            }
+        }
+
+        window.showPrevImageCustom = function() {
+            if (currentLightboxIndex > 0) {
+                displayLightboxImage(currentLightboxIndex - 1);
+            }
+        }
+
+        window.showNextImageCustom = function() {
+            if (currentLightboxIndex < currentLightboxImages.length - 1) {
+                displayLightboxImage(currentLightboxIndex + 1);
+            }
+        }
+
+        if (imageLightboxOverlayCustom) {
+            imageLightboxOverlayCustom.addEventListener('click', function(event) {
+                if (event.target === imageLightboxOverlayCustom) {
+                    closeImageLightboxCustom();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (imageLightboxOverlayCustom && imageLightboxOverlayCustom.style.display === 'flex') {
+                if (event.key === "Escape") {
+                    closeImageLightboxCustom();
+                } else if (event.key === "ArrowLeft") {
+                    showPrevImageCustom();
+                } else if (event.key === "ArrowRight") {
+                    showNextImageCustom();
+                }
+            }
+        });
     });
 </script>
 {% endblock %}

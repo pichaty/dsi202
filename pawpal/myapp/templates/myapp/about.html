@@ -4,130 +4,242 @@
 
 {% block extra_head %}
   <style>
-    /* Custom fonts */
+    /* Custom fonts and variables */
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+    
     :root {
-        --primary: #d55e00;
+        --primary: #FF7043;
+        --primary-light: #FFE0D1;
+        --primary-dark: #D84315;
         --secondary: #8d6e63;
-        --green: #8db38b;
-        --light-orange: #d99a56;
-        --background: #f9f4e8;
-        --accent-red: #e8605c;
+        --green: #66BB6A;
+        --green-light: #E8F5E9;
+        --light-orange: #FFAB91;
+        --background: #FAFAFA;
+        --accent-red: #EF5350;
+        --text-primary: #424242;
+        --text-secondary: #757575;
+        --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        --transition: all 0.3s ease;
     }
 
     body {
         font-family: 'Sarabun', sans-serif;
         background-color: var(--background);
         margin: 0;
-        padding-bottom: 60px; /* Adjusted padding-bottom for fixed footer in base.html */
+        padding-bottom: 70px;
+        color: var(--text-primary);
+        line-height: 1.6;
     }
 
-    /* About Us Page Specific Styles */
-    .page-title {
-        background-color: var(--green);
+    /* Improved page header */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         color: white;
-        padding: 15px;
+        padding: 30px 20px;
         text-align: center;
-        font-weight: bold;
-        margin-bottom: 15px;
+        border-radius: 0 0 30px 30px;
+        margin-bottom: 25px;
+        box-shadow: var(--card-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30px;
+        left: -30px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .page-subtitle {
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
     }
 
-    .about-section {
-        background-color: #fff9e8;
-        border-radius: 10px;
-        margin: 15px;
-        padding: 20px;
+    /* Enhanced about section */
+    .container {
+        padding: 0 15px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
-
-    .about-section h2 {
+    
+    .card {
+        background-color: white;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .section-title {
         color: var(--primary);
-        font-size: 20px;
-        margin-bottom: 15px;
-        font-weight: bold;
+        font-size: 22px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding-bottom: 10px;
     }
-
-    .about-section p {
-        margin-bottom: 10px;
-        line-height: 1.5;
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary);
+        border-radius: 3px;
     }
-
-    .highlight {
-        background-color: #ffece0;
-        padding: 10px;
-        border-radius: 8px;
-        border-left: 4px solid var(--primary);
-        margin: 15px 0;
-    }
-
+    
     .paw-icon {
         color: var(--light-orange);
+        margin-left: 10px;
+        font-size: 24px;
     }
-
-    .stats-container {
-        background-color: white;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 20px 15px;
-        text-align: center;
-    }
-
-    .stats-title {
-        color: var(--accent-red);
-        background-color: #ffe4e3;
-        display: inline-block;
-        padding: 5px 15px;
-        border-radius: 20px;
+    
+    .about-content {
+        color: var(--text-secondary);
         margin-bottom: 15px;
+        font-size: 16px;
+    }
+    
+    .highlight {
+        background-color: var(--primary-light);
+        padding: 18px;
+        border-radius: 12px;
+        margin: 20px 0;
+        font-weight: 500;
+        position: relative;
+        border-left: 5px solid var(--primary);
+    }
+    
+    .highlight::before {
+        content: '"';
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        font-size: 40px;
+        color: var(--primary);
+        opacity: 0.2;
     }
 
+    /* Redesigned stats container */
+    .stats-container {
+        background: linear-gradient(to bottom, white, #F5F5F5);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 25px;
+        text-align: center;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .stats-title {
+        color: white;
+        background-color: var(--green);
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 30px;
+        margin-bottom: 25px;
+        font-weight: 600;
+        font-size: 18px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+    
     .stats-chart {
         display: flex;
         justify-content: center;
         position: relative;
-        height: 180px;
-        margin: 30px 0;
+        height: 200px;
+        margin: 40px 0;
     }
-
+    
     .stat-number {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
-        color: var(--primary);
+        color: var(--primary-dark);
         margin-bottom: 5px;
     }
-
+    
     .stat-label {
-        font-size: 14px;
-        color: #666;
+        font-size: 15px;
+        color: var(--text-secondary);
+        font-weight: 500;
     }
-
+    
     .triangle-point {
         position: absolute;
+        transition: var(--transition);
     }
-
+    
+    .triangle-point:hover {
+        transform: scale(1.05);
+    }
+    
     .triangle-point.top {
         top: 0;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
     }
-
+    
     .triangle-point.left {
         bottom: 0;
         left: 0;
         text-align: left;
     }
-
+    
     .triangle-point.right {
         bottom: 0;
         right: 0;
         text-align: right;
     }
-
+    
     .triangle-icon {
-        font-size: 40px;
-        margin-bottom: 5px;
-        color: var(--light-orange);
+        font-size: 44px;
+        margin-bottom: 10px;
+        filter: drop-shadow(0 3px 5px rgba(0,0,0,0.1));
+        transition: var(--transition);
     }
-
+    
+    .triangle-point:hover .triangle-icon {
+        transform: scale(1.2);
+    }
+    
     .triangle-lines {
         position: absolute;
         width: 100%;
@@ -137,172 +249,314 @@
         z-index: -1;
     }
 
-    /* Blog section - UPDATED */
-    .blog-section {
-        margin: 15px;
-    }
-
-    .blog-title {
+    /* Enhanced blog section */
+    .section-header {
         background-color: var(--green);
         color: white;
-        padding: 15px;
+        padding: 18px;
         text-align: center;
         font-weight: bold;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        position: relative;
+        overflow: hidden;
     }
-
+    
+    .section-header::after {
+        content: '';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 70px;
+        height: 70px;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
     .blog-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        margin-bottom: 10px;
     }
-
+    
     .blog-card {
         background-color: white;
-        border-radius: 10px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
         height: 100%;
+        position: relative;
     }
-
+    
     .blog-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
-
+    
     .blog-link {
         text-decoration: none;
         color: inherit;
         display: block;
         height: 100%;
     }
-
+    
     .blog-image {
         width: 100%;
-        height: 120px;
+        height: 140px;
         object-fit: cover;
+        transition: var(--transition);
     }
-
+    
+    .blog-card:hover .blog-image {
+        transform: scale(1.05);
+    }
+    
     .blog-card-content {
-        padding: 12px;
+        padding: 15px;
     }
-
+    
     .blog-card-title {
-        font-weight: bold;
-        font-size: 14px;
-        color: var(--secondary);
-        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--text-primary);
+        line-height: 1.4;
     }
-
+    
     .new-tag {
         background-color: var(--accent-red);
         color: white;
-        padding: 2px 8px;
+        padding: 3px 8px;
         border-radius: 4px;
-        font-size: 10px;
+        font-size: 11px;
         margin-right: 5px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(239,83,80,0.3);
+    }
+    
+    .view-all {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .view-all-btn {
+        background-color: var(--green-light);
+        color: var(--green);
+        border: none;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: var(--transition);
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .view-all-btn:hover {
+        background-color: var(--green);
+        color: white;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    
+    .view-all-btn:active {
+        transform: translateY(2px);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    /* Class for hiding extra blog cards */
+    .hidden {
+        display: none;
     }
 
-    /* Contact section */
+    /* Redesigned contact section */
     .contact-section {
-        margin: 15px;
-        background-color: white;
-        border-radius: 10px;
-        padding: 15px;
-    }
-
-    .contact-title {
-        font-weight: bold;
-        font-size: 16px;
         margin-bottom: 15px;
+        background: linear-gradient(to bottom right, white, #F8F9FA);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: var(--card-shadow);
     }
-
+    
+    .contact-title {
+        font-weight: 600;
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: var(--secondary);
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .contact-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background-color: var(--secondary);
+        border-radius: 3px;
+    }
+    
+    .contact-items {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
     .contact-item {
         display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .contact-icon {
-        width: 24px;
-        margin-right: 10px;
-        color: var(--secondary);
-    }
-
-    .contact-info {
-        font-size: 14px;
-    }
-
-    .contact-hours {
-        display: flex;
         align-items: flex-start;
+        padding: 15px;
+        background-color: white;
+        border-radius: 12px;
+        transition: var(--transition);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .contact-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        background-color: #F5F5F5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: var(--secondary);
+        font-size: 18px;
+    }
+    
+    .contact-info {
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+    
+    .contact-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 3px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .blog-cards {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        
+        .contact-items {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+        }
+        
+        .stats-chart {
+            height: 180px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .blog-cards {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+        
+        .card {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+        }
+        
+        .triangle-icon {
+            font-size: 36px;
+        }
+        
+        .stat-number {
+            font-size: 22px;
+        }
     }
   </style>
 {% endblock %}
 
 {% block content %}
-    <div class="page-title">
-        About Us
+    <!-- Enhanced page header -->
+    <div class="page-header">
+        <div class="page-title">About Us</div>
+        <div class="page-subtitle">Get to know the PawPal team and our mission</div>
     </div>
 
-    <div class="about-section">
-        <h2>{{ about.what_we_do_title }} <span class="paw-icon">🐾</span></h2>
-        <p>{{ about.what_we_do_content }}</p>
-        <p>{{ about.what_we_do_content2 }}</p>
+    <div class="container">
+        <!-- About Section -->
+        <div class="card">
+            <h2 class="section-title">{{ about.what_we_do_title }} <span class="paw-icon">🐾</span></h2>
+            <p class="about-content">{{ about.what_we_do_content }}</p>
+            <p class="about-content">{{ about.what_we_do_content2 }}</p>
 
-        <div class="highlight">
-            {{ about.tagline }}
+            <div class="highlight">
+                {{ about.tagline }}
+            </div>
+
+            <h2 class="section-title">{{ about.why_we_do_title }} <span class="paw-icon">🐾</span></h2>
+            <p class="about-content">{{ about.why_we_do_content }}</p>
+            <p class="about-content">{{ about.why_we_do_content2 }}</p>
         </div>
 
-        <h2>{{ about.why_we_do_title }} <span class="paw-icon">🐾</span></h2>
-        <p>{{ about.why_we_do_content }}</p>
-        <p>{{ about.why_we_do_content2 }}</p>
-    </div>
+        <!-- Stats Section - Redesigned -->
+        <div class="stats-container">
+            <div class="stats-title">{{ stats.stats_title }}</div>
 
-    <div class="stats-container">
-        <div class="stats-title">{{ stats.stats_title }}</div>
+            <div class="stats-chart">
+                <div class="triangle-point top">
+                    <div class="triangle-icon">❤️</div>
+                    <div class="stat-number">{{ stats.treated_count }}</div>
+                    <div class="stat-label">{{ stats.treated_label }}</div>
+                </div>
 
-        <div class="stat-number">{{ stats.treated_count }}</div>
-        <div class="stat-label">{{ stats.treated_label }}</div>
+                <div class="triangle-point left">
+                    <div class="triangle-icon">🐱</div>
+                    <div class="stat-number">{{ stats.adopted_count }}</div>
+                    <div class="stat-label">{{ stats.adopted_label }}</div>
+                </div>
 
-        <div class="stats-chart">
-            <div class="triangle-point top">
-                <div class="triangle-icon">❤️</div>
-                <div class="stat-number">{{ stats.treated_count }}</div>
-                <div class="stat-label">{{ stats.treated_label }}</div>
+                <div class="triangle-point right">
+                    <div class="triangle-icon">💉</div>
+                    <div class="stat-number">{{ stats.neutered_count }}</div>
+                    <div class="stat-label">{{ stats.neutered_label }}</div>
+                </div>
+
+                <svg class="triangle-lines" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="150" y1="30" x2="30" y2="150" stroke="#FF7043" stroke-width="3" stroke-dasharray="5,5" />
+                    <line x1="150" y1="30" x2="270" y2="150" stroke="#FF7043" stroke-width="3" stroke-dasharray="5,5" />
+                    <line x1="30" y1="150" x2="270" y2="150" stroke="#FF7043" stroke-width="3" stroke-dasharray="5,5" />
+                    <circle cx="150" cy="30" r="5" fill="#FF7043" />
+                    <circle cx="30" cy="150" r="5" fill="#FF7043" />
+                    <circle cx="270" cy="150" r="5" fill="#FF7043" />
+                </svg>
             </div>
-
-            <div class="triangle-point left">
-                <div class="triangle-icon">🐱</div>
-                <div class="stat-number">{{ stats.adopted_count }}</div>
-                <div class="stat-label">{{ stats.adopted_label }}</div>
-            </div>
-
-            <div class="triangle-point right">
-                <div class="triangle-icon">💉</div>
-                <div class="stat-number">{{ stats.neutered_count }}</div>
-                <div class="stat-label">{{ stats.neutered_label }}</div>
-            </div>
-
-            <svg class="triangle-lines" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
-                <line x1="150" y1="30" x2="30" y2="150" stroke="#e8605c" stroke-width="2" />
-                <line x1="150" y1="30" x2="270" y2="150" stroke="#e8605c" stroke-width="2" />
-                <line x1="30" y1="150" x2="270" y2="150" stroke="#e8605c" stroke-width="2" />
-            </svg>
         </div>
-    </div>
 
-    <div class="blog-section">
-        <div class="blog-title">
+        <!-- Blog Section - Enhanced -->
+        <div class="section-header">
             Blog and Resources
         </div>
 
         <div class="blog-cards">
             {% for post in blog_posts %}
-
+    
             <a href="{{ post.url|default:'#' }}" class="blog-link" target="_blank">
-
+            
                 <div class="blog-card">
                     {% if post.image %}
                         <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-image">
@@ -366,36 +620,46 @@
             </a>
             {% endfor %}
         </div>
-    </div>
-
-    <div class="contact-section">
-        <div class="contact-title">Contact Us</div>
-
-        <div class="contact-item">
-            <div class="contact-icon">
-                <i class="fas fa-phone"></i>
-            </div>
-            <div class="contact-info">
-                tel: {{ contact.phone }}
-            </div>
+        
+        <div class="view-all">
+            <button class="view-all-btn" id="viewAllArticles">ดูบทความทั้งหมด</button>
         </div>
 
-        <div class="contact-item contact-hours">
-            <div class="contact-icon">
-                <i class="far fa-clock"></i>
-            </div>
-            <div class="contact-info">
-                open: {{ contact.opening_hours }}<br>
-                {{ contact.closing_days }}
-            </div>
-        </div>
+        <!-- Contact Section - Redesigned -->
+        <div class="contact-section">
+            <div class="contact-title">Contact Us</div>
 
-        <div class="contact-item">
-            <div class="contact-icon">
-                <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <div class="contact-info">
-                {{ contact.description }}
+            <div class="contact-items">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-label">โทรศัพท์</span>
+                        {{ contact.phone }}
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="far fa-clock"></i>
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-label">เวลาทำการ</span>
+                        {{ contact.opening_hours }}<br>
+                        {{ contact.closing_days }}
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-label">ที่อยู่</span>
+                        {{ contact.description }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -403,4 +667,42 @@
 
 {% block extra_scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
+    <script>
+        // Add subtle animation to stats elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const statPoints = document.querySelectorAll('.triangle-point');
+            
+            statPoints.forEach(point => {
+                point.addEventListener('mouseover', function() {
+                    this.querySelector('.triangle-icon').style.transform = 'scale(1.2) rotate(5deg)';
+                });
+                
+                point.addEventListener('mouseout', function() {
+                    this.querySelector('.triangle-icon').style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // View all articles button functionality
+            const viewAllBtn = document.getElementById('viewAllArticles');
+            if (viewAllBtn) {
+                viewAllBtn.addEventListener('click', function() {
+                    const allCards = document.querySelectorAll('.blog-card');
+                    
+                    allCards.forEach(card => {
+                        if (card.classList.contains('hidden')) {
+                            card.classList.remove('hidden');
+                        }
+                    });
+                    
+                    this.innerHTML = 'กำลังโหลดบทความ...';
+                    setTimeout(() => {
+                        this.innerHTML = 'แสดงบทความทั้งหมดแล้ว';
+                        this.disabled = true;
+                        this.style.opacity = '0.7';
+                    }, 1000);
+                });
+            }
+        });
+    </script>
 {% endblock %}
