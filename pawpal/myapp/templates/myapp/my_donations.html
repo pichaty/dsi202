@@ -1,0 +1,43 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}ประวัติการบริจาค - PawPal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .donations-container { max-width: 800px; margin: 20px auto; padding: 20px; }
+    .donations-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
+    .donation-record-card { background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+    .donation-record-card h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em; }
+    .donation-record-card p { font-size: 0.9em; margin-bottom: 5px; }
+    .slip-preview { max-width: 100px; max-height: 100px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+    .no-donations { text-align: center; color: #777; margin-top: 30px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="donations-container">
+    <h1>ประวัติการบริจาคของคุณ</h1>
+    {% if donations %}
+        {% for record in donations %}
+            <div class="donation-record-card">
+                <h5>
+                    {% if record.donation_case %}
+                        บริจาคให้เคส: {{ record.donation_case.title }} (No. {{ record.donation_case.case_id }})
+                    {% else %}
+                        บริจาคทั่วไป
+                    {% endif %}
+                </h5>
+                <p><strong>จำนวนเงิน:</strong> {{ record.amount|floatformat:2 }} บาท</p>
+                <p><strong>วันที่บริจาค:</strong> {{ record.donated_at|date:"d M Y, H:i" }}</p>
+                <p><strong>ช่องทางการชำระเงิน:</strong> {{ record.payment_method }}</p>
+                {% if record.slip_image %}
+                    <p><strong>สลิป:</strong> <br><img src="{{ record.slip_image.url }}" alt="Donation Slip" class="slip-preview"></p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-donations">คุณยังไม่มีประวัติการบริจาค</p>
+    {% endif %}
+</div>
+{% endblock %}

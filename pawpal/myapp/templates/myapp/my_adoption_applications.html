@@ -1,0 +1,57 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}สถานะการรับเลี้ยง - PawPal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .applications-container { max-width: 800px; margin: 20px auto; padding: 20px; }
+    .applications-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
+    .application-card { background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+    .application-card h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em; }
+    .application-card p { font-size: 0.9em; margin-bottom: 5px; }
+    .status-pending { color: orange; font-weight: bold; }
+    .status-approved { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; } /* Assuming you might have a rejected status */
+    .no-applications { text-align: center; color: #777; margin-top: 30px; }
+    .pet-list { list-style: none; padding-left: 0; }
+    .pet-list li { background-color: #f9f9f9; padding: 5px 10px; border-radius: 4px; margin-top: 5px; display: inline-block; margin-right: 5px;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="applications-container">
+    <h1>สถานะการรับเลี้ยงสัตว์ของคุณ</h1>
+    {% if applications %}
+        {% for app in applications %}
+            <div class="application-card">
+                <h5>คำขอสำหรับ:
+                    {% if app.pets.all %}
+                        <ul class="pet-list">
+                        {% for pet in app.pets.all %}
+                            <li>{{ pet.name }} ({{ pet.breed }})</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span>ไม่มีข้อมูลสัตว์เลี้ยง</span>
+                    {% endif %}
+                </h5>
+                <p><strong>วันที่ยื่นคำขอ:</strong> {{ app.apply_date|date:"d M Y, H:i" }}</p>
+                <p><strong>สถานะ:</strong>
+                    {% if app.is_approved %}
+                        <span class="status-approved">ได้รับการอนุมัติแล้ว</span>
+                    {% else %}
+                        <span class="status-pending">รอดำเนินการ</span>
+                        {# คุณอาจจะมีสถานะอื่นๆ เช่น 'ถูกปฏิเสธ' เพื่อแสดงผลต่างกัน #}
+                    {% endif %}
+                </p>
+                <p><strong>รายละเอียดผู้สมัคร:</strong> {{ app.first_name }} {{ app.last_name }}</p>
+                <p><strong>อีเมล:</strong> {{ app.email }}</p>
+                {# เพิ่มรายละเอียดอื่นๆ ของ application ที่ต้องการแสดง #}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-applications">คุณยังไม่มีคำขอรับเลี้ยงสัตว์ที่ยื่นไป</p>
+    {% endif %}
+</div>
+{% endblock %}

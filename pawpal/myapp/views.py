@@ -2,19 +2,99 @@
 
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.views.generic import ListView, DetailView
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.urls import reverse
-from decimal import Decimal # Import Decimal for accurate currency calculations
+from decimal import Decimal
 
-# ตรวจสอบว่า import โมเดลครบถ้วน
 from .models import (
-    Pet, UserFavorite, BlogPost, AboutContent, PetStatistics, 
-    ContactInfo, DonationCase, AdoptionApplication, DonationRecord, DonationSettings,Pet, AdoptionApplication, UserFavorite 
+    Pet, UserFavorite, BlogPost, AboutContent, PetStatistics,
+    ContactInfo, DonationCase, AdoptionApplication, DonationRecord, DonationSettings, PetImage
 )
+from django.contrib.auth.models import User # Import User model
+
+# ... (โค้ด views ที่มีอยู่แล้ว) ...
+
+# --- New Views for Profile Dropdown ---
+@login_required
+def user_profile_view(request):
+    """
+    แสดงข้อมูลผู้ใช้งานเบื้องต้น
+    """
+    context = {
+        'current_user': request.user
+    }
+    return render(request, 'myapp/user_profile.html', context)
+
+@login_required
+def my_adoption_applications_view(request):
+    """
+    แสดงสถานะคำขอรับเลี้ยงสัตว์ของผู้ใช้
+    กรองจาก email ของผู้ใช้ที่ล็อกอิน เนื่องจาก AdoptionApplication ปัจจุบันไม่มี ForeignKey ไปยัง User โดยตรง
+    """
+    applications = AdoptionApplication.objects.filter(email=request.user.email).order_by('-apply_date')
+    context = {
+        'applications': applications
+    }
+    return render(request, 'myapp/my_adoption_applications.html', context)
+
+@login_required
+def my_adopted_pets_view(request):
+    """
+    แสดงสัตว์เลี้ยงที่ผู้ใช้เคยรับเลี้ยงและได้รับการอนุมัติแล้ว
+    กรองจาก email และ is_approved = True
+    """
+    # ดึง application ที่อนุมัติแล้วและ email ตรงกับ user ปัจจุบัน
+    approved_applications = AdoptionApplication.objects.filter(
+        email=request.user.email,
+        is_approved=True
+    ).prefetch_related('pets') # prefetch_related เพื่อประสิทธิภาพในการดึงข้อมูล pets
+
+    adopted_pets_list = []
+    for app in approved_applications:
+        for pet in app.pets.filter(is_adopted=True): # ตรวจสอบว่า pet is_adopted จริงๆ
+            if pet not in adopted_pets_list: # ป้องกันการแสดงสัตว์เลี้ยงซ้ำหากอยู่ในหลาย application (กรณีพิเศษ)
+                adopted_pets_list.append(pet)
+    
+    context = {
+        'adopted_pets': adopted_pets_list
+    }
+    return render(request, 'myapp/my_adopted_pets.html', context)
+
+@login_required
+def my_donations_view(request):
+    """
+    แสดงประวัติการบริจาคของผู้ใช้
+    """
+    donations = DonationRecord.objects.filter(user=request.user).order_by('-donated_at')
+    context = {
+        'donations': donations
+    }
+    return render(request, 'myapp/my_donations.html', context)
+
+@login_required
+def account_settings_view(request):
+    """
+    หน้าหลักสำหรับการตั้งค่าบัญชี อาจมีลิงก์ไปยังหน้าย่อยๆ ของ allauth
+    """
+    # หน้านี้สามารถมีลิงก์ไปยัง:
+    # {% url 'account_change_password' %}
+    # {% url 'account_email' %}
+    # {% url 'socialaccount_connections' %} (ถ้าใช้ social login)
+    return render(request, 'myapp/account_settings.html')
+
+@login_required
+def notifications_placeholder_view(request):
+    """
+    Placeholder view for notifications.
+    """
+    # For now, this can just render a simple template or redirect
+    # to the chat page if that's the primary notification method.
+    # return redirect('chat_view_name') # If you have a named URL for chat
+    return render(request, 'myapp/notifications_placeholder.html')
 
 
 # 1. FBV: หน้า Home

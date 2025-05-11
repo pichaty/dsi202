@@ -1,0 +1,29 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}การตั้งค่าบัญชี - PawPal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .settings-container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .settings-container h1 { color: var(--primary); margin-bottom: 25px; font-size: 1.5em;}
+    .settings-links ul { list-style: none; padding: 0; }
+    .settings-links li a { display: block; padding: 12px 0; text-decoration: none; color: var(--green); border-bottom: 1px solid #eee; font-size: 1.05em;}
+    .settings-links li a:hover { color: var(--primary); }
+    .settings-links li:last-child a { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <h1>การตั้งค่าบัญชี</h1>
+    <div class="settings-links">
+        <ul>
+            <li><a href="{% url 'account_change_password' %}">เปลี่ยนรหัสผ่าน</a></li>
+            <li><a href="{% url 'account_email' %}">จัดการที่อยู่อีเมล</a></li>
+            {# หากคุณเปิดใช้งาน social accounts ใน allauth และต้องการให้ผู้ใช้จัดการ #}
+            {# <li><a href="{% url 'socialaccount_connections' %}">จัดการบัญชีโซเชียล</a></li> #}
+        </ul>
+    </div>
+</div>
+{% endblock %}

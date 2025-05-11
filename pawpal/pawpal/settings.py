@@ -161,7 +161,11 @@ ACCOUNT_UNIQUE_EMAIL = True                     # Ensures emails are unique
 ACCOUNT_LOGOUT_ON_GET = True                    # Logout directly on GET request to logout URL
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_SIGNUP_ON_GET = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 # Custom Forms (ถ้ามี)
 # ACCOUNT_SIGNUP_FORM_CLASS = 'myapp.forms.CustomSignupForm' # ตัวอย่างถ้าคุณมี custom signup form
 # ACCOUNT_ADAPTER = 'myapp.adapter.MyAccountAdapter' # If you have a custom adapter
@@ -183,3 +187,12 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 # SOCIALACCOUNT_LOGIN_ON_GET = True # Uncomment if you want to initiate social login on GET request
+
+
+# pawpal/settings.py
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.1.111'  # IP Address ของคอมพิวเตอร์ที่รัน Django server
+]

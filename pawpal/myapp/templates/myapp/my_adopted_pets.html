@@ -1,0 +1,43 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}สัตว์เลี้ยงของฉัน - PawPal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .my-pets-container { max-width: 800px; margin: 20px auto; padding: 20px; }
+    .my-pets-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
+    .pet-card-adopted { display: flex; align-items: center; background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+    .pet-card-adopted img { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-right: 15px; }
+    .pet-info-adopted h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em;}
+    .pet-info-adopted p { font-size: 0.9em; margin-bottom: 3px; }
+    .no-pets { text-align: center; color: #777; margin-top: 30px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="my-pets-container">
+    <h1>สัตว์เลี้ยงที่คุณได้รับเลี้ยง</h1>
+    {% if adopted_pets %}
+        {% for pet in adopted_pets %}
+            <div class="pet-card-adopted">
+                {% if pet.photo %}
+                    <img src="{{ pet.photo.url }}" alt="{{ pet.name }}">
+                {% else %}
+                    <img src="{% static 'myapp/images/default_pet.png' %}" alt="Default Pet Image">
+                {% endif %}
+                <div class="pet-info-adopted">
+                    <h5>{{ pet.name }}</h5>
+                    <p><strong>สายพันธุ์:</strong> {{ pet.breed }}</p>
+                    <p><strong>เพศ:</strong> {{ pet.get_gender_display }}</p>
+                    <p><strong>อายุ:</strong> {{ pet.age }}</p>
+                    {# สามารถเพิ่ม link ไปยัง pet_detail page ของสัตว์เลี้ยงตัวนั้นๆ #}
+                    {# <p><a href="{% url 'pet_detail' pk=pet.pk %}">ดูรายละเอียดเพิ่มเติม</a></p> #}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-pets">คุณยังไม่ได้รับเลี้ยงสัตว์เลี้ยงใดๆ</p>
+    {% endif %}
+</div>
+{% endblock %}

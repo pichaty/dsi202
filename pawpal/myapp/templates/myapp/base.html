@@ -4,14 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PawPal{% endblock %}</title> {# เพิ่ม block title #}
+    <title>{% block title %}PawPal{% endblock %}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-    {# หากคุณมีไฟล์ style.css กลาง ให้ uncomment บรรทัดด้านล่าง หรือตรวจสอบว่า path ถูกต้อง #}
-    {# <link href="{% static 'myapp/css/style.css' %}" rel="stylesheet"> #}
-
     <style>
         /* Base styles for header, body, main, etc. */
         body {
@@ -47,10 +44,11 @@
             top: -160px; /* Match header height */
         }
 
-        .header-left-content { /* Container for profile icon and logout link */
+        .header-left-content {
             display: flex;
             align-items: center;
-            gap: 15px; /* ระยะห่างระหว่าง profile icon กับ logout link */
+            gap: 15px;
+            position: relative; /* For dropdown positioning */
         }
 
         .profile-icon-link {
@@ -58,65 +56,141 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer; /* Make it look clickable */
         }
 
         .profile-icon {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: #8c6e5d; /* สีน้ำตาลเข้มสำหรับไอคอน */
+            background-color: #8c6e5d;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em; /* ปรับขนาดตัวอักษรในไอคอน */
+            font-size: 1.2em;
             font-weight: bold;
-            text-transform: uppercase; /* ทำให้เป็นตัวพิมพ์ใหญ่ */
+            text-transform: uppercase;
         }
 
-        .logout-link {
-            color: #d55e00; /* สีส้ม primary */
+        /* Profile Dropdown Styles */
+        .profile-dropdown {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 45px; /* Adjust as needed, below the profile icon */
+            left: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1001; /* Ensure it's above other content */
+            min-width: 240px; /* Adjust width as needed */
+            padding: 5px 0; /* Padding for top/bottom of the dropdown box */
+        }
+
+        .profile-dropdown.open {
+            display: block;
+        }
+
+        .profile-dropdown-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 5px;
+        }
+        .profile-dropdown-header strong {
+            display: block;
+            font-size: 0.95em;
+            color: #333;
+        }
+         .profile-dropdown-header small {
+            display: block;
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        .profile-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-dropdown ul li a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, color 0.2s ease; /* Added color transition */
+        }
+        .profile-dropdown ul li a i { /* Style for icons in dropdown */
+            margin-right: 10px;
+            color: #555; /* Default icon color */
+            width: 16px; /* For icon alignment */
+            text-align: center;
+            transition: color 0.2s ease; /* Added color transition for icon */
+        }
+
+        .profile-dropdown ul li a:hover {
+            background-color: #f5f5f5;
+            color: #d55e00; /* Change text color on hover */
+        }
+        .profile-dropdown ul li a:hover i {
+            color: #d55e00; /* Change icon color on hover */
+        }
+
+
+        .profile-dropdown .dropdown-divider {
+            height: 1px;
+            margin: 5px 0; /* Space around divider */
+            overflow: hidden;
+            background-color: #e9ecef;
+        }
+        /* End Profile Dropdown Styles */
+
+
+        .logout-link { /* This class was previously used, might not be needed if logout is in dropdown */
+            color: #d55e00;
             text-decoration: none;
             font-weight: bold;
             font-size: 0.9em;
         }
         .logout-link:hover {
             text-decoration: underline;
-            color: #e8605c; /* สีแดง accent เมื่อ hover */
+            color: #e8605c;
         }
 
-        .logo-container { /* เพิ่ม container สำหรับ logo เพื่อจัดกึ่งกลางได้ง่ายขึ้น */
-            flex-grow: 1; /* ให้ logo container ยืดเต็มพื้นที่ที่เหลือ */
+        .logo-container {
+            flex-grow: 1;
             display: flex;
-            justify-content: center; /* จัด logo ให้อยู่กึ่งกลาง */
+            justify-content: center;
         }
 
         .logo {
-            height: 150px; /* Max height for logo */
-            width: auto;   /* Maintain aspect ratio */
-            object-fit: contain; /* Ensure logo fits without cropping */
+            height: 150px;
+            width: auto;
+            object-fit: contain;
         }
 
-        .header-right-icons { /* เปลี่ยนชื่อ class เพื่อความชัดเจน */
+        .header-right-icons {
             display: flex;
             align-items: center;
-            gap: 10px; /* ระยะห่างระหว่างไอคอนด้านขวา */
+            gap: 10px;
         }
 
         .favorite-icon-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative; /* สำหรับ notification count */
+            position: relative;
         }
 
         .favorite-icon-img {
-            width: 60px; /* Adjusted size */
+            width: 60px;
             height: auto;
         }
 
-        .notifications { /* สำหรับไอคอน Message Box */
-            position: relative; /* ถ้าจะมี notification count ในอนาคต */
+        .notifications {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -124,16 +198,16 @@
             height: 30px;
         }
 
-        .notifications img { /* รูปภาพภายใน .notifications (Message Box) */
-            height: 24px; /* ปรับขนาดตามความเหมาะสม */
+        .notifications img {
+            height: 24px;
             width: auto;
         }
 
         .notification-count {
             position: absolute;
-            top: -3px;    /* ปรับตำแหน่งให้เหมาะสมกับไอคอน favorite */
-            right: -3px;   /* ปรับตำแหน่งให้เหมาะสมกับไอคอน favorite */
-            background-color: #e8605c; /* สีแดง accent */
+            top: -3px;
+            right: -3px;
+            background-color: #e8605c;
             color: white;
             border-radius: 50%;
             width: 16px;
@@ -142,16 +216,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            line-height: 1; /* ปรับ line-height ให้พอดี */
+            line-height: 1;
             font-weight: bold;
         }
 
         main {
-            flex-grow: 1; /* Allows main to take up available space */
+            flex-grow: 1;
             width: 100%;
         }
 
-        /* Favorite icon on pet cards (if not in shared CSS) */
         .favorite-icon {
             position: absolute;
             top: 10px;
@@ -176,12 +249,30 @@
 </head>
 <body>
     <header>
-        <div class="header-left-content"> {# ใช้ class ใหม่สำหรับคุมส่วนซ้าย #}
+        <div class="header-left-content">
             {% if user.is_authenticated %}
-                <a href="#" class="profile-icon-link" title="{{ user.username }}"> {# อาจจะลิงก์ไปหน้า profile #}
+                {# Profile icon now acts as a toggle for the dropdown #}
+                <div class="profile-icon-link" id="profileIconLink" title="{{ user.username }}">
                     <div class="profile-icon">{{ user.username|first }}</div>
-                </a>
-                <a href="{% url 'account_logout' %}" class="logout-link">Logout</a>
+                </div>
+                {# Dropdown Menu HTML Structure #}
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-dropdown-header">
+                        <strong>{{ user.get_full_name|default:user.username }}</strong>
+                        <small>{{ user.email }}</small>
+                    </div>
+                    <ul>
+                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>ข้อมูลผู้ใช้งาน</a></li>
+                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>สถานะการรับเลี้ยง</a></li>
+                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>สัตว์เลี้ยงของฉัน</a></li>
+                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>รายการโปรด</a></li>
+                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>ประวัติการบริจาค</a></li>
+                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>การตั้งค่าบัญชี</a></li>
+                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>การแจ้งเตือน</a></li> {# Placeholder URL #}
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>ออกจากระบบ</a></li>
+                    </ul>
+                </div>
             {% else %}
                 <a href="{% url 'account_login' %}" class="profile-icon-link" title="Login/Sign Up">
                     <div class="profile-icon">👤</div>
@@ -189,20 +280,20 @@
             {% endif %}
         </div>
 
-        <div class="logo-container"> {# ใช้ class ใหม่สำหรับคุม logo #}
-            <a href="{% url 'home' %}"> {# Make logo a link to home #}
+        <div class="logo-container">
+            <a href="{% url 'home' %}">
                 <img src="{% static 'myapp/images/pawpallogo.png' %}" alt="PawPal Logo" class="logo" />
             </a>
         </div>
 
-        <div class="header-right-icons"> {# ใช้ class ใหม่สำหรับคุมส่วนขวา #}
+        <div class="header-right-icons">
             <a href="{% url 'favorites' %}" class="favorite-icon-link" title="My Favorites">
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
                 {% if favorite_count > 0 %}
                     <span class="notification-count">{{ favorite_count }}</span>
                 {% endif %}
             </a>
-            <a href="#" class="notifications" title="Notifications"> {# URL to notifications page #}
+            <a href="{% url 'notifications_placeholder' %}" class="notifications" title="Notifications"> {# Placeholder URL #}
                 <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications">
                 {# <span class="notification-count">2</span> #} {# Example notification count #}
             </a>
@@ -216,29 +307,42 @@
 
     {% include 'myapp/foot.html' %}
 
-    {# หากคุณใช้ Bootstrap JS หรือมี JS กลางอื่นๆ ให้ uncomment หรือตรวจสอบ #}
-    {# <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script> #}
     <script>
         let lastScrollTop = 0;
         const header = document.querySelector('header');
-        const headerHeight = header.offsetHeight; // ควรจะเท่ากับ 160px ตาม CSS
+        const headerHeight = header.offsetHeight;
 
         window.addEventListener('scroll', function() {
             let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
             if (currentScrollTop > lastScrollTop && currentScrollTop > headerHeight) {
-                // Scroll Down
                 header.classList.add('header-hidden');
             } else {
-                // Scroll Up
                 header.classList.remove('header-hidden');
             }
             lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
 
-            // Ensure header is visible when at the top of the page
              if (currentScrollTop === 0) {
                  header.classList.remove('header-hidden');
             }
         });
+
+        // JavaScript for Profile Dropdown
+        const profileIconLink = document.getElementById('profileIconLink');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileIconLink && profileDropdown) {
+            profileIconLink.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent click from immediately closing due to document listener
+                profileDropdown.classList.toggle('open');
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (profileDropdown.classList.contains('open') && !profileIconLink.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.classList.remove('open');
+                }
+            });
+        }
     </script>
     {% block extra_scripts %}{% endblock %}
 </body>
