@@ -32,24 +32,27 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'myapp',  # Your application
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp',  # Your application
     'django.contrib.sites', # Required by allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', # For Google provider
+    'channels',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware' ,
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -195,3 +198,17 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 # SOCIALACCOUNT_LOGIN_ON_GET = True # No longer recommended, use provider_login_url template tag with POST
+# work/dsi202/pawpal/pawpal/settings.py
+
+# ... (การตั้งค่าอื่นๆ) ...
+
+ASGI_APPLICATION = 'pawpal.asgi.application' # <--- เพิ่มบรรทัดนี้
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer', # สำหรับ Development
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer', # สำหรับ Production
+        'CONFIG': {
+            "hosts": [('localhost', 6379)], # <--- แก้ไขเป็น Host และ Port ของ Redis Server ของคุณ
+        },
+    },
+}

@@ -411,3 +411,12 @@ def get_pet_detail_ajax(request, pet_id):
     except Exception as e:
         print(f"Error in get_pet_detail_ajax for pet_id {pet_id}: {str(e)}")
         return JsonResponse({'success': False, 'error': 'An unexpected error occurred.'}, status=500)
+
+# work/dsi202/pawpal/myapp/views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required # ถ้าต้องการให้เฉพาะ user ที่ login เข้าแชทได้
+
+@login_required # (Optional)
+def chat_view(request):
+    # สามารถเพิ่ม context อื่นๆ ที่ต้องการส่งไป template ได้
+    return render(request, 'myapp/chat.html')

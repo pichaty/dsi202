@@ -47,28 +47,41 @@
         margin-bottom: 20px;
     }
 
-    .input-group input[type="text"],
-    .input-group input[type="email"],
-    .input-group input[type="password"],
-    #id_login, /* สำหรับ allauth username/email */
-    #id_password { /* สำหรับ allauth password */
+    /* --- START: Updated CSS for input fields --- */
+    .input-group input[type="text"], /* For username/email if rendered as text by form */
+    .input-group input[type="email"], /* For email if rendered specifically */
+    .input-group input[type="password"], /* For password */
+    #id_login, /* For allauth username/email field */
+    #id_password { /* For allauth password field */
         width: 100%;
         padding: 12px 15px;
-        padding-right: 40px; /* เพิ่ม padding-right สำหรับ eye icon ถ้ามี */
         border: none;
-        border-radius: 25px;
+        border-radius: 25px !important; /* Ensure rounded corners, !important can help override */
         background-color: white;
         font-size: 16px;
         box-sizing: border-box;
         color: #333;
+        -webkit-appearance: none; /* Remove default Safari/Chrome styling */
+        -moz-appearance: none;    /* Remove default Firefox styling */
+        appearance: none;         /* Remove default styling */
     }
 
-    .input-group input::placeholder,
+    /* Specific padding for password fields to accommodate the toggle icon */
+    /* This will apply to the Django form's password field and any other password field in an .input-group */
+    .input-group input[type="password"],
+    #id_password {
+        padding-right: 40px; /* Space for the toggle icon */
+    }
+    /* --- END: Updated CSS for input fields --- */
+
+
+    .input-group input::placeholder, /* General placeholder for any input in .input-group */
     #id_login::placeholder,
     #id_password::placeholder {
         color: #aaa;
     }
 
+    /* Hide labels if placeholders are used */
     form label[for="id_login"],
     form label[for="id_password"] {
         display: none;
@@ -82,7 +95,7 @@
         color: #aaa;
         cursor: pointer;
         user-select: none;
-        font-size: 18px; /* เพิ่มขนาด font-size เพื่อให้ icon ชัดขึ้นเล็กน้อย */
+        font-size: 18px;
     }
 
     .btn-continue {
@@ -124,7 +137,7 @@
         font-size: 14px;
     }
 
-    .btn-google {
+    .btn-google { /* This class will be used by the button inside the form */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -139,6 +152,7 @@
         transition: background-color 0.3s ease;
         margin-bottom: 25px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        cursor: pointer; /* Add cursor pointer for button */
     }
 
     .btn-google:hover {
@@ -167,28 +181,28 @@
         text-decoration: underline;
     }
 
-    .errorlist {
+    .errorlist { /* For field-specific errors */
         list-style-type: none;
         padding: 0;
-        margin: 0 0 15px 0;
+        margin: 0 0 10px 0; /* Space below errors, before the input field */
         color: #ff4d4d;
         font-size: 0.9em;
-        text-align: left;
+        text-align: left; /* Align error text to the left */
     }
     .errorlist li {
-        padding: 8px; /* เพิ่ม padding เล็กน้อย */
-        background-color: rgba(255, 220, 220, 0.9); /* เปลี่ยนสีพื้นหลัง error เล็กน้อย */
-        border-left: 3px solid #ff4d4d; /* เพิ่ม border ด้านซ้าย */
+        padding: 8px;
+        background-color: rgba(255, 220, 220, 0.9);
+        border-left: 3px solid #ff4d4d;
         border-radius: 4px;
         margin-bottom: 5px;
     }
 
-    form > ul.errorlist { /* Target non-field errors specifically */
+    form > ul.errorlist { /* For non-field errors (errors at the top of the form) */
       list-style-type: none;
       padding: 0;
-      margin: 0 0 15px 0;
+      margin: 0 0 15px 0; /* Space below general form errors */
     }
-    form > ul.errorlist li { /* Style for non-field errors */
+    form > ul.errorlist li {
         padding: 8px;
         background-color: rgba(255, 220, 220, 0.9);
         border-left: 3px solid #ff4d4d;
@@ -237,8 +251,8 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-                {{ form.password }} {# This field will be rendered by allauth #}
-                <span class="password-toggle" data-target="id_password">👁️</span>
+                {{ form.password }} 
+                <span class="password-toggle" data-target="id_password">👁️</span> {# Ensure data-target is "id_password" #}
             </div>
 
             {% if redirect_field_value %}
@@ -253,12 +267,15 @@
         <div class="divider">
             <span>or</span>
         </div>
-            
-             <a href="{% provider_login_url 'google' process='login' %}" class="btn-google">
-                <img src="{% static 'myapp/images/google_icon.png' %}" alt="Google icon">
-                Continue with Google
-            </a> 
-        {% endif %}
+
+            <form method="post" action="{% provider_login_url 'google' process='login' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-google">
+                    <img src="{% static 'myapp/images/google_icon.png' %}" alt="Google icon">
+                    Continue with Google
+                </button>
+            </form>
+            {% endif %}
 
         <p class="signup-link">
             don't have an account yet ? <a href="{% url 'account_signup' %}">Sign Up</a>
@@ -293,7 +310,7 @@
         }
         const passwordInput = document.getElementById('id_password'); // allauth ใช้ id_password
         if (passwordInput) {
-            passwordInput.setAttribute('placeholder', 'Password');
+            passwordInput.setAttribute('placeholder', 'Password'); // <<<--- เพิ่ม placeholder ให้ช่อง Password
         }
     });
 </script>

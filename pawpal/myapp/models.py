@@ -321,4 +321,43 @@ class DonationRecord(models.Model):
         verbose_name_plural = "รายการบริจาคทั้งหมด"
         ordering = ['-donated_at']
         
+# work/dsi202/pawpal/myapp/models.py
+from django.db import models
+from django.contrib.auth.models import User # หรือ from django.conf import settings แล้วใช้ settings.AUTH_USER_MODEL
+from django.utils import timezone
+
+class Conversation(models.Model):
+    """
+    เก็บข้อมูลการสนทนาระหว่าง User กับ Admin
+    อาจจะสร้าง instance หนึ่งต่อ User หนึ่งคนที่จะคุยกับ Admin
+    หรือ Admin หนึ่งคนคุยกับ User หลายคน (ขึ้นอยู่กับการออกแบบ)
+    """
+    user = models.ForeignKey(User, related_name='chat_conversations_with_admin', on_delete=models.CASCADE)
+    admin = models.ForeignKey(User, related_name='chat_conversations_with_user', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'is_staff': True})
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        admin_username = self.admin.username if self.admin else "Admin"
+        return f"Conversation between {self.user.username} and {admin_username}"
+
+    class Meta:
+        unique_together = ('user', 'admin') # ป้องกันการสร้างห้องซ้ำซ้อน (ถ้า admin ไม่ null)
+        ordering = ['-updated_at']
+
+class ChatMessage(models.Model):
+    """เก็บข้อความแต่ละข้อความใน Conversation"""
+    conversation = models.ForeignKey(Conversation, related_name='messages', on_delete=models.CASCADE, null=True, blank=True) # อาจจะเป็น null ถ้าเป็น global chat
+    sender = models.ForeignKey(User, related_name='sent_chat_messages', on_delete=models.SET_NULL, null=True) # ผู้ส่ง
+    content = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
+    is_admin_message = models.BooleanField(default=False) # ระบุว่าเป็นข้อความจาก Admin หรือไม่
+
+    def __str__(self):
+        sender_name = self.sender.username if self.sender else "System"
+        return f"From {sender_name}: {self.content[:50]}"
+
+    class Meta:
+        ordering = ['timestamp']
 

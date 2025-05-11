@@ -3,152 +3,235 @@
 
 {% block extra_head %}
     <style>
-        /* โค้ด CSS จากขั้นตอนที่ 14 อยู่ที่นี่ */
+        /* ... (CSS เดิมของคุณ) ... */
         .chat-container {
-            max-width: 600px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            max-width: 700px; /* เพิ่มความกว้างเล็กน้อย */
+            margin: 30px auto; /* ปรับ margin */
+            border: 1px solid #e0e0e0; /* สีขอบอ่อนลง */
+            border-radius: 10px; /* เพิ่มความโค้งมน */
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 220px); /* ปรับความสูงเผื่อ Header และ Footer */
+            height: calc(100vh - 240px); /* ปรับความสูงให้เหมาะสม */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* เพิ่มเงา */
+        }
+
+        .chat-header { /* (เพิ่มใหม่) ส่วนหัวของแชท */
+            padding: 15px;
+            background-color: var(--green); /* ใช้สีเขียวจาก base.html */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+            border-bottom: 1px solid #ccc;
         }
 
         .chat-box {
             flex-grow: 1;
-            padding: 10px;
-            overflow-y: auto; /* ทำให้ส่วนแสดงข้อความ Scroll ได้ */
-            background-color: #f9f9f9;
+            padding: 15px; /* เพิ่ม padding */
+            overflow-y: auto;
+            background-color: #f9f4e8; /* สีพื้นหลังอ่อนๆ */
+            display: flex; /* (เพิ่มใหม่) เพื่อจัดเรียงข้อความ */
+            flex-direction: column; /* (เพิ่มใหม่) */
         }
 
         .message {
-            margin-bottom: 10px;
-            padding: 8px;
-            border-radius: 5px;
-            max-width: 80%;
+            margin-bottom: 12px; /* เพิ่มระยะห่าง */
+            padding: 10px 15px; /* ปรับ padding */
+            border-radius: 18px; /* ทำให้โค้งมนมากขึ้น */
+            max-width: 75%; /* จำกัดความกว้างสูงสุด */
+            line-height: 1.4;
+            position: relative; /* สำหรับ timestamp */
         }
 
         .message.sent {
-            background-color: #dcf8c6; /* สีสำหรับข้อความที่ส่งเอง */
+            background-color: #dcf8c6;
             align-self: flex-end; /* ชิดขวา */
+            border-radius: 18px 18px 5px 18px; /* รูปทรง bubble */
         }
 
         .message.received {
-            background-color: #ffffff; /* สีสำหรับข้อความที่ได้รับ */
+            background-color: #ffffff;
             align-self: flex-start; /* ชิดซ้าย */
-            border: 1px solid #eee;
+            border: 1px solid #e7e7e7;
+            border-radius: 18px 18px 18px 5px; /* รูปทรง bubble */
         }
+
+        .message .sender-name { /* (เพิ่มใหม่) สไตล์ชื่อผู้ส่ง */
+            font-weight: bold;
+            font-size: 0.8em;
+            color: var(--primary); /* สีส้ม */
+            margin-bottom: 3px;
+            display: block;
+        }
+         .message.sent .sender-name {
+            color: #555; /* สีชื่อผู้ส่งของตัวเอง */
+        }
+
 
         .chat-input {
             display: flex;
-            padding: 10px;
-            border-top: 1px solid #ccc;
-            background-color: #eee;
+            padding: 12px; /* ปรับ padding */
+            border-top: 1px solid #e0e0e0; /* สีขอบอ่อนลง */
+            background-color: #f5f5f5; /* สีพื้นหลัง input area */
         }
 
         .chat-input input[type="text"] {
             flex-grow: 1;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            padding: 12px 15px; /* ปรับ padding */
+            border-radius: 25px; /* ทำให้มน */
+            border: 1px solid #d0d0d0;
             margin-right: 10px;
+            font-size: 0.95em; /* ปรับขนาดฟอนต์ */
+        }
+         .chat-input input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2);
         }
 
         .chat-input button {
-            padding: 8px 15px;
+            padding: 10px 20px; /* ปรับ padding */
             border: none;
-            border-radius: 5px;
-            background-color: var(--primary); /* ใช้สีจาก base.html */
+            border-radius: 25px; /* ทำให้มน */
+            background-color: var(--primary);
             color: white;
             cursor: pointer;
+            font-weight: bold; /* เพิ่มความหนาตัวอักษร */
+            transition: background-color 0.2s ease; /* เพิ่ม transition */
         }
 
         .chat-input button:hover {
-            background-color: #c05500; /* สีเข้มขึ้นเมื่อ hover */
+            background-color: #c05500;
+        }
+
+        /* สำหรับข้อความต้อนรับ หรือ System message */
+        .message.system {
+            align-self: center;
+            background-color: #e6f3ff;
+            color: #507aa3;
+            font-style: italic;
+            font-size: 0.85em;
+            max-width: 90%;
+            text-align: center;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    {# HTML Structure ของ Chat Box และ Input #}
     <div class="chat-container">
+        <div class="chat-header">Chat with Admin</div> {# (เพิ่มใหม่) ส่วนหัว #}
         <div class="chat-box" id="chat-box">
-            {# ข้อความแชทจะถูกเพิ่มเข้ามาที่นี่โดย JavaScript #}
-             <div class="message received">Welcome to the chat!</div> {# ข้อความต้อนรับเริ่มต้น #}
+            <div class="message system">Connecting to chat...</div>
         </div>
         <div class="chat-input">
-            <input type="text" id="chat-message-input" placeholder="Enter message...">
-            <button id="chat-message-submit">Send</button>
+            <input type="text" id="chat-message-input" placeholder="Type your message..." autocomplete="off">
+            <button id="chat-message-submit"><i class="fas fa-paper-plane"></i> Send</button>
         </div>
     </div>
 {% endblock %}
 
 {% block extra_scripts %}
-    {# เพิ่มโค้ด JavaScript สำหรับ WebSocket ที่นี่ #}
     <script>
-        // JavaScript สำหรับ WebSocket
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('chat-message-input');
-        const sendButton = document.getElementById('chat-message-submit');
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBox = document.getElementById('chat-box');
+            const messageInput = document.getElementById('chat-message-input');
+            const sendButton = document.getElementById('chat-message-submit');
+            const currentUsername = "{{ request.user.username|escapejs }}"; // ดึง username ของผู้ใช้ปัจจุบัน
+            const isAdminUser = "{{ request.user.is_staff|yesno:'true,false'|escapejs }}" === "true";
 
-        // สร้างการเชื่อมต่อ WebSocket
-        // ใช้ wss:// สำหรับ Production ถ้า Server ใช้ SSL/TLS
-        const chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/chat/' // ใช้ path ตามที่เรากำหนดใน routing.py
-        );
+            // สร้าง WebSocket connection
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const chatSocket = new WebSocket(
+                protocol + window.location.host + '/ws/chat/'
+            );
 
-        // เมื่อได้รับข้อความจาก Server ผ่าน WebSocket
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            console.log('Received:', data); // พิมพ์ข้อมูลที่ได้รับลง console เพื่อ debug
+            function displayMessage(data) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
 
-            // สร้าง element สำหรับแสดงข้อความ
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            // ในอนาคต จะต้องตรวจสอบว่าเป็นข้อความที่เราส่งเอง (sent) หรือข้อความที่ได้รับ (received)
-            messageElement.classList.add('received'); // สำหรับตอนนี้ ให้เป็น received ทั้งหมดก่อน
+                const senderNameElement = document.createElement('div'); // (เพิ่มใหม่)
+                senderNameElement.classList.add('sender-name'); // (เพิ่มใหม่)
 
-            messageElement.textContent = data.message; // แสดงเนื้อหาข้อความ
+                if (data.sender_username === 'System') {
+                     messageElement.classList.add('system');
+                     senderNameElement.textContent = ''; // ไม่มีชื่อผู้ส่งสำหรับ System
+                } else if (data.sender_username === currentUsername) {
+                    messageElement.classList.add('sent');
+                    senderNameElement.textContent = 'You'; // หรือ data.sender_username
+                } else {
+                    messageElement.classList.add('received');
+                    senderNameElement.textContent = data.sender_username + (data.is_admin ? ' (Admin)' : '');
+                }
 
-            chatBox.appendChild(messageElement); // เพิ่มข้อความเข้าไปใน chat box
-            chatBox.scrollTop = chatBox.scrollHeight; // เลื่อน Scroll Bar ไปล่างสุด
-        };
+                if (data.sender_username !== 'System') { // (เพิ่มใหม่)
+                    messageElement.appendChild(senderNameElement);
+                }
 
-        // เมื่อ WebSocket ปิดลง
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+                const messageContentElement = document.createElement('div');
+                messageContentElement.textContent = data.message;
+                messageElement.appendChild(messageContentElement);
 
-         // เมื่อ WebSocket เปิด
-        chatSocket.onopen = function(e) {
-            console.log('WebSocket connection opened');
-        };
-
-         // จัดการข้อผิดพลาด WebSocket
-        chatSocket.onerror = function(e) {
-            console.error('WebSocket error observed:', e);
-        };
-
-
-        // เมื่อพิมพ์ข้อความใน input แล้วกด Enter
-        messageInput.onkeypress = function(e) {
-            if (e.key === 'Enter') { // ตรวจสอบว่ากดปุ่ม Enter
-                sendButton.click(); // คลิกปุ่ม Send
+                chatBox.appendChild(messageElement);
+                chatBox.scrollTop = chatBox.scrollHeight;
             }
-        };
 
-        // เมื่อคลิกปุ่ม Send
-        sendButton.onclick = function(e) {
-            const message = messageInput.value;
-            if (message.trim() !== '') { // ตรวจสอบว่าไม่ใช่ข้อความว่างเปล่า
-                // ส่งข้อความไปยัง Server ผ่าน WebSocket
-                chatSocket.send(JSON.stringify({
-                    'message': message
-                }));
+            chatSocket.onopen = function(e) {
+                console.log('WebSocket connection opened');
+                // ลบข้อความ 'Connecting...' หรือแทนที่ด้วย 'Connected!'
+                const connectingMessage = chatBox.querySelector('.message.system');
+                if(connectingMessage && connectingMessage.textContent.includes('Connecting')) {
+                   connectingMessage.textContent = 'Welcome to the Admin Chat!';
+                } else {
+                     displayMessage({message: 'Connected to chat!', sender_username: 'System'});
+                }
+                // TODO: อาจจะส่ง request เพื่อดึงประวัติแชทเก่า
+            };
 
-                messageInput.value = ''; // ล้างช่อง input
-            }
-        };
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                console.log('Received:', data);
+                displayMessage(data);
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly. Code:', e.code, 'Reason:', e.reason);
+                displayMessage({message: 'Disconnected from chat. Please refresh the page.', sender_username: 'System'});
+            };
+
+            chatSocket.onerror = function(e) {
+                console.error('WebSocket error observed:', e);
+                displayMessage({message: 'Error connecting to chat.', sender_username: 'System'});
+            };
+
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { // กด Enter โดยไม่กด Shift
+                    e.preventDefault(); // ป้องกันการขึ้นบรรทัดใหม่ใน input (ถ้าเป็น textarea)
+                    sendButton.click();
+                }
+            });
+
+            sendButton.addEventListener('click', function(e) {
+                const message = messageInput.value.trim();
+                if (message !== '') {
+                    if (chatSocket.readyState === WebSocket.OPEN) {
+                        chatSocket.send(JSON.stringify({
+                            'message': message
+                        }));
+                        // แสดงข้อความที่ส่งทันที (Client-side prediction)
+                        // displayMessage({
+                        //     message: message,
+                        //     sender_username: currentUsername,
+                        //     is_admin: isAdminUser
+                        // });
+                        messageInput.value = '';
+                    } else {
+                        console.error('WebSocket is not open. ReadyState:', chatSocket.readyState);
+                        displayMessage({message: 'Cannot send message. Connection is closed.', sender_username: 'System'});
+                    }
+                }
+            });
+            messageInput.focus(); // ให้ cursor ไปที่ input field เลย
+        });
     </script>
 {% endblock %}
