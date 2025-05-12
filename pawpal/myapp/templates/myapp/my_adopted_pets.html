@@ -1,43 +1,219 @@
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block title %}สัตว์เลี้ยงของฉัน - PawPal{% endblock %}
+{% block title %}My Paws - สัตว์เลี้ยงของฉัน - PawPal{% endblock %}
 
 {% block extra_head %}
 <style>
-    .my-pets-container { max-width: 800px; margin: 20px auto; padding: 20px; }
-    .my-pets-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
-    .pet-card-adopted { display: flex; align-items: center; background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
-    .pet-card-adopted img { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-right: 15px; }
-    .pet-info-adopted h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em;}
-    .pet-info-adopted p { font-size: 0.9em; margin-bottom: 3px; }
-    .no-pets { text-align: center; color: #777; margin-top: 30px; }
+    /* ดึงตัวแปรสีจาก base.html หรือกำหนดใหม่ถ้าจำเป็น */
+    :root {
+        --primary: #d55e00;
+        --secondary: #8d6e63;
+        --green: #8db38b;
+        --background: #f9f4e8;
+        --text-dark: #333;
+        --text-light: #555;
+        --card-bg: #ffffff;
+        --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        --border-radius-md: 12px; /* เพิ่ม border-radius ขนาดกลาง */
+        --border-radius-lg: 16px; /* เพิ่ม border-radius ขนาดใหญ่ */
+    }
+
+    .my-paws-page-container { /* ตั้งชื่อ class ให้สื่อถึงหน้า My Paws โดยเฉพาะ */
+        max-width: 900px; /* ปรับความกว้างสูงสุดตามความเหมาะสม */
+        margin: 25px auto;
+        padding: 20px;
+    }
+
+    .page-section-header { /* สไตล์หัวข้อของหน้า */
+        background-color: var(--green); /* สีเขียว */
+        color: white;
+        padding: 18px 25px;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        text-align: center;
+        font-size: 1.7em; /* ปรับขนาดฟอนต์ใหญ่ขึ้น */
+        font-weight: bold;
+        font-family: 'Grandstander', cursive; /* ฟอนต์หัวเรื่องน่ารัก */
+        margin-bottom: 0; /* ติดกับ content-box */
+        letter-spacing: 0.5px;
+    }
+    .page-section-header .paw-icon-header { /* ไอคอนอุ้งเท้าในหัวข้อ */
+        margin-right: 12px;
+        font-size: 1.1em; /* ปรับขนาดให้สัมพันธ์กัน */
+        vertical-align: middle;
+    }
+
+    .my-paws-content-box { /* กล่องเนื้อหาหลัก */
+        background-color: var(--card-bg);
+        padding: 25px;
+        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        box-shadow: var(--card-shadow);
+    }
+
+    .my-paws-grid { /* Grid สำหรับแสดงสัตว์เลี้ยง */
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(25%, 1fr)); /* ปรับขนาดการ์ดให้ตอบสนองได้ดี */
+        gap: 25px; /* เพิ่มระยะห่างระหว่างการ์ด */
+    }
+
+    .adopted-pet-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        overflow: hidden; /* ป้องกันไม่ให้รูปภาพล้นขอบ */
+        display: flex;
+        flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+    .adopted-pet-card:hover {
+        transform: translateY(-4px); /* เอฟเฟกต์ลอยเล็กน้อยเมื่อ hover */
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .pet-card-image-wrapper {
+        width: 100%;
+        padding-top: 75%; /* Aspect ratio 4:3 สำหรับรูปภาพ */
+        position: relative;
+        overflow: hidden;
+    }
+    .pet-card-image-wrapper img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* ให้รูปภาพเต็มพื้นที่และไม่ผิดสัดส่วน */
+    }
+
+    .pet-card-info {
+        padding: 18px; /* เพิ่ม padding */
+        text-align: left; /* จัดข้อความชิดซ้าย */
+        flex-grow: 1; /* ให้ส่วนข้อมูลขยายเต็มพื้นที่ที่เหลือ */
+    }
+
+    .pet-card-info h5 {
+        font-family: 'Grandstander', cursive;
+        color: var(--primary); /* สีส้มสำหรับชื่อ */
+        font-size: 1.4em; /* ปรับขนาดชื่อ */
+        margin-top: 0;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+    }
+     .pet-card-info h5 .pet-name-icon {
+        margin-right: 8px;
+        font-size: 0.9em;
+        color: var(--light-orange); /* สีส้มอ่อนสำหรับไอคอนข้างชื่อ */
+    }
+
+
+    .pet-card-info p {
+        font-size: 0.95em; /* ปรับขนาดฟอนต์รายละเอียด */
+        color: var(--text-light);
+        margin-bottom: 6px;
+        line-height: 1.5;
+    }
+    .pet-card-info p strong {
+        color: var(--text-dark);
+        min-width: 80px; /* จัดแนว strong ให้ตรงกันเล็กน้อย */
+        display: inline-block;
+    }
+
+    .pet-card-actions { /* ส่วนสำหรับปุ่ม (ถ้ามี) */
+        padding: 0 18px 18px 18px;
+        margin-top: auto; /* ดันปุ่มไปอยู่ด้านล่างสุดของการ์ด */
+    }
+    .view-detail-button { /* ปุ่มดูรายละเอียดเพิ่มเติม (ถ้ามี) */
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        background-color: var(--green);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 25px; /* ปุ่มมนๆ */
+        font-weight: bold;
+        font-size: 0.9em;
+        transition: background-color 0.2s ease;
+    }
+    .view-detail-button:hover {
+        background-color: #79a076; /* สีเขียวเข้มขึ้นเมื่อ hover */
+    }
+
+
+    .no-pets-message { /* ข้อความเมื่อไม่มีสัตว์เลี้ยง */
+        text-align: center;
+        color: var(--text-light);
+        margin-top: 30px;
+        font-size: 1.1em; /* ปรับขนาดฟอนต์ */
+        padding: 25px;
+        background-color: #fffaf0; /* สีพื้นหลังอ่อนๆ สำหรับข้อความ */
+        border-radius: var(--border-radius-md);
+        border: 1px dashed var(--secondary); /* เส้นประสีน้ำตาล */
+    }
+    .no-pets-message .paw-icon-empty {
+        font-size: 2.5em; /* ไอคอนอุ้งเท้าใหญ่ขึ้น */
+        color: var(--light-orange); /* สีส้มอ่อน */
+        display: block;
+        margin-bottom: 15px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="my-pets-container">
-    
-    {% if adopted_pets %}
-        {% for pet in adopted_pets %}
-            <div class="pet-card-adopted">
-                {% if pet.photo %}
-                    <img src="{{ pet.photo.url }}" alt="{{ pet.name }}">
-                {% else %}
-                    <img src="{% static 'myapp/images/default_pet.png' %}" alt="Default Pet Image">
-                {% endif %}
-                <div class="pet-info-adopted">
-                    <h5>{{ pet.name }}</h5>
-                    <p><strong>สายพันธุ์:</strong> {{ pet.breed }}</p>
-                    <p><strong>เพศ:</strong> {{ pet.get_gender_display }}</p>
-                    <p><strong>อายุ:</strong> {{ pet.age }}</p>
-                    {# สามารถเพิ่ม link ไปยัง pet_detail page ของสัตว์เลี้ยงตัวนั้นๆ #}
-                    {# <p><a href="{% url 'pet_detail' pk=pet.pk %}">ดูรายละเอียดเพิ่มเติม</a></p> #}
-                </div>
+<div class="my-paws-page-container">
+    <h1 class="page-section-header">
+        <i class="fas fa-paw paw-icon-header"></i>My Paws 
+    </h1>
+    <div class="my-paws-content-box">
+        {% if adopted_pets %}
+            <div class="my-paws-grid">
+                {% for pet in adopted_pets %}
+                    <div class="adopted-pet-card">
+                        <div class="pet-card-image-wrapper">
+                            {% if pet.photo %}
+                                <img src="{{ pet.photo.url }}" alt="{{ pet.name }}">
+                            {% else %}
+                                <img src="{% static 'myapp/images/default_pet.png' %}" alt="Default Pet Image">
+                            {% endif %}
+                        </div>
+                        <div class="pet-card-info">
+                            <h5>
+                                {% if pet.pet_type == 'dog' %}
+                                    <i class="fas fa-dog pet-name-icon"></i>
+                                {% elif pet.pet_type == 'cat' %}
+                                    <i class="fas fa-cat pet-name-icon"></i>
+                                {% else %}
+                                    <i class="fas fa-paw pet-name-icon"></i>
+                                {% endif %}
+                                {{ pet.name }}
+                            </h5>
+                            <p><strong>สายพันธุ์:</strong> {{ pet.breed }}</p>
+                            <p><strong>เพศ:</strong> {{ pet.get_gender_display }}</p>
+                            <p><strong>อายุ:</strong> {{ pet.age }}</p>
+                            <p><strong>รายละเอียด:</strong> {{ pet.detail|default:"-" }}</p>
+                        </div>
+                        {# ถ้าต้องการปุ่มดูรายละเอียดเพิ่มเติมในหน้านี้ สามารถใส่ตรงนี้ได้ #}
+                        {# <div class="pet-card-actions"> #}
+                        {#     <a href="{% url 'pet_detail' pk=pet.id %}" class="view-detail-button">ดูรายละเอียด</a> #}
+                        {# </div> #}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-pets">คุณยังไม่ได้รับเลี้ยงสัตว์เลี้ยงใดๆ</p>
-    {% endif %}
+        {% else %}
+            <div class="no-pets-message">
+                <span class="paw-icon-empty">🐾</span>
+                คุณยังไม่ได้รับเลี้ยงสัตว์เลี้ยงใดๆ จาก PawPal เลยนะ<br>
+                ลองเข้าไปดูน้องๆ ที่รอคอยบ้านใหม่อยู่สิ!
+                <br><br>
+                <a href="{% url 'adopt_catalog' %}" class="button" style="background-color: var(--primary); color:white; padding: 10px 20px; border-radius: 20px; text-decoration:none; display:inline-block; margin-top:10px;">ค้นหาสัตว์เลี้ยง</a>
+
+            </div>
+        {% endif %}
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    {# หากมี JavaScript เฉพาะสำหรับหน้านี้ สามารถใส่ที่นี่ #}
 {% endblock %}

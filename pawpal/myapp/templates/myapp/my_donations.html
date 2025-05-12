@@ -5,39 +5,178 @@
 
 {% block extra_head %}
 <style>
-    .donations-container { max-width: 800px; margin: 20px auto; padding: 20px; }
-    .donations-container h1 { color: var(--primary); margin-bottom: 20px; font-size: 1.5em; }
-    .donation-record-card { background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
-    .donation-record-card h5 { margin-top: 0; color: var(--secondary); font-size: 1.1em; }
-    .donation-record-card p { font-size: 0.9em; margin-bottom: 5px; }
-    .slip-preview { max-width: 100px; max-height: 100px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
-    .no-donations { text-align: center; color: #777; margin-top: 30px; }
+    /* เพิ่ม CSS หรือปรับปรุงเพื่อให้สวยงามและ responsive */
+    .donations-page-container { /* ใช้ชื่อ class กลางสำหรับ page container */
+        max-width: 800px;
+        margin: 25px auto;
+        padding: 20px;
+    }
+
+    .page-section-header { /* สไตล์หัวข้อของหน้า (ใช้ร่วมกับหน้าอื่นได้) */
+        background-color: #b56f39; /* สีส้ม */
+        color: white;
+        padding: 18px 25px;
+        border-radius: var(--border-radius-lg, 16px) var(--border-radius-lg, 16px) 0 0;
+        text-align: center;
+        font-size: 1.7em;
+        font-weight: bold;
+        font-family: 'Grandstander', cursive;
+        margin-bottom: 0;
+        letter-spacing: 0.5px;
+    }
+     .page-section-header .paw-icon-header {
+        margin-right: 12px;
+        font-size: 1.1em;
+        vertical-align: middle;
+    }
+
+    .donations-content-box { /* กล่องเนื้อหาหลัก */
+        background-color: var(--card-bg, #ffffff);
+        padding: 25px;
+        border-radius: 0 0 var(--border-radius-lg, 16px) var(--border-radius-lg, 16px);
+        box-shadow: var(--card-shadow, 0 4px 12px rgba(0,0,0,0.08));
+    }
+
+    .donation-record-card {
+        display: flex; /* ใช้ flexbox เพื่อจัดเรียงรูปกับข้อมูล */
+        align-items: flex-start; /* จัดให้อยู่บนสุด */
+        background-color: #fff;
+        border: 1px solid #eee;
+        border-radius: 10px; /* เพิ่มความโค้งมน */
+        margin-bottom: 20px; /* เพิ่มระยะห่าง */
+        padding: 20px; /* เพิ่ม padding */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07); /* ปรับเงา */
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+    .donation-record-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+    }
+
+    .donation-case-image-container { /* (เพิ่มใหม่) Container สำหรับรูปเคส */
+        flex-shrink: 0; /* ป้องกันไม่ให้รูปถูกบีบ */
+        width: 100px; /* กำหนดขนาดรูป */
+        height: 100px;
+        margin-right: 20px; /* ระยะห่างระหว่างรูปกับข้อมูล */
+        border-radius: 8px; /* มุมโค้งมนสำหรับรูป */
+        overflow: hidden; /* ซ่อนส่วนที่ล้น */
+        background-color: #f0f0f0; /* สีพื้นหลังกรณีไม่มีรูป */
+    }
+    .donation-case-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* ให้รูปเต็มพื้นที่และไม่ผิดสัดส่วน */
+    }
+
+    .donation-details { /* (เพิ่มใหม่) Container สำหรับข้อมูลการบริจาค */
+        flex-grow: 1; /* ให้ส่วนข้อมูลขยายเต็มพื้นที่ที่เหลือ */
+    }
+
+    .donation-details h5 {
+        margin-top: 0;
+        color: var(--secondary);
+        font-size: 1.15em; /* ปรับขนาด */
+        margin-bottom: 8px;
+        font-family: 'Grandstander', cursive;
+    }
+    .donation-details p {
+        font-size: 0.9em;
+        margin-bottom: 6px;
+        color: var(--text-light, #555);
+        line-height: 1.5;
+    }
+     .donation-details p strong {
+        color: var(--text-dark, #333);
+    }
+
+    .slip-preview-container { /* (เพิ่มใหม่) Container สำหรับสลิป */
+        margin-top: 10px;
+        text-align: left; /* หรือ center ถ้าต้องการให้สลิปอยู่กลาง */
+    }
+    .slip-preview {
+        max-width: 120px; /* ปรับขนาดสลิป preview */
+        max-height: 150px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        cursor: pointer; /* ให้รู้ว่าคลิกดูรูปใหญ่ได้ (ถ้ามี) */
+        transition: transform 0.2s ease;
+    }
+    .slip-preview:hover {
+        transform: scale(1.05);
+    }
+
+    .no-donations {
+        text-align: center;
+        color: #777;
+        margin-top: 30px;
+        font-size: 1.1em;
+        padding: 20px;
+        background-color: #fffaf0;
+        border-radius: var(--border-radius-md, 12px);
+        border: 1px dashed var(--secondary);
+    }
+     .no-donations .paw-icon-empty {
+        font-size: 2.5em;
+        color: var(--light-orange, #f5a623);
+        display: block;
+        margin-bottom: 15px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="donations-container">
-    <h1>Donation history</h1>
-    {% if donations %}
-        {% for record in donations %}
-            <div class="donation-record-card">
-                <h5>
+<div class="donations-page-container">
+    <h1 class="page-section-header">
+        <i class="fas fa-history paw-icon-header"></i>My Donations
+    </h1>
+    <div class="donations-content-box">
+        {% if donations %}
+            {% for record in donations %}
+                <div class="donation-record-card">
                     {% if record.donation_case %}
-                        บริจาคให้เคส: {{ record.donation_case.title }} (No. {{ record.donation_case.case_id }})
+                        <div class="donation-case-image-container">
+                            {% if record.donation_case.image %} {# รูปจาก DonationCase.image #}
+                                <img src="{{ record.donation_case.image.url }}" alt="{{ record.donation_case.title }}">
+                            {% elif record.donation_case.pet and record.donation_case.pet.photo %} {# รูปจาก Pet.photo ที่ผูกกับ DonationCase #}
+                                <img src="{{ record.donation_case.pet.photo.url }}" alt="{{ record.donation_case.pet.name }}">
+                            {% else %}
+                                <img src="{% static 'myapp/images/default_case.png' %}" alt="No case image"> {# รูป Default สำหรับเคส #}
+                            {% endif %}
+                        </div>
                     {% else %}
-                        บริจาคทั่วไป
+                        <div class="donation-case-image-container"> {# สำหรับบริจาคทั่วไป อาจจะไม่มีรูปเคสโดยตรง #}
+                             <img src="{% static 'myapp/images/general_donation.png' %}" alt="General Donation"> {# รูป Default สำหรับบริจาคทั่วไป #}
+                        </div>
                     {% endif %}
-                </h5>
-                <p><strong>จำนวนเงิน:</strong> {{ record.amount|floatformat:2 }} บาท</p>
-                <p><strong>วันที่บริจาค:</strong> {{ record.donated_at|date:"d M Y, H:i" }}</p>
-                <p><strong>ช่องทางการชำระเงิน:</strong> {{ record.payment_method }}</p>
-                {% if record.slip_image %}
-                    <p><strong>สลิป:</strong> <br><img src="{{ record.slip_image.url }}" alt="Donation Slip" class="slip-preview"></p>
-                {% endif %}
+
+                    <div class="donation-details">
+                        <h5>
+                            {% if record.donation_case %}
+                                บริจาคให้เคส: {{ record.donation_case.title }} (No. {{ record.donation_case.case_id }})
+                            {% else %}
+                                บริจาคทั่วไป
+                            {% endif %}
+                        </h5>
+                        <p><strong>จำนวนเงิน:</strong> {{ record.amount|floatformat:2 }} บาท</p>
+                        <p><strong>วันที่บริจาค:</strong> {{ record.donated_at|date:"d M Y, H:i" }}</p>
+                        <p><strong>ช่องทางการชำระเงิน:</strong> {{ record.payment_method }}</p>
+                        {% if record.slip_image %}
+                            <div class="slip-preview-container">
+                                <p style="margin-bottom: 5px;"><strong>สลิป:</strong></p>
+                                <img src="{{ record.slip_image.url }}" alt="Donation Slip" class="slip-preview">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-donations">
+                <span class="paw-icon-empty">🐾</span>
+                คุณยังไม่มีประวัติการบริจาค
+                <br><br>
+                <a href="{% url 'donate' %}" class="button" style="background-color: var(--primary); color:white; padding: 10px 20px; border-radius: 20px; text-decoration:none; display:inline-block; margin-top:10px;">บริจาคเลย</a>
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-donations">คุณยังไม่มีประวัติการบริจาค</p>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

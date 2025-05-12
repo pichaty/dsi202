@@ -101,9 +101,13 @@ def my_adopted_pets_view(request):
     }
     return render(request, 'myapp/my_adopted_pets.html', context)
 
+# work/dsi202/pawpal/myapp/views.py
+
 @login_required
 def my_donations_view(request):
-    donations = DonationRecord.objects.filter(user=request.user).order_by('-donated_at')
+    donations = DonationRecord.objects.filter(user=request.user) \
+                                      .select_related('donation_case', 'donation_case__pet') \
+                                      .order_by('-donated_at')
     context = {
         'donations': donations
     }
