@@ -2,20 +2,21 @@
 {% load static %}
 
 {% block extra_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         /* Custom fonts and base styles are in base.html */
 
         /* Page specific styles for adoption_form.html */
         main {
-            /* Adjust padding-top based on the fixed header height */
-            /* Logo height (150px) + top/bottom padding (5px + 5px) = 160px */
-            padding-top: 160px;
-            padding-bottom: 60px; /* Add padding for the footer */
-            background-color: var(--background); /* Set background color for the main content */
+            padding-top: 160px; /* Height of fixed header */
+            padding-bottom: 60px; /* Height of fixed footer */
+            background-color: var(--background);
         }
 
         .page-content {
             padding: 15px;
+            max-width: 700px; /* Limit width for better readability */
+            margin: 0 auto; /* Center the content */
         }
 
         .adoption-process-section {
@@ -23,71 +24,106 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .section-title {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 1.25em; /* Slightly larger */
             color: var(--primary);
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* More space below title */
             text-align: center;
+            border-bottom: 1px solid #eee; /* Add a light separator */
+            padding-bottom: 10px; /* Space for the separator */
         }
 
         .process-step {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 18px; /* Slightly more space between steps */
         }
 
         .step-number {
             background-color: var(--primary);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 28px; /* Slightly larger */
+            height: 28px; /* Slightly larger */
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
+            font-size: 0.9em; /* Adjust if needed */
             font-weight: bold;
-            margin-right: 10px;
-            flex-shrink: 0; /* Prevent number from shrinking */
+            margin-right: 12px; /* More space */
+            flex-shrink: 0;
         }
 
         .step-content h4 {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 1.05em; /* Slightly larger */
             margin: 0 0 5px 0;
+            color: #333; /* Darker color for heading */
         }
 
         .step-content p {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.9em; /* Slightly smaller for readability */
+            color: #555; /* Softer text color */
             margin: 0;
+            line-height: 1.5;
         }
 
+        /* Styling for the calendar input field and its label */
+        .interview-datetime-label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 6px; /* Space between label and input */
+            font-weight: bold;
+            color: #444;
+            margin-top: 8px; /* Space above the label if it's inside a step */
+        }
+        .interview-datetime-picker {
+            width: 100%;
+            padding: 12px 15px; /* More padding */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95em; /* Slightly larger font in input */
+            box-sizing: border-box;
+            background-color: white;
+            cursor: pointer;
+            color: #333;
+        }
+        .interview-datetime-picker:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2); /* Pawpal primary color */
+            outline: none;
+        }
+
+
         .initial-enquiry-form {
-             background-color: #ffece0; /* Background color from screenshot */
+             background-color: #ffece0;
              border-radius: 15px;
-             padding: 20px;
+             padding: 25px; /* More padding */
+             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .form-title {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 1.2em; /* Slightly larger */
             color: var(--primary);
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* More space */
+            text-align: center;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px; /* Slightly more space */
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-size: 0.9em;
+            margin-bottom: 6px;
             font-weight: bold;
+            color: #444; /* Slightly darker label color */
         }
 
         .form-group input[type="text"],
@@ -95,62 +131,73 @@
         .form-group input[type="tel"],
         .form-group textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px; /* More padding */
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            font-size: 0.95em; /* Slightly larger font */
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="tel"]:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2);
+            outline: none;
         }
 
+
         .form-group textarea {
-            height: 80px; /* Adjust height as needed */
-            resize: vertical; /* Allow vertical resizing */
+            height: 100px; /* More height */
+            resize: vertical;
         }
 
         .form-row {
             display: flex;
-            gap: 15px;
+            gap: 20px; /* More gap */
         }
 
         .form-row .form-group {
-            flex: 1; /* Each form group in a row takes equal space */
+            flex: 1;
         }
 
         .submit-button-container {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px; /* More space */
         }
 
         .submit-button {
-            background-color: var(--secondary); /* Color from screenshot */
+            background-color: var(--secondary);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 10px 30px;
-            font-size: 16px;
+            padding: 12px 35px; /* More padding */
+            font-size: 1em; /* Slightly larger */
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .submit-button:hover {
+            background-color: #7a5c51; /* Darker shade */
+            transform: translateY(-2px);
         }
 
-      
-        /* Styles for displaying selected pets WITH images */
+
         .selected-pets-section {
             margin-bottom: 20px;
-            padding: 15px;
-            background-color: white; /* เปลี่ยนพื้นหลังเป็นสีขาว เพื่อให้เห็นเงาชัดขึ้น */
-            border-radius: 15px; /* ปรับ border-radius ให้เหมือน card อื่นๆ */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* เพิ่มเงาเพื่อให้ดูเป็นกรอบลอยขึ้นมา */
-            /* อาจเพิ่ม max-width ถ้าต้องการจำกัดความกว้างบนหน้าจอใหญ่ๆ */
-            /* max-width: 500px; */
-            /* margin: 20px auto;  ถ้าเพิ่ม max-width อาจใช้ margin auto เพื่อจัดกึ่งกลาง */
+            padding: 20px; /* More padding */
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Softer shadow */
         }
 
         .selected-pets-section h4 {
-            font-size: 18px;
+            font-size: 1.1em; /* Slightly larger */
             margin-top: 0;
-            margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่างหัวข้อ */
+            margin-bottom: 15px;
             font-weight: bold;
-            color: #333; /* ปรับสีหัวข้อเล็กน้อย */
+            color: var(--secondary); /* Brownish color */
         }
 
         .selected-pets-list {
@@ -162,52 +209,52 @@
         .selected-pet-item-with-image {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 20px; /* เพิ่ม padding ภายในแต่ละรายการให้ใหญ่ขึ้น */
-            background-color: #fffde7; /* ใช้สีเทาอ่อนสำหรับพื้นหลังของแต่ละรายการ */
-            border-radius: 10px; /* ปรับ border-radius สำหรับรายการย่อย */
-            /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* อาจเพิ่มเงาเล็กๆ ให้รายการย่อยถ้าต้องการ */
+            margin-bottom: 12px; /* More space */
+            padding: 15px; /* More padding */
+            background-color: #f9f4e8; /* Light beige background */
+            border-radius: 10px;
+            border-left: 4px solid var(--green); /* Green accent */
         }
 
         .selected-pet-image {
-            width: 100px; /* เพิ่มขนาดรูปภาพให้ใหญ่ขึ้น */
-            height: 100px; /* เพิ่มขนาดรูปภาพให้ใหญ่ขึ้น */
+            width: 80px; /* Adjust size as needed */
+            height: 80px; /* Adjust size as needed */
             object-fit: cover;
-            border-radius: 8px; /* ปรับ border-radius ของรูปภาพเล็กน้อย */
-            margin-right: 15px; /* เพิ่มระยะห่างระหว่างรูปภาพกับข้อความ */
+            border-radius: 8px;
+            margin-right: 15px;
             flex-shrink: 0;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .selected-pet-details-text {
-            font-size: 16px; /* อาจเพิ่มขนาดตัวอักษรขึ้นเล็กน้อย */
-            color: #555; /* ปรับสีข้อความเล็กน้อย */
+            font-size: 1em; /* Standard size */
+            color: #444; /* Darker text */
             flex-grow: 1;
         }
-        
+        .selected-pet-details-text strong {
+            color: #333;
+        }
 
     </style>
 {% endblock %}
 
 {% block content %}
-    {# The header is now provided by base.html #}
-
     <div class="page-content">
 
-        {# Optional: Display selected pets for context #}
         {% if selected_pets %}
         <div class="selected-pets-section">
-            <h4>Pets you are applying for:</h4>
+            <h4><i class="fas fa-paw" style="margin-right: 8px; color: var(--green);"></i>Pets you are applying for:</h4>
             <ul class="selected-pets-list">
                 {% for pet in selected_pets %}
-                    <li class="selected-pet-item-with-image"> {# เปลี่ยน class name เพื่อใช้ CSS ใหม่ #}
+                    <li class="selected-pet-item-with-image">
                         {% if pet.photo %}
                             <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="selected-pet-image">
                         {% else %}
-                            {# ใช้รูป default ถ้าไม่มีรูปสัตว์เลี้ยง #}
                             <img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available" class="selected-pet-image">
                         {% endif %}
-                        <div class="selected-pet-details-text"> {# เพิ่ม div คลุมข้อความ #}
-                            - No. {{ pet.name }} ({{ pet.breed }})
+                        <div class="selected-pet-details-text">
+                           <strong>No. {{ pet.name }}</strong> ({{ pet.breed }})
                         </div>
                     </li>
                 {% endfor %}
@@ -216,12 +263,12 @@
         {% endif %}
 
         <div class="adoption-process-section">
-            <div class="section-title">Adoption process</div>
+            <div class="section-title">Adoption Process</div>
 
             <div class="process-step">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                    <h4>Initial enquiry</h4>
+                    <h4>Initial Enquiry</h4>
                     <p>Submit an adoption enquiry, answering some initial questions about your family, lifestyle and ideal companion.</p>
                 </div>
             </div>
@@ -230,7 +277,11 @@
                 <div class="step-number">2</div>
                 <div class="step-content">
                     <h4>Interview</h4>
-                    <p>Join a video call with one of our adoption coordinators to help find your perfect match. Discuss the dog's medical history, behavioural needs and more.</p>
+                    <p>Join a video call with one of our adoption coordinators to help find your perfect match. Discuss the dog’s medical history, behavioural needs and more.</p>
+                    <label for="interview_datetime_picker" class="interview-datetime-label">
+                        <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>Suggest a Date & Time for Video Call (mon-fri: 09.00 - 17.30):
+                    </label>
+                    <input type="text" id="interview_datetime_picker" name="interview_datetime" class="interview-datetime-picker" placeholder="Select Date and Time">
                 </div>
             </div>
 
@@ -245,7 +296,7 @@
             <div class="process-step">
                 <div class="step-number">4</div>
                 <div class="step-content">
-                    <h4>Adoption agreement</h4>
+                    <h4>Adoption Agreement</h4>
                     <p>Sign the adoption agreement, confirming your commitment to the care of your chosen dog.</p>
                 </div>
             </div>
@@ -253,30 +304,33 @@
             <div class="process-step">
                 <div class="step-number">5</div>
                 <div class="step-content">
-                    <h4>Travel arrangements</h4>
+                    <h4>Travel Arrangements</h4>
                     <p>Let our logistics team arrange your dog's journey to you. Collect your new best friend from a pre-arranged location and enjoy a lifetime of happiness together!</p>
                 </div>
             </div>
         </div>
 
         <div class="initial-enquiry-form">
-            <div class="form-title">Initial enquiry</div>
+            <div class="form-title">Initial Enquiry Details</div>
 
             <form method="post">
                 {% csrf_token %}
+                {# Input field 'interview_datetime' ที่ถูกสร้างโดย Flatpickr จะมี name="interview_datetime" อยู่แล้ว #}
+                {# ไม่จำเป็นต้องใส่ input hidden เพิ่ม ถ้า input ที่แสดงผลมี name ที่ถูกต้อง #}
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                        <label for="first_name">First Name *</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name|default:'' }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" required>
+                        <label for="last_name">Last Name *</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ request.user.last_name|default:'' }}" required>
                     </div>
                 </div>
 
                  <div class="form-group">
-                    <label for="address">Address</label>
+                    <label for="address">Address *</label>
                     <input type="text" id="address" name="address" required>
                 </div>
 
@@ -304,59 +358,71 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="phone_number">Phone Number</label>
-                        <input type="tel" id="phone_number" name="phone_number">
+                        <label for="phone_number">Phone Number *</label>
+                        <input type="tel" id="phone_number" name="phone_number" {% if request.user.is_authenticated and request.user.profile and request.user.profile.phone_number %}value="{{ request.user.profile.phone_number }}"{% endif %} required>
                     </div>
                      <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email">
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" name="email" value="{{ request.user.email|default:'' }}" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="household">Who do you live with in your household?</label>
-                    <input type="text" id="household" name="household">
+                    <textarea id="household" name="household" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="other_pets">Do you have any other pets? (if yes, please describe)</label>
-                    <textarea id="other_pets" name="other_pets"></textarea>
+                    <textarea id="other_pets" name="other_pets" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="property_description">Please describe your property and its location</label>
-                     <textarea id="property_description" name="property_description"></textarea>
+                    <label for="property_description">Please describe your property and its location (e.g., house with yard, apartment)</label>
+                     <textarea id="property_description" name="property_description" rows="3"></textarea>
                 </div>
 
                  <div class="form-group">
-                    <label for="job_working_hours">What is your job and working hours?</label>
+                    <label for="job_working_hours">What is your job and typical working hours?</label>
                     <input type="text" id="job_working_hours" name="job_working_hours">
                 </div>
 
                  <div class="form-group">
-                    <label for="motivation">Feel free to tell us more about yourself and why you are interested in adopting</label>
-                    <textarea id="motivation" name="motivation"></textarea>
+                    <label for="motivation">Feel free to tell us more about yourself and why you are interested in adopting.</label>
+                    <textarea id="motivation" name="motivation" rows="4"></textarea>
                 </div>
 
-
                 <div class="submit-button-container">
-                    {# You can add a hidden input field here to include the selected pet IDs when submitting the form #}
                     {% if selected_pets %}
-                            <input type="hidden" name="selected_pet_ids" value="{{ selected_pet_ids_for_form }}">
+                        <input type="hidden" name="selected_pet_ids" value="{{ selected_pet_ids_for_form }}">
                     {% endif %}
-                    <button type="submit" class="submit-button">Submit</button>
+                    <button type="submit" class="submit-button">Submit Enquiry</button>
                 </div>
             </form>
         </div>
-
     </div>
-
-
-    {# The footer is now included by base.html #}
-
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-    {# Add any specific JavaScript for this page here if needed for form validation or other interactions #}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Flatpickr for the interview datetime picker
+            flatpickr("#interview_datetime_picker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i", // Format that Django DateTimeField expects
+                altInput: true,
+                altFormat: "F j, Y (h:i K)", // User-friendly format
+                minuteIncrement: 15,
+                minDate: "today",
+                // defaultDate: new Date().fp_incr(1), // Optional: Default to tomorrow
+            });
+
+            // The JavaScript block that was causing issues has been removed.
+            // The pre-filling of user data is now handled by the 'value' attribute
+            // directly in the input fields within the HTML, for example:
+            // <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name|default:'' }}" required>
+            // This is processed on the server-side by Django's template engine.
+        });
+    </script>
 {% endblock %}

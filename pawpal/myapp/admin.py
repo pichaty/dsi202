@@ -191,23 +191,37 @@ class ContactInfoAdmin(admin.ModelAdmin):
 # ใน work/dsi202/pawpal/myapp/admin.py
 
 # ใน work/dsi202/pawpal/myapp/admin.py
+# work/dsi202/pawpal/myapp/admin.py
 
 from django.contrib import admin
-from .models import AdoptionApplication, Pet # ตรวจสอบว่า Pet ก็ถูก import ด้วยถ้ายังไม่มี
+from django.utils.html import format_html
+from .models import (
+    Pet, DonationCase, DonationSettings, DonationRecord, PetImage,
+    Product, AboutContent, PetStatistics, BlogPost, ContactInfo,
+    AdoptionApplication, Conversation, ChatMessage # เพิ่ม Conversation, ChatMessage ถ้ายังไม่มี
+)
+from django.core.exceptions import ValidationError
+
+# ... (โค้ด Admin Class อื่นๆ ที่มีอยู่แล้ว) ...
 
 @admin.register(AdoptionApplication)
 class AdoptionApplicationAdmin(admin.ModelAdmin):
-    # แก้ไข list_display โดยเปลี่ยน 'is_approved' เป็น 'status'
-    list_display = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'apply_date', 'display_applied_pets', 'status') # <--- แก้ไขตรงนี้
-    list_filter = ('status', 'apply_date') # <--- เปลี่ยน 'is_approved' เป็น 'status'
-    search_fields = ('first_name', 'last_name', 'email', 'phone_number', 'address', 'motivation', 'pets__name', 'pets__id')
+    list_display = (
+        'id', 'first_name', 'last_name', 'email', 'phone_number',
+        'apply_date', 'display_applied_pets', 'status',
+        'interview_datetime_formatted' # <<<--- เพิ่ม field ใหม่
+    )
+    list_filter = ('status', 'apply_date', 'interview_datetime') # <<<--- เพิ่ม interview_datetime
+    search_fields = (
+        'first_name', 'last_name', 'email', 'phone_number',
+        'address', 'motivation', 'pets__name', 'pets__id'
+    )
     date_hierarchy = 'apply_date'
     readonly_fields = ('apply_date',)
 
     fieldsets = (
         (None, {
-            # แก้ไข fieldsets โดยเปลี่ยน 'is_approved' เป็น 'status'
-            'fields': ('status', ('first_name', 'last_name'), ('email', 'phone_number')) # <--- แก้ไขตรงนี้
+            'fields': ('status', ('first_name', 'last_name'), ('email', 'phone_number'))
         }),
         ('Address Information', {
             'fields': ('address', 'subdistrict', 'district', 'province', 'postal_code')
@@ -215,6 +229,12 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
         ('Adoption Details', {
             'fields': ('household', 'other_pets', 'property_description', 'job_working_hours', 'motivation')
         }),
+        # --- START: เพิ่ม Section สำหรับวันเวลานัดหมาย ---
+        ('Interview Appointment', {
+            'fields': ('interview_datetime',),
+            'classes': ('collapse',), # ทำให้ section นี้ย่อ/ขยายได้ (ทางเลือก)
+        }),
+        # --- END: เพิ่ม Section สำหรับวันเวลานัดหมาย ---
         ('Applied Pets', {
             'fields': ('pets',)
         }),
@@ -228,19 +248,29 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
         return ", ".join([f"{pet.name} (ID: {pet.id})" for pet in obj.pets.all()])
     display_applied_pets.short_description = 'Applied for Pets'
 
-    # หากมี action approve_selected_applications ให้ปรับปรุง logic ตรงนี้
+    # --- START: Method สำหรับแสดงผล interview_datetime ในรูปแบบที่อ่านง่าย ---
+    def interview_datetime_formatted(self, obj):
+        if obj.interview_datetime:
+            return obj.interview_datetime.strftime("%d %b %Y, %H:%M") # Format: 12 May 2025, 14:30
+        return "-"
+    interview_datetime_formatted.admin_order_field = 'interview_datetime' # ทำให้สามารถ sort ตาม field นี้ได้
+    interview_datetime_formatted.short_description = 'Interview Date & Time'
+    # --- END: Method สำหรับแสดงผล ---
+
+
     def approve_selected_applications(self, request, queryset):
         updated_count = 0
         for application in queryset:
-            if application.status != AdoptionApplication.STATUS_APPROVED: # ตรวจสอบสถานะปัจจุบัน
-                application.status = AdoptionApplication.STATUS_APPROVED  # เปลี่ยนสถานะเป็น approved
-                application.save() # เรียก save() method ของ AdoptionApplication
+            if application.status != AdoptionApplication.STATUS_APPROVED:
+                application.status = AdoptionApplication.STATUS_APPROVED
+                application.save()
                 updated_count +=1
         if updated_count > 0:
             self.message_user(request, f"{updated_count} adoption applications were successfully approved.")
         else:
             self.message_user(request, "No applications were updated (they might have been already approved).")
-
     approve_selected_applications.short_description = "Approve selected applications"
 
     actions = [approve_selected_applications]
+
+

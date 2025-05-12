@@ -334,7 +334,30 @@ def favorites_view(request):
     favorite_pets = Pet.objects.filter(userfavorite__user=request.user).order_by('-userfavorite__created_at')
     return render(request, 'myapp/favorites.html', {'favorite_pets': favorite_pets})
 
-@login_required
+# work/dsi202/pawpal/myapp/views.py
+
+from django.http import HttpResponse, JsonResponse, Http404
+from django.views.generic import DetailView
+import json
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.urls import reverse
+from decimal import Decimal
+from datetime import datetime # <<<--- เพิ่ม import datetime
+
+from .models import (
+    Pet, UserFavorite, BlogPost, AboutContent, PetStatistics,
+    ContactInfo, DonationCase, AdoptionApplication, DonationRecord,
+    DonationSettings, PetImage
+)
+from promptpay import qrcode
+import base64
+from io import BytesIO
+
+# ... (โค้ด view อื่นๆ ไม่เปลี่ยนแปลง) ...
+
+@login_required # แนะนำให้ผู้ใช้ต้อง login ก่อนกรอกฟอร์ม
 def adoption_form_view(request):
     if request.method == 'POST':
         application = AdoptionApplication()
@@ -346,13 +369,29 @@ def adoption_form_view(request):
         application.province = request.POST.get('province', '')
         application.postal_code = request.POST.get('postal_code', '')
         application.phone_number = request.POST.get('phone_number', '')
-        application.email = request.POST.get('email', request.user.email)
+        # ถ้า user login อยู่แล้ว ให้ใช้ email จาก user object เป็น default
+        application.email = request.POST.get('email', request.user.email if request.user.is_authenticated else '')
         application.household = request.POST.get('household', '')
         application.other_pets = request.POST.get('other_pets', '')
         application.property_description = request.POST.get('property_description', '')
         application.job_working_hours = request.POST.get('job_working_hours', '')
         application.motivation = request.POST.get('motivation', '')
-        application.save()
+
+        # --- START: รับข้อมูลวันเวลานัดหมาย ---
+        interview_datetime_str = request.POST.get('interview_datetime', '')
+        if interview_datetime_str:
+            try:
+                # Flatpickr ส่งค่ามาในรูปแบบ "Y-m-d H:i"
+                application.interview_datetime = datetime.strptime(interview_datetime_str, '%Y-%m-%d %H:%M')
+            except ValueError:
+                # หาก format ไม่ถูกต้อง อาจจะตั้งเป็น None หรือแจ้ง error
+                application.interview_datetime = None
+                # messages.error(request, "Invalid date/time format for interview.") # (Optional)
+        else:
+            application.interview_datetime = None
+        # --- END: รับข้อมูลวันเวลานัดหมาย ---
+
+        application.save() # บันทึกข้อมูลหลักของ application ก่อน
 
         selected_pet_ids_str = request.POST.get('selected_pet_ids', '')
         pet_ids_list_for_application = []
@@ -361,31 +400,50 @@ def adoption_form_view(request):
                 pet_ids_list_for_application = [int(id_str) for id_str in selected_pet_ids_str.split(',') if id_str.isdigit()]
                 selected_pets_for_save = Pet.objects.filter(id__in=pet_ids_list_for_application)
                 if selected_pets_for_save.exists():
-                    application.pets.set(selected_pets_for_save)
+                    application.pets.set(selected_pets_for_save) # เพิ่มสัตว์เลี้ยงเข้าไปใน ManyToManyField
             except ValueError:
+                # จัดการกรณี ID ไม่ใช่ตัวเลข (ถ้าจำเป็น)
                 pass
+
+        # ลบสัตว์เลี้ยงที่สมัครออกจากรายการโปรด (ถ้าผู้ใช้ login อยู่)
         if request.user.is_authenticated and pet_ids_list_for_application:
             UserFavorite.objects.filter(user=request.user, pet_id__in=pet_ids_list_for_application).delete()
+
         return redirect(reverse('adoption_thank_you'))
     else:
         selected_pet_ids_str = request.GET.get('pets', '')
         selected_pets_for_display = []
-        hidden_pet_ids_value = ''
+        hidden_pet_ids_value = '' # สำหรับส่ง ID สัตว์เลี้ยงไปกับฟอร์ม
         if selected_pet_ids_str:
             try:
                 pet_ids_list = [int(id_str) for id_str in selected_pet_ids_str.split(',') if id_str.isdigit()]
                 selected_pets_for_display = Pet.objects.filter(id__in=pet_ids_list)
                 hidden_pet_ids_value = ",".join(map(str, pet_ids_list))
             except ValueError:
+                # ถ้า ID ไม่ใช่ตัวเลข ก็ปล่อยให้ list ว่างไป
                 pass
+
+        # ดึงข้อมูลเบื้องต้นของผู้ใช้ที่ login อยู่ (ถ้ามี)
+        initial_data = {}
+        if request.user.is_authenticated:
+            initial_data['first_name'] = request.user.first_name
+            initial_data['last_name'] = request.user.last_name
+            initial_data['email'] = request.user.email
+            # คุณสามารถเพิ่ม field อื่นๆ ที่ต้องการดึงจาก User model ได้
+
         context = {
             'selected_pets': selected_pets_for_display,
             'selected_pet_ids_for_form': hidden_pet_ids_value,
+            'initial_data': initial_data, # ส่ง initial_data ไปยัง template
         }
         return render(request, 'myapp/adoption_form.html', context)
 
+# ... (โค้ด view อื่นๆ ไม่เปลี่ยนแปลง) ...
+
 def adoption_thank_you_view(request):
     return render(request, 'myapp/adoption_thank_you.html')
+
+# ... (โค้ด get_pet_detail_ajax และ chat_view ไม่เปลี่ยนแปลง) ...
 
 def get_pet_detail_ajax(request, pet_id):
     try:
@@ -420,3 +478,38 @@ from django.contrib.auth.decorators import login_required # ถ้าต้อ�
 def chat_view(request):
     # สามารถเพิ่ม context อื่นๆ ที่ต้องการส่งไป template ได้
     return render(request, 'myapp/chat.html')
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages # Optional: สำหรับแสดงข้อความแจ้งเตือน
+from .models import AdoptionApplication
+
+# ... (Views อื่นๆ) ...
+
+@login_required
+def cancel_adoption_application_view(request, application_id):
+    application = get_object_or_404(AdoptionApplication, id=application_id)
+
+    # ตรวจสอบว่าเป็นเจ้าของคำขอหรือไม่ (ป้องกันการยกเลิกคำขอของผู้อื่น)
+    # สมมติว่าคุณเก็บ email ของผู้ยื่นใน Model AdoptionApplication
+    if application.email != request.user.email:
+        messages.error(request, "You do not have permission to cancel this application.")
+        return redirect('my_adoption_applications') # หรือหน้าอื่นที่เหมาะสม
+
+    # อนุญาตให้ยกเลิกได้เฉพาะบางสถานะ เช่น Pending หรือ Under Review
+    if application.status in [AdoptionApplication.STATUS_PENDING, AdoptionApplication.STATUS_UNDER_REVIEW]:
+        if request.method == 'POST':
+            application.status = AdoptionApplication.STATUS_CANCELED
+            application.save()
+            messages.success(request, f"Adoption application APP-{application.id:05d} has been canceled.")
+            return redirect('my_adoption_applications')
+        else:
+            # แสดงหน้ายืนยันการยกเลิก (ถ้าต้องการ)
+            # return render(request, 'myapp/confirm_cancel_adoption.html', {'application': application})
+            # หรือถ้าไม่ต้องการหน้ายืนยัน ก็สามารถยกเลิกได้เลยเมื่อกดปุ่ม (ผ่าน POST request)
+            messages.info(request, "This action should ideally be confirmed via a POST request.")
+            return redirect('my_adoption_applications')
+    else:
+        messages.warning(request, f"This application cannot be canceled as it is already {application.get_status_display()}.")
+        return redirect('my_adoption_applications')
+

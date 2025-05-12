@@ -7,7 +7,7 @@
 <style>
     /* Inherits styles from base.html including color variables */
     .page-container {
-        max-width: 750px; /* อาจจะปรับความกว้างได้อีกตามความเหมาะสม */
+        max-width: 750px;
         margin: 20px auto;
         padding: 0;
     }
@@ -15,10 +15,10 @@
     .section-header {
         background-color: var(--green);
         color: white;
-        padding: 15px 20px; /* ลด padding หัวข้อลงเล็กน้อย */
-        border-radius: 10px 10px 0 0; /* ปรับความมน */
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0;
         text-align: center;
-        font-size: 1.5em; /* ปรับขนาดฟอนต์หัวข้อ */
+        font-size: 1.5em;
         font-weight: bold;
         font-family: 'Grandstander', cursive;
         margin-bottom: 0;
@@ -26,74 +26,75 @@
 
     .content-box {
         background-color: #fff;
-        padding: 20px; /* ลด padding โดยรวมของ content box */
+        padding: 20px;
         border-radius: 0 0 10px 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
     .application-card {
-        display: flex; /* --- ใช้ Flexbox เพื่อจัดรูปกับข้อมูล --- */
-        align-items: flex-start; /* --- จัดให้อยู่บนสุดของ flex container --- */
+        display: flex;
+        align-items: flex-start;
         background-color: #fdfdfd;
-        border: 1px solid #e8e8e8; /* ปรับสีขอบให้อ่อนลง */
+        border: 1px solid #e8e8e8;
         border-left: 4px solid var(--green);
         border-radius: 8px;
-        margin-bottom: 15px; /* ลด margin ล่าง */
-        padding: 15px; /* ลด padding ภายในการ์ด */
-        box-shadow: 0 1px 6px rgba(0,0,0,0.05); /* ลดเงาลง */
+        margin-bottom: 15px;
+        padding: 15px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.05);
         transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        position: relative; /* For cancel button positioning */
     }
     .application-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
 
-    .pet-image-container { /* --- Container สำหรับรูปภาพ --- */
-        flex-shrink: 0; /* ไม่ให้รูปถูกบีบ */
-        margin-right: 15px; /* ระยะห่างระหว่างรูปกับข้อมูล */
-        width: 90px; /* --- ขนาดรูปภาพ (ปรับได้) --- */
-        height: 90px; /* --- ขนาดรูปภาพ (ปรับได้) --- */
+    .pet-image-container {
+        flex-shrink: 0;
+        margin-right: 15px;
+        width: 90px;
+        height: 90px;
         border-radius: 6px;
-        overflow: hidden; /* ซ่อนส่วนเกินของรูป */
-        background-color: #f0f0f0; /* สีพื้นหลังเผื่อรูปไม่โหลด */
+        overflow: hidden;
+        background-color: #f0f0f0;
     }
     .pet-image-container img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* ให้รูปเต็มกรอบโดยไม่เสียสัดส่วน */
+        object-fit: cover;
     }
 
-    .application-details { /* --- Container สำหรับข้อมูล --- */
-        flex-grow: 1; /* ให้ข้อมูลขยายเต็มพื้นที่ที่เหลือ */
+    .application-details {
+        flex-grow: 1;
     }
 
-    .application-card h5 { /* หัวข้อ "คำขอสำหรับ" */
+    .application-card h5 {
         margin-top: 0;
-        margin-bottom: 8px; /* ลด margin */
+        margin-bottom: 8px;
         color: var(--secondary);
-        font-size: 1.05em; /* ลดขนาดฟอนต์ */
+        font-size: 1.05em;
         font-weight: 600;
         border-bottom: 1px dashed #eaeaea;
-        padding-bottom: 8px; /* ลด padding */
+        padding-bottom: 8px;
     }
 
     .application-card p {
-        font-size: 0.9em; /* ลดขนาดฟอนต์ของรายละเอียด */
-        margin-bottom: 6px; /* ลด margin */
+        font-size: 0.9em;
+        margin-bottom: 6px;
         line-height: 1.5;
         color: #454545;
     }
     .application-card p strong {
         color: #333;
-        min-width: 90px; /* ปรับความกว้าง label */
+        min-width: 90px;
         display: inline-block;
     }
 
-    /* Status Tags Styling (เหมือนเดิม หรือปรับขนาด padding/font-size เล็กน้อย) */
+    /* Status Tags Styling */
     .status-tag {
-        padding: 4px 10px; /* ลด padding ของ tag */
+        padding: 4px 10px;
         border-radius: 12px;
-        font-size: 0.8em; /* ลดขนาดฟอนต์ tag */
+        font-size: 0.8em;
         font-weight: bold;
         color: white;
         display: inline-block;
@@ -103,14 +104,15 @@
     .status-approved { background-color: #28a745; color: white; border: 1px solid #1e7e34;}
     .status-rejected { background-color: #dc3545; color: white; border: 1px solid #b02a37;}
     .status-under_review { background-color: #17a2b8; color: white; border: 1px solid #117a8b;}
+    .status-canceled { background-color: #6c757d; color: white; border: 1px solid #545b62;} /* New Canceled Status Style */
     .status-default { background-color: #6c757d; color: white; border: 1px solid #545b62;}
 
 
     .no-applications {
         text-align: center;
         color: #777;
-        margin-top: 25px; /* ลด margin */
-        font-size: 1em; /* ลดขนาดฟอนต์ */
+        margin-top: 25px;
+        font-size: 1em;
         padding: 15px;
         background-color: #f9f9f9;
         border-radius: 8px;
@@ -121,7 +123,7 @@
         color: var(--green);
     }
 
-    .pet-list-in-card { /* เปลี่ยนชื่อ class เพื่อไม่ให้ชนกับ .pet-list อื่นๆ ถ้ามี */
+    .pet-list-in-card {
         list-style: none;
         padding-left: 0;
         margin-top: 5px;
@@ -129,18 +131,64 @@
     }
     .pet-list-in-card li {
         background-color: #e9f5e9;
-        padding: 5px 10px; /* ลด padding */
+        padding: 5px 10px;
         border-radius: 15px;
         display: inline-block;
         margin-right: 6px;
         margin-bottom: 4px;
-        font-size: 0.8em; /* ลดขนาดฟอนต์ */
+        font-size: 0.8em;
         color: var(--green_dark, #38783a);
         border: 1px solid var(--green_light, #a7d7a9);
     }
     .pet-list-in-card li i {
         margin-right: 4px;
     }
+
+    /* Cancel Button Styling */
+    .cancel-button-container {
+        margin-top: 10px;
+        text-align: right; /* Align button to the right */
+    }
+
+    .btn-cancel-adoption {
+        background-color: var(--accent-red, #dc3545); /* Red color */
+        color: white;
+        border: none;
+        padding: 6px 12px; /* Adjust padding */
+        border-radius: 5px; /* Rounded corners */
+        font-size: 0.8em; /* Adjust font size */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    .btn-cancel-adoption:hover {
+        background-color: #c82333; /* Darker red on hover */
+    }
+    .btn-cancel-adoption.disabled { /* Style for disabled button */
+        background-color: #adb5bd; /* Grey color */
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+     /* Django Messages Styling (from allauth or custom) */
+    .allauth-messages { /* General class for message list */
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    .allauth-messages li { /* Individual message item */
+        padding: 12px 18px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 0.95em;
+        border: 1px solid transparent; /* Base border */
+    }
+    /* Specific message types */
+    .allauth-messages li.success { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc;}
+    .allauth-messages li.warning { background-color: #fff3cd; color: #664d03; border-color: #ffecb5;}
+    .allauth-messages li.error { background-color: #f8d7da; color: #842029; border-color: #f5c2c7;}
+    .allauth-messages li.info { background-color: #cce5ff; color: #004085; border-color: #b8daff;} /* For info messages */
+
 </style>
 {% endblock %}
 
@@ -148,10 +196,19 @@
 <div class="page-container">
     <h1 class="section-header"><i class="fas fa-file-alt" style="margin-right: 10px;"></i>สถานะการรับเลี้ยงสัตว์</h1>
     <div class="content-box">
+
+        {% if messages %} {# Display Django messages if any #}
+            <ul class="allauth-messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message|safe }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% if applications %}
             {% for app in applications %}
                 <div class="application-card">
-                    {# --- ส่วนแสดงรูปภาพสัตว์เลี้ยง (แสดงรูปแรกในรายการ pets ของ application นี้) --- #}
+                    {# Pet image section #}
                     {% with first_pet=app.pets.first %}
                         <div class="pet-image-container">
                             {% if first_pet and first_pet.photo %}
@@ -162,6 +219,7 @@
                         </div>
                     {% endwith %}
 
+                    {# Application details section #}
                     <div class="application-details">
                         <h5>คำขอสำหรับ:
                             {% if app.pets.all %}
@@ -175,7 +233,7 @@
                                         {% else %}
                                             <i class="fas fa-paw"></i>
                                         {% endif %}
-                                        {{ pet_item.name }}
+                                        {{ pet_item.name }} (ID: {{ pet_item.id }})
                                     </li>
                                 {% endfor %}
                                 </ul>
@@ -194,11 +252,33 @@
                                 <span class="status-tag status-pending">{{ app.get_status_display }}</span>
                             {% elif app.status == app.STATUS_UNDER_REVIEW %}
                                 <span class="status-tag status-under_review">{{ app.get_status_display }}</span>
+                            {% elif app.status == app.STATUS_CANCELED %} {# Display for Canceled status #}
+                                <span class="status-tag status-canceled">{{ app.get_status_display }}</span>
                             {% else %}
                                 <span class="status-tag status-default">{{ app.get_status_display }}</span>
                             {% endif %}
                         </p>
                         <p><strong>ผู้ยื่นคำขอ:</strong> {{ app.first_name }} {{ app.last_name }}</p>
+
+                        {# Cancel Adoption Button Section #}
+                        {% if app.status == app.STATUS_PENDING or app.status == app.STATUS_UNDER_REVIEW %}
+                            <div class="cancel-button-container">
+                                <form method="post" action="{% url 'cancel_adoption_application' application_id=app.id %}" onsubmit="return confirm('Are you sure you want to cancel this adoption application? This action cannot be undone.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel-adoption">
+                                        <i class="fas fa-times-circle" style="margin-right: 5px;"></i>Cancel Adoption
+                                    </button>
+                                </form>
+                            </div>
+                        {% elif app.status == app.STATUS_CANCELED %}
+                             <div class="cancel-button-container">
+                                <button type="button" class="btn-cancel-adoption disabled" disabled>
+                                    Canceled
+                                </button>
+                            </div>
+                        {% endif %}
+                        {# End Cancel Adoption Button Section #}
+
                     </div>
                 </div>
             {% endfor %}

@@ -4,8 +4,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
-from django.db.models import F # เพิ่ม F object สำหรับ atomic updates
-from django.utils import timezone # ถ้ามีการใช้ timezone.now
+from django.db.models import F
+from django.utils import timezone
 
 class Pet(models.Model):
     is_adopted = models.BooleanField(default=False)
@@ -18,11 +18,11 @@ class Pet(models.Model):
         ('female', 'Female'),
     ]
 
-    name = models.CharField(max_length=100) # ควรเป็นชื่อเฉพาะ หรือรหัสประจำตัวสัตว์เลี้ยง
+    name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     age = models.CharField(max_length=100, default='Unknown')
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    personality = models.CharField(max_length=200, blank=True) # อนุญาตให้ว่างได้
+    personality = models.CharField(max_length=200, blank=True)
     story = models.TextField(blank=True)
     vaccinated = models.BooleanField(default=False)
     disability = models.CharField(max_length=100, blank=True)
@@ -132,13 +132,12 @@ class BlogPost(models.Model):
     image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
     is_new = models.BooleanField(default=False)
     url = models.URLField(max_length=5000, blank=True, null=True)
-    slug = models.SlugField(unique=True, blank=True) # Auto-generated if blank
+    slug = models.SlugField(unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-            # Ensure slug uniqueness if auto-generating
             original_slug = self.slug
             queryset = BlogPost.objects.all().exclude(pk=self.pk)
             counter = 1
@@ -170,7 +169,7 @@ class YourModel(models.Model): # This model seems unused or a placeholder
         return self.your_url
 
 class UserFavorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE) # Changed from 'auth.User' for consistency
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -182,22 +181,20 @@ class UserFavorite(models.Model):
 
 
 class AdoptionApplication(models.Model):
-    # --- Application Status Choices ---
     STATUS_PENDING = 'pending'
     STATUS_APPROVED = 'approved'
     STATUS_REJECTED = 'rejected'
-    STATUS_UNDER_REVIEW = 'under_review' # Example of an additional status
+    STATUS_UNDER_REVIEW = 'under_review'
+    STATUS_CANCELED = 'canceled'
 
     APPLICATION_STATUS_CHOICES = [
         (STATUS_PENDING, 'รอดำเนินการ (Pending)'),
         (STATUS_APPROVED, 'อนุมัติแล้ว (Approved)'),
         (STATUS_REJECTED, 'ถูกปฏิเสธ (Rejected)'),
         (STATUS_UNDER_REVIEW, 'กำลังตรวจสอบ (Under Review)'),
+        (STATUS_CANCELED, 'ยกเลิกแล้ว (Canceled)'),
     ]
 
-    # --- Applicant Information ---
-    # Consider adding a ForeignKey to User if applications are made by logged-in users
-    # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="ผู้ยื่นคำขอ (ถ้าล็อกอิน)")
     first_name = models.CharField(max_length=100, verbose_name="ชื่อจริง")
     last_name = models.CharField(max_length=100, verbose_name="นามสกุล")
     address = models.CharField(max_length=255, verbose_name="ที่อยู่")
@@ -206,16 +203,12 @@ class AdoptionApplication(models.Model):
     province = models.CharField(max_length=100, blank=True, null=True, verbose_name="จังหวัด")
     postal_code = models.CharField(max_length=20, blank=True, null=True, verbose_name="รหัสไปรษณีย์")
     phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name="เบอร์โทรศัพท์")
-    email = models.EmailField(blank=True, null=True, verbose_name="อีเมล") # Ensure this is being populated if used for filtering
-
-    # --- Adoption Details ---
+    email = models.EmailField(blank=True, null=True, verbose_name="อีเมล")
     household = models.TextField(blank=True, null=True, verbose_name="บุคคลในครัวเรือน")
     other_pets = models.TextField(blank=True, null=True, verbose_name="สัตว์เลี้ยงอื่นๆ (ถ้ามี)")
     property_description = models.TextField(blank=True, null=True, verbose_name="รายละเอียดที่พักอาศัย")
     job_working_hours = models.CharField(max_length=255, blank=True, null=True, verbose_name="อาชีพและเวลาทำงาน")
     motivation = models.TextField(blank=True, null=True, verbose_name="เหตุผลที่ต้องการรับเลี้ยง")
-
-    # --- Application Meta ---
     apply_date = models.DateTimeField(auto_now_add=True, verbose_name="วันที่ยื่นคำขอ")
     status = models.CharField(
         max_length=20,
@@ -225,26 +218,29 @@ class AdoptionApplication(models.Model):
     )
     pets = models.ManyToManyField(Pet, related_name='applications', verbose_name="สัตว์เลี้ยงที่ขอรับเลี้ยง")
 
+    # --- START: เพิ่ม Field สำหรับนัดหมายสัมภาษณ์ ---
+    interview_datetime = models.DateTimeField(
+        verbose_name="วันและเวลานัดหมายสัมภาษณ์ (Video Call)",
+        null=True,
+        blank=True, # ทำให้ field นี้ไม่บังคับกรอกในเบื้องต้น
+        help_text="ผู้ใช้เลือกวันเวลาสำหรับ Video Call กับผู้ประสานงาน"
+    )
+    # --- END: เพิ่ม Field สำหรับนัดหมายสัมภาษณ์ ---
+
     def __str__(self):
         pet_names = ", ".join([pet.name for pet in self.pets.all()])
         return f"คำขอจาก {self.first_name} {self.last_name} สำหรับ {pet_names} ({self.get_status_display()})"
 
     def save(self, *args, **kwargs):
-        is_new_application = self._state.adding # Check if it's a new instance being added
+        is_new_application = self._state.adding
         old_status = None
-
         if not is_new_application:
             try:
                 old_instance = AdoptionApplication.objects.get(pk=self.pk)
                 old_status = old_instance.status
             except AdoptionApplication.DoesNotExist:
-                # This case should ideally not happen if self.pk exists,
-                # but as a fallback, assume it was pending.
                 old_status = self.STATUS_PENDING
-        
-        super().save(*args, **kwargs) # Save the application first
-
-        # Logic for when status changes to Approved
+        super().save(*args, **kwargs)
         if old_status != self.STATUS_APPROVED and self.status == self.STATUS_APPROVED:
             pets_marked_adopted_count = 0
             for pet in self.pets.all():
@@ -252,36 +248,24 @@ class AdoptionApplication(models.Model):
                     pet.is_adopted = True
                     pet.save()
                     pets_marked_adopted_count += 1
-            
             if pets_marked_adopted_count > 0:
-                stats, created = PetStatistics.objects.get_or_create(pk=1) # Assuming singleton PetStatistics
+                stats, created = PetStatistics.objects.get_or_create(pk=1)
                 stats.adopted_count = F('adopted_count') + pets_marked_adopted_count
                 stats.save()
-
-        # Logic for when status changes FROM Approved to something else
         elif old_status == self.STATUS_APPROVED and self.status != self.STATUS_APPROVED:
             pets_reverted_count = 0
             for pet in self.pets.all():
-                # Check if this pet is still adopted by *another* approved application
                 other_approved_apps_for_pet = AdoptionApplication.objects.filter(
                     pets=pet, status=self.STATUS_APPROVED
                 ).exclude(pk=self.pk).exists()
-
                 if pet.is_adopted and not other_approved_apps_for_pet:
                     pet.is_adopted = False
                     pet.save()
                     pets_reverted_count += 1
-            
             if pets_reverted_count > 0:
                 stats, created = PetStatistics.objects.get_or_create(pk=1)
-                # Ensure adopted_count doesn't go below zero
                 stats.adopted_count = F('adopted_count') - pets_reverted_count
                 stats.save()
-                # To prevent negative, you might need to refresh and check:
-                # stats.refresh_from_db()
-                # if stats.adopted_count < 0:
-                #     stats.adopted_count = 0
-                #     stats.save()
 
     class Meta:
         verbose_name = "คำขอรับเลี้ยง"
@@ -291,23 +275,23 @@ class AdoptionApplication(models.Model):
 
 class DonationRecord(models.Model):
     donation_case = models.ForeignKey(
-        DonationCase, 
+        DonationCase,
         on_delete=models.SET_NULL,
-        null=True, 
-        blank=True, 
+        null=True,
+        blank=True,
         related_name='records',
         verbose_name="เคสบริจาค (ถ้ามี)"
     )
     user = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
         verbose_name="ผู้บริจาค (ถ้าล็อกอิน)"
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="จำนวนเงิน")
     payment_method = models.CharField(max_length=50, verbose_name="ช่องทางการชำระเงิน")
-    slip_image = models.ImageField(upload_to='donation_slips/', blank=True, null=True, verbose_name="รูปสลิป") # Allow blank/null if not PromptPay
+    slip_image = models.ImageField(upload_to='donation_slips/', blank=True, null=True, verbose_name="รูปสลิป")
     donated_at = models.DateTimeField(auto_now_add=True, verbose_name="วันที่บริจาค")
 
     def __str__(self):
@@ -320,18 +304,8 @@ class DonationRecord(models.Model):
         verbose_name = "รายการบริจาค"
         verbose_name_plural = "รายการบริจาคทั้งหมด"
         ordering = ['-donated_at']
-        
-# work/dsi202/pawpal/myapp/models.py
-from django.db import models
-from django.contrib.auth.models import User # หรือ from django.conf import settings แล้วใช้ settings.AUTH_USER_MODEL
-from django.utils import timezone
 
 class Conversation(models.Model):
-    """
-    เก็บข้อมูลการสนทนาระหว่าง User กับ Admin
-    อาจจะสร้าง instance หนึ่งต่อ User หนึ่งคนที่จะคุยกับ Admin
-    หรือ Admin หนึ่งคนคุยกับ User หลายคน (ขึ้นอยู่กับการออกแบบ)
-    """
     user = models.ForeignKey(User, related_name='chat_conversations_with_admin', on_delete=models.CASCADE)
     admin = models.ForeignKey(User, related_name='chat_conversations_with_user', on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'is_staff': True})
     created_at = models.DateTimeField(auto_now_add=True)
@@ -342,17 +316,16 @@ class Conversation(models.Model):
         return f"Conversation between {self.user.username} and {admin_username}"
 
     class Meta:
-        unique_together = ('user', 'admin') # ป้องกันการสร้างห้องซ้ำซ้อน (ถ้า admin ไม่ null)
+        unique_together = ('user', 'admin')
         ordering = ['-updated_at']
 
 class ChatMessage(models.Model):
-    """เก็บข้อความแต่ละข้อความใน Conversation"""
-    conversation = models.ForeignKey(Conversation, related_name='messages', on_delete=models.CASCADE, null=True, blank=True) # อาจจะเป็น null ถ้าเป็น global chat
-    sender = models.ForeignKey(User, related_name='sent_chat_messages', on_delete=models.SET_NULL, null=True) # ผู้ส่ง
+    conversation = models.ForeignKey(Conversation, related_name='messages', on_delete=models.CASCADE, null=True, blank=True)
+    sender = models.ForeignKey(User, related_name='sent_chat_messages', on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
-    is_admin_message = models.BooleanField(default=False) # ระบุว่าเป็นข้อความจาก Admin หรือไม่
+    is_admin_message = models.BooleanField(default=False)
 
     def __str__(self):
         sender_name = self.sender.username if self.sender else "System"
@@ -360,4 +333,3 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['timestamp']
-

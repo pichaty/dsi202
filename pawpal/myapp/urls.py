@@ -28,4 +28,5 @@ urlpatterns = [
     path('accounts/settings/', views.account_settings_view, name='account_settings'),
     path('notifications/', views.notifications_placeholder_view, name='notifications_placeholder'), # Placeholder
      path('chat/', views.chat_view, name='chat_page'), # <--- เพิ่ม URL สำหรับหน้าแชท
+      path('accounts/my-adoptions/cancel/<int:application_id>/', views.cancel_adoption_application_view, name='cancel_adoption_application'),
 ]
