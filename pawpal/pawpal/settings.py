@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware', # Added AccountMiddleware for allauth
+    
 ]
 
 ROOT_URLCONF = 'pawpal.urls'

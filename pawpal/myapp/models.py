@@ -8,7 +8,6 @@ from django.db.models import F
 from django.utils import timezone
 
 class Pet(models.Model):
-    # ... (โค้ดเดิมของ Pet model) ...
     is_adopted = models.BooleanField(default=False)
     PET_TYPE_CHOICES = [
         ('dog', 'Dog'),
@@ -57,37 +56,18 @@ class DonationCase(models.Model):
     amount_needed = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     amount_raised = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     image = models.ImageField(upload_to='donations/', blank=True, null=True)
-    # --- เพิ่ม Field นี้ ---
-    promptpay_id = models.CharField(
-        max_length=50,  # ปรับความยาวตามต้องการ (เบอร์โทรศัพท์ PromptPay ปกติ 10 หลัก)
-        blank=True,
-        null=True,
-        verbose_name="PromptPay ID สำหรับเคสนี้"
-    )
-    # --- สิ้นสุดการเพิ่ม Field ---
 
     def __str__(self):
         return f"{self.case_id} - {self.title}"
 
-# ... (โค้ด Model อื่นๆ ที่เหลือ) ...
 
 class DonationSettings(models.Model):
     promptpay_qr_code = models.ImageField(
         upload_to='site_settings/qr_codes/',
         blank=True,
         null=True,
-        verbose_name="PromptPay QR Code Image (สำหรับบริจาคทั่วไป)"
+        verbose_name="PromptPay QR Code Image"
     )
-    # --- เพิ่ม Field นี้สำหรับ PromptPay ID หลักของมูลนิธิ ---
-    default_promptpay_id = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-        verbose_name="Default PromptPay ID (สำหรับบริจาคทั่วไป)",
-        help_text="หมายเลข PromptPay หลักของมูลนิธิ หากเคสไม่มี ID ของตัวเอง"
-    )
-    # --- สิ้นสุดการเพิ่ม Field ---
-
 
     class Meta:
         verbose_name = "Donation Settings"
