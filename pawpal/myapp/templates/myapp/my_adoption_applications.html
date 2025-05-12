@@ -1,7 +1,7 @@
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block title %}สถานะการรับเลี้ยง - PawPal{% endblock %}
+{% block title %}{{ page_title|default:"สถานะการรับเลี้ยง" }} - PawPal{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -86,7 +86,7 @@
     }
     .application-card p strong {
         color: #333;
-        min-width: 90px;
+        min-width: 100px; /* Adjusted min-width */
         display: inline-block;
     }
 
@@ -98,13 +98,13 @@
         font-weight: bold;
         color: white;
         display: inline-block;
-        text-transform: capitalize;
+        text-transform: capitalize; /* Consistent capitalization */
     }
     .status-pending { background-color: #ffc107; color: #333; border: 1px solid #e0a800;}
     .status-approved { background-color: #28a745; color: white; border: 1px solid #1e7e34;}
     .status-rejected { background-color: #dc3545; color: white; border: 1px solid #b02a37;}
     .status-under_review { background-color: #17a2b8; color: white; border: 1px solid #117a8b;}
-    .status-canceled { background-color: #6c757d; color: white; border: 1px solid #545b62;} /* New Canceled Status Style */
+    .status-canceled { background-color: #6c757d; color: white; border: 1px solid #545b62;}
     .status-default { background-color: #6c757d; color: white; border: 1px solid #545b62;}
 
 
@@ -147,57 +147,87 @@
     /* Cancel Button Styling */
     .cancel-button-container {
         margin-top: 10px;
-        text-align: right; /* Align button to the right */
+        text-align: right;
     }
 
     .btn-cancel-adoption {
-        background-color: var(--accent-red, #dc3545); /* Red color */
+        background-color: var(--accent-red, #dc3545);
         color: white;
         border: none;
-        padding: 6px 12px; /* Adjust padding */
-        border-radius: 5px; /* Rounded corners */
-        font-size: 0.8em; /* Adjust font size */
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-size: 0.8em;
         text-decoration: none;
         cursor: pointer;
         transition: background-color 0.2s ease;
     }
     .btn-cancel-adoption:hover {
-        background-color: #c82333; /* Darker red on hover */
+        background-color: #c82333;
     }
-    .btn-cancel-adoption.disabled { /* Style for disabled button */
-        background-color: #adb5bd; /* Grey color */
+    .btn-cancel-adoption.disabled {
+        background-color: #adb5bd;
         cursor: not-allowed;
         opacity: 0.7;
     }
 
-     /* Django Messages Styling (from allauth or custom) */
-    .allauth-messages { /* General class for message list */
+     /* Django Messages Styling */
+    .allauth-messages {
         list-style-type: none;
         padding: 0;
         margin-bottom: 20px;
     }
-    .allauth-messages li { /* Individual message item */
+    .allauth-messages li {
         padding: 12px 18px;
         border-radius: 8px;
         margin-bottom: 10px;
         font-size: 0.95em;
-        border: 1px solid transparent; /* Base border */
+        border: 1px solid transparent;
     }
-    /* Specific message types */
     .allauth-messages li.success { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc;}
     .allauth-messages li.warning { background-color: #fff3cd; color: #664d03; border-color: #ffecb5;}
     .allauth-messages li.error { background-color: #f8d7da; color: #842029; border-color: #f5c2c7;}
-    .allauth-messages li.info { background-color: #cce5ff; color: #004085; border-color: #b8daff;} /* For info messages */
+    .allauth-messages li.info { background-color: #cce5ff; color: #004085; border-color: #b8daff;}
+
+    /* Page Navigation Links */
+    .page-navigation-links {
+        text-align: center;
+        margin-bottom: 15px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .page-navigation-links a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .page-navigation-links a:hover,
+    .page-navigation-links a.active {
+        background-color: var(--primary-light, #ffe0b2); /* Use a light version of your primary color */
+        color: var(--primary-dark, #c05500); /* Use a dark version of your primary color */
+    }
 
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-container">
-    <h1 class="section-header"><i class="fas fa-file-alt" style="margin-right: 10px;"></i>สถานะการรับเลี้ยงสัตว์</h1>
+    <h1 class="section-header">
+        <i class="fas fa-file-alt" style="margin-right: 10px;"></i>
+        {{ page_title|default:"สถานะการรับเลี้ยงสัตว์" }}
+    </h1>
+
+    <div class="page-navigation-links">
+        <a href="{% url 'my_adoption_applications' %}" class="{% if request.resolver_match.url_name == 'my_adoption_applications' %}active{% endif %}">Current & Recent</a>
+        <a href="{% url 'adoption_application_history' %}" class="{% if request.resolver_match.url_name == 'adoption_application_history' %}active{% endif %}">History</a>
+    </div>
+
     <div class="content-box">
 
-        {% if messages %} {# Display Django messages if any #}
+        {% if messages %}
             <ul class="allauth-messages">
                 {% for message in messages %}
                     <li class="{{ message.tags }}">{{ message|safe }}</li>
@@ -208,7 +238,6 @@
         {% if applications %}
             {% for app in applications %}
                 <div class="application-card">
-                    {# Pet image section #}
                     {% with first_pet=app.pets.first %}
                         <div class="pet-image-container">
                             {% if first_pet and first_pet.photo %}
@@ -219,7 +248,6 @@
                         </div>
                     {% endwith %}
 
-                    {# Application details section #}
                     <div class="application-details">
                         <h5>คำขอสำหรับ:
                             {% if app.pets.all %}
@@ -252,41 +280,48 @@
                                 <span class="status-tag status-pending">{{ app.get_status_display }}</span>
                             {% elif app.status == app.STATUS_UNDER_REVIEW %}
                                 <span class="status-tag status-under_review">{{ app.get_status_display }}</span>
-                            {% elif app.status == app.STATUS_CANCELED %} {# Display for Canceled status #}
+                            {% elif app.status == app.STATUS_CANCELED %}
                                 <span class="status-tag status-canceled">{{ app.get_status_display }}</span>
                             {% else %}
                                 <span class="status-tag status-default">{{ app.get_status_display }}</span>
                             {% endif %}
                         </p>
                         <p><strong>ผู้ยื่นคำขอ:</strong> {{ app.first_name }} {{ app.last_name }}</p>
-
-                        {# Cancel Adoption Button Section #}
-                        {% if app.status == app.STATUS_PENDING or app.status == app.STATUS_UNDER_REVIEW %}
-                            <div class="cancel-button-container">
-                                <form method="post" action="{% url 'cancel_adoption_application' application_id=app.id %}" onsubmit="return confirm('Are you sure you want to cancel this adoption application? This action cannot be undone.');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-cancel-adoption">
-                                        <i class="fas fa-times-circle" style="margin-right: 5px;"></i>Cancel Adoption
-                                    </button>
-                                </form>
-                            </div>
-                        {% elif app.status == app.STATUS_CANCELED %}
-                             <div class="cancel-button-container">
-                                <button type="button" class="btn-cancel-adoption disabled" disabled>
-                                    Canceled
-                                </button>
-                            </div>
+                        {% if app.interview_datetime %}
+                        <p><strong>เวลานัดสัมภาษณ์:</strong> {{ app.interview_datetime|date:"d M Y, H:i" }}</p>
                         {% endif %}
-                        {# End Cancel Adoption Button Section #}
 
+
+                        {% if request.resolver_match.url_name == 'my_adoption_applications' or request.resolver_match.url_name == 'adoption_application_history' %}
+                            {% if app.status == app.STATUS_PENDING or app.status == app.STATUS_UNDER_REVIEW %}
+                                <div class="cancel-button-container">
+                                    <form method="post" action="{% url 'cancel_adoption_application' application_id=app.id %}" onsubmit="return confirm('Are you sure you want to cancel this adoption application? This action cannot be undone.');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-cancel-adoption">
+                                            <i class="fas fa-times-circle" style="margin-right: 5px;"></i>Cancel Adoption
+                                        </button>
+                                    </form>
+                                </div>
+                            {% elif app.status == app.STATUS_CANCELED %}
+                                 <div class="cancel-button-container">
+                                    <button type="button" class="btn-cancel-adoption disabled" disabled>
+                                        Canceled
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
         {% else %}
             <div class="no-applications">
                 <i class="fas fa-folder-open"></i>
-                <p>คุณยังไม่มีคำขอรับเลี้ยงสัตว์ที่ยื่นไปในขณะนี้</p>
-                <p><a href="{% url 'adopt_catalog' %}" class="button" style="background-color: var(--primary); color:white; padding: 10px 20px; border-radius: 20px; text-decoration:none; display:inline-block; margin-top:10px;">ดูสัตว์เลี้ยงสำหรับรับอุปการะ</a></p>
+                {% if request.resolver_match.url_name == 'adoption_application_history' %}
+                    <p>คุณยังไม่มีประวัติคำขอรับเลี้ยงสัตว์</p>
+                {% else %}
+                    <p>คุณยังไม่มีคำขอรับเลี้ยงสัตว์ที่กำลังดำเนินการ หรือคำขอที่เพิ่งดำเนินการเสร็จสิ้นล่าสุด</p>
+                    <p><a href="{% url 'adopt_catalog' %}" class="button" style="background-color: var(--primary); color:white; padding: 10px 20px; border-radius: 20px; text-decoration:none; display:inline-block; margin-top:10px;">ดูสัตว์เลี้ยงสำหรับรับอุปการะ</a></p>
+                {% endif %}
             </div>
         {% endif %}
     </div>

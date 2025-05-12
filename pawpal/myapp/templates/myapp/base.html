@@ -11,16 +11,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Base styles for header, body, main, etc. */
+        :root { /* Define color variables here for consistency */
+            --primary: #d55e00;
+            --primary-light: #ffe0b2; /* Example light orange */
+            --primary-dark: #c05500;  /* Example dark orange */
+            --secondary: #8d6e63;
+            --green: #8db38b;
+            --green_dark: #38783a; /* For text on light green bg */
+            --green_light: #a7d7a9; /* For border on light green bg */
+            --light-orange: #d99a56;
+            --background: #f9f4e8;
+            --accent-red: #e8605c;
+        }
+
         body {
             font-family: 'Sarabun', sans-serif;
-            background-color: #f9f4e8; /* var(--background) */
+            background-color: var(--background);
             margin: 0;
             padding-top: 160px; /* Height of fixed header */
             padding-bottom: 60px; /* Height of fixed footer */
-            min-height: 100vh; /* Ensure body takes full viewport height */
+            min-height: 100vh;
             box-sizing: border-box;
-            display: flex; /* For centering content if needed on some pages */
-            flex-direction: column; /* For centering content */
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -32,23 +45,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 15px; /* Adjusted padding */
+            padding: 5px 15px;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: top 0.3s ease-in-out;
-            height: 140px; /* Explicit height for header */
+            height: 140px;
             box-sizing: border-box;
         }
 
         .header-hidden {
-            top: -160px; /* Match header height */
+            top: -160px; /* Match header height + a bit more if needed */
         }
 
         .header-left-content {
             display: flex;
             align-items: center;
             gap: 15px;
-            position: relative; /* For dropdown positioning */
+            position: relative;
         }
 
         .profile-icon-link {
@@ -56,14 +69,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer; /* Make it look clickable */
+            cursor: pointer;
         }
 
         .profile-icon {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: #8c6e5d;
+            background-color: #8c6e5d; /* Consider using var(--secondary) */
             color: white;
             display: flex;
             align-items: center;
@@ -75,17 +88,17 @@
 
         /* Profile Dropdown Styles */
         .profile-dropdown {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
-            top: 45px; /* Adjust as needed, below the profile icon */
+            top: 45px;
             left: 0;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1001; /* Ensure it's above other content */
-            min-width: 240px; /* Adjust width as needed */
-            padding: 5px 0; /* Padding for top/bottom of the dropdown box */
+            z-index: 1001;
+            min-width: 240px;
+            padding: 5px 0;
         }
 
         .profile-dropdown.open {
@@ -120,43 +133,43 @@
             text-decoration: none;
             color: #333;
             font-size: 0.9em;
-            transition: background-color 0.2s ease, color 0.2s ease; /* Added color transition */
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
-        .profile-dropdown ul li a i { /* Style for icons in dropdown */
+        .profile-dropdown ul li a i {
             margin-right: 10px;
-            color: #555; /* Default icon color */
-            width: 16px; /* For icon alignment */
+            color: #555;
+            width: 16px;
             text-align: center;
-            transition: color 0.2s ease; /* Added color transition for icon */
+            transition: color 0.2s ease;
         }
 
         .profile-dropdown ul li a:hover {
             background-color: #f5f5f5;
-            color: #d55e00; /* Change text color on hover */
+            color: var(--primary);
         }
         .profile-dropdown ul li a:hover i {
-            color: #d55e00; /* Change icon color on hover */
+            color: var(--primary);
         }
 
 
         .profile-dropdown .dropdown-divider {
             height: 1px;
-            margin: 5px 0; /* Space around divider */
+            margin: 5px 0;
             overflow: hidden;
             background-color: #e9ecef;
         }
         /* End Profile Dropdown Styles */
 
 
-        .logout-link { /* This class was previously used, might not be needed if logout is in dropdown */
-            color: #d55e00;
+        .logout-link {
+            color: var(--primary);
             text-decoration: none;
             font-weight: bold;
             font-size: 0.9em;
         }
         .logout-link:hover {
             text-decoration: underline;
-            color: #e8605c;
+            color: var(--accent-red);
         }
 
         .logo-container {
@@ -166,15 +179,15 @@
         }
 
         .logo {
-            height: 150px;
-            width: auto;
+            height: 150px; /* Maintain original size */
+            width: auto;    /* Maintain original size */
             object-fit: contain;
         }
 
         .header-right-icons {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 10px; /* Adjust gap as needed */
         }
 
         .favorite-icon-link {
@@ -184,39 +197,39 @@
             position: relative;
         }
 
-        .favorite-icon-img {
-            width: 60px;
+        .favorite-icon-img { /* Renamed from .favorite-icon to avoid clash if original .favorite-icon is still used elsewhere with different styling */
+            width: 60px; /* Adjust size as needed */
             height: auto;
         }
 
-        .notifications {
+        .notifications { /* Assuming this is for chat or general notifications */
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
+            width: 30px; /* Base size for the icon container */
             height: 30px;
         }
 
         .notifications img {
-            height: 24px;
+            height: 24px; /* Size of the actual icon image */
             width: auto;
         }
 
         .notification-count {
             position: absolute;
-            top: 6px;
-            right: 6px;
-            background-color: #e8605c;
+            top: 6px; /* Adjust for visual alignment with favorite icon */
+            right: 6px; /* Adjust for visual alignment */
+            background-color: var(--accent-red);
             color: white;
             border-radius: 50%;
             width: 16px;
             height: 16px;
-            font-size: 0.65em;
+            font-size: 0.65em; /* Small font for count */
             display: flex;
             align-items: center;
             justify-content: center;
-            line-height: 1;
+            line-height: 1; /* Ensure text is centered vertically */
             font-weight: bold;
         }
 
@@ -225,6 +238,8 @@
             width: 100%;
         }
 
+        /* If you have a general .favorite-icon class for heart icons on cards, keep it separate */
+        /* This is an example if you use it on pet cards */
         .favorite-icon {
             position: absolute;
             top: 10px;
@@ -236,13 +251,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ccc;
+            color: #ccc; /* Default color for inactive icon */
             z-index: 10;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .favorite-icon i.fas.fa-heart { color: #ccc; }
-        .favorite-icon i.fas.fa-heart.active { color: #e8605c; }
+        .favorite-icon i.fas.fa-heart { color: #ccc; } /* Default FontAwesome heart color */
+        .favorite-icon i.fas.fa-heart.active { color: var(--accent-red); } /* Active color */
 
     </style>
     {% block extra_head %}{% endblock %}
@@ -251,24 +266,23 @@
     <header>
         <div class="header-left-content">
             {% if user.is_authenticated %}
-                {# Profile icon now acts as a toggle for the dropdown #}
                 <div class="profile-icon-link" id="profileIconLink" title="{{ user.username }}">
-                    <div class="profile-icon">{{ user.username|first }}</div>
+                    <div class="profile-icon">{{ user.username|first|upper }}</div>
                 </div>
-                {# Dropdown Menu HTML Structure #}
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-dropdown-header">
                         <strong>{{ user.get_full_name|default:user.username }}</strong>
                         <small>{{ user.email }}</small>
                     </div>
                     <ul>
-                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>User Profile</a></li>
-                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>Adoption Status</a></li>
+                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>Profile</a></li>
+                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>Adoption status</a></li>
+                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>history</a></li>
                         <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>My paws</a></li>
                         <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>Favorites</a></li>
                         <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>My Donations</a></li>
                         <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>Settings</a></li>
-                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>Notifications</a></li> {# Placeholder URL #}
+                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>Notification</a></li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
                     </ul>
@@ -294,8 +308,8 @@
                 {% endif %}
             </a>
             <a href="{% url 'chat_page' %}" class="notifications" title="Chat with Admin">
-                <img src="{% static 'myapp/images/message_box.png' %}" alt="Notifications">
-                {# <span class="notification-count">2</span> #} {# Example notification count #}
+                <img src="{% static 'myapp/images/message_box.png' %}" alt="Chat">
+                {# <span class="notification-count">2</span> #} {# Example notification count for chat #}
             </a>
         </div>
     </header>
@@ -310,20 +324,18 @@
     <script>
         let lastScrollTop = 0;
         const header = document.querySelector('header');
-        const headerHeight = header.offsetHeight;
+        const headerHeight = header.offsetHeight; // Get actual header height
 
         window.addEventListener('scroll', function() {
             let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
             if (currentScrollTop > lastScrollTop && currentScrollTop > headerHeight) {
+                // Scroll Down
                 header.classList.add('header-hidden');
             } else {
+                // Scroll Up
                 header.classList.remove('header-hidden');
             }
-            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-
-             if (currentScrollTop === 0) {
-                 header.classList.remove('header-hidden');
-            }
+            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
         });
 
         // JavaScript for Profile Dropdown
