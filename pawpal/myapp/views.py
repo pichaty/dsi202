@@ -612,3 +612,33 @@ def notifications_view(request): # เปลี่ยนชื่อ view functi
         'page_title': 'Notifications'
     }
     return render(request, 'myapp/notifications_list.html', context) # เปลี่ยนชื่อ template
+
+# work/dsi202/pawpal/myapp/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import UserProfileEditForm
+
+@login_required
+def user_profile_view(request):
+    user_instance = request.user
+    edit_mode = request.GET.get('edit', 'false').lower() == 'true' # ตรวจสอบ query parameter 'edit'
+
+    if request.method == 'POST':
+        form = UserProfileEditForm(request.POST, instance=user_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'อัปเดตข้อมูลโปรไฟล์สำเร็จแล้ว!')
+            return redirect('user_profile') # กลับไปหน้าโปรไฟล์ (view mode)
+        else:
+            messages.error(request, 'เกิดข้อผิดพลาดในการอัปเดตข้อมูลโปรไฟล์ กรุณาตรวจสอบข้อมูลที่กรอก')
+            edit_mode = True # ถ้าฟอร์มผิดพลาด ให้ยังอยู่ใน edit mode
+    else:
+        form = UserProfileEditForm(instance=user_instance)
+
+    context = {
+        'current_user': user_instance,
+        'form': form,
+        'edit_mode': edit_mode, # ส่งสถานะ edit_mode ไปยัง template
+    }
+    return render(request, 'myapp/user_profile.html', context)

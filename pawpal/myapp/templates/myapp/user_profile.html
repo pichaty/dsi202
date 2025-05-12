@@ -5,66 +5,116 @@
 
 {% block extra_head %}
 <style>
-    /* Inherits styles from base.html including color variables */
-
-    .page-container { /* New general container for content area */
-        max-width: 800px; /* Consistent max-width */
+    /* ... (CSS เดิมของคุณ) ... */
+    .page-container {
+        max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        background-color: var(--background); /* Light background for the page */
+        background-color: var(--background);
     }
 
-    .section-header { /* For main page title */
-        background-color: var(--green); /* Pawpal's green */
+    .section-header {
+        background-color: var(--green);
         color: white;
         padding: 15px 20px;
-        border-radius: 8px 8px 0 0; /* Rounded top corners */
+        border-radius: 8px 8px 0 0;
         text-align: center;
         font-size: 1.6em;
         font-weight: bold;
-        margin-bottom: 0; /* Remove bottom margin if content-box has padding */
+        margin-bottom: 0;
     }
 
-    .content-box { /* Box for the actual content */
-        background-color: #fff; /* White background for content area */
+    .content-box {
+        background-color: #fff;
         padding: 25px;
-        border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+        border-radius: 0 0 8px 8px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .profile-info p {
+    /* Profile Info Display (View Mode) */
+    .profile-info-display p { /* เปลี่ยนชื่อ class เพื่อแยกกับ form */
         margin-bottom: 12px;
-        font-size: 1.05em; /* Slightly larger text */
-        color: #444; /* Darker text for readability */
+        font-size: 1.05em;
+        color: #444;
         line-height: 1.6;
     }
-    .profile-info strong {
-        color: var(--secondary); /* Pawpal's secondary color (brownish) */
-        min-width: 120px; /* Align labels a bit */
+    .profile-info-display strong {
+        color: var(--secondary);
+        min-width: 120px; /* หรือตาม UI ที่ต้องการ */
         display: inline-block;
     }
+
+    /* Profile Edit Form (Edit Mode) */
+    .profile-edit-form .form-group {
+        margin-bottom: 15px;
+    }
+    .profile-edit-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--secondary);
+        font-size: 0.95em;
+    }
+    .profile-edit-form .profile-form-input { /* class ที่เพิ่มใน forms.py */
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 1em;
+    }
+    .profile-edit-form .profile-form-input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2);
+    }
+    .profile-edit-form .errorlist { /* สำหรับแสดง error ของ form */
+        list-style-type: none;
+        padding: 0;
+        margin: 5px 0 0 0;
+        color: red;
+        font-size: 0.9em;
+    }
+
 
     .profile-actions {
         margin-top: 25px;
         padding-top: 20px;
         border-top: 1px solid #eee;
+        text-align: left; /* จัดปุ่ม Edit ไปทางขวา */
     }
-    .profile-actions a {
-        display: inline-block; /* Make buttons block-like */
+    .profile-actions a, .profile-actions button {
+        display: inline-block;
         padding: 10px 20px;
-        margin-right: 10px;
-        margin-bottom: 10px; /* For stacking on small screens */
-        background-color: var(--primary); /* Pawpal's orange */
+        margin-left: 10px; /* เปลี่ยนเป็น margin-left สำหรับปุ่มที่อยู่ติดกันทางขวา */
+        margin-bottom: 10px;
+        background-color: var(--primary);
         color: white;
         text-decoration: none;
-        border-radius: 25px; /* Rounded buttons */
+        border-radius: 25px;
         font-weight: bold;
         transition: background-color 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95em;
     }
-    .profile-actions a:hover {
-        background-color: #c88a46; /* Darker orange on hover */
+    .profile-actions a:hover, .profile-actions button:hover {
+        background-color: #c88a46;
         text-decoration: none;
     }
+    .profile-actions .btn-secondary { /* ปุ่ม Cancel หรือปุ่มที่ไม่ใช่ primary */
+        background-color: #aaa;
+    }
+    .profile-actions .btn-secondary:hover {
+        background-color: #888;
+    }
+
+    /* Django Messages Styling (เหมือนเดิม) */
+    .django-messages { list-style-type: none; padding: 0; margin: 0 0 20px 0; }
+    .django-messages li { padding: 10px 15px; margin-bottom: 10px; border-radius: 5px; font-size: 0.95em; }
+    .django-messages li.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
+    .django-messages li.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
+
 </style>
 {% endblock %}
 
@@ -72,18 +122,52 @@
 <div class="page-container">
     <h1 class="section-header"><i class="fas fa-user-circle" style="margin-right: 10px;"></i>User profile</h1>
     <div class="content-box">
-        <div class="profile-info">
-            <p><strong>Username :</strong> {{ current_user.username }}</p>
-            <p><strong>e-mail :</strong> {{ current_user.email }}</p>
-            <p><strong>fullname :</strong> {{ current_user.get_full_name|default:"ไม่ได้ระบุ" }}</p>
-            <p><strong>Join Date :</strong> {{ current_user.date_joined|date:"d F Y" }}</p>
-        </div>
 
-        <div class="profile-actions">
-            <a href="{% url 'account_change_password' %}"><i class="fas fa-key" style="margin-right: 5px;"></i>Reset Password</a>
-            <a href="{% url 'account_email' %}"><i class="fas fa-envelope" style="margin-right: 5px;"></i>Manage Email</a>
-            {# Add other relevant links here if needed #}
-        </div>
+        {% if messages %}
+            <ul class="django-messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if edit_mode %}
+            {# Edit Mode: Display Form #}
+            <form method="post" class="profile-edit-form">
+                {% csrf_token %}
+                <h3>แก้ไขข้อมูลโปรไฟล์</h3>
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small style="color: grey; font-size:0.85em; display:block; margin-top:3px;">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="profile-actions">
+                    <a href="{% url 'user_profile' %}" class="btn-secondary">Cancel</a>
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
+        {% else %}
+            {# View Mode: Display User Info #}
+            <div class="profile-info-display">
+                <p><strong>Username :</strong> {{ current_user.username }}</p>
+                <p><strong>e-mail :</strong> {{ current_user.email }}</p>
+                <p><strong>fullname :</strong> {{ current_user.get_full_name|default:"ไม่ได้ระบุ" }}</p>
+                <p><strong>Join Date :</strong> {{ current_user.date_joined|date:"d F Y" }}</p>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{% url 'user_profile' %}?edit=true" class="btn-edit-profile"><i class="fas fa-edit" style="margin-right: 5px;"></i>Edit Profile</a>
+                <a href="{% url 'account_change_password' %}"><i class="fas fa-key" style="margin-right: 5px;"></i>Reset Password</a>
+                <a href="{% url 'account_email' %}"><i class="fas fa-envelope" style="margin-right: 5px;"></i>Manage Email</a>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
