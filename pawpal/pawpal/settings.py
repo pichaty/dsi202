@@ -201,7 +201,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'OAUTH_PKCE_ENABLED': True, # Recommended for security
     }
 }
-# SOCIALACCOUNT_LOGIN_ON_GET = True # No longer recommended, use provider_login_url template tag with POST
+SOCIALACCOUNT_LOGIN_ON_GET = True # No longer recommended, use provider_login_url template tag with POST
 # work/dsi202/pawpal/pawpal/settings.py
 
 # ... (การตั้งค่าอื่นๆ) ...
@@ -216,3 +216,4 @@ CHANNEL_LAYERS = {
         },
     },
 }
+SOCIALACCOUNT_AUTO_SIGNUP = True 

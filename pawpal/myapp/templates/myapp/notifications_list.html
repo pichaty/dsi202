@@ -121,7 +121,7 @@
     </h1>
     <div class="content-box-notif">
         {% if notifications_list %}
-            <a href="{% url 'notifications_list' %}?mark_all_read=true" class="mark-all-read-link">ทำเครื่องหมายว่าอ่านทั้งหมด</a>
+            <a href="{% url 'notifications_list' %}?mark_all_read=true" class="mark-all-read-link">Mark All as Read </a>
             <ul class="notification-list">
                 {% for notif in notifications_list %}
                 <li class="notification-item {% if not notif.is_read %}unread{% endif %}">

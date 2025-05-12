@@ -1,33 +1,94 @@
+# work/dsi202/pawpal/myapp/adapters.py
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.account.adapter import DefaultAccountAdapter
-from allauth.account.forms import LoginForm # Import LoginForm ที่ถูกต้อง
-import logging # Import a logging library
+from django.contrib.auth import get_user_model
+from django.shortcuts import resolve_url
+from django.conf import settings
 
-logger = logging.getLogger(__name__) # Create a logger instance
 
-class DebugAccountAdapter(DefaultAccountAdapter):
+User = get_user_model()
 
-    def get_login_form_class(self, request):
-        # นี่คือ method ที่ allauth ใช้เพื่อเรียก LoginForm class
-        # เราสามารถดักจับ form instance ที่นี่หลังจากมันถูกสร้างขึ้นได้
-        # แต่การเข้าถึง instance โดยตรงใน method นี้อาจไม่ง่าย
-        # วิธีที่ดีกว่าคือการ override view หรือ signal
-        # อย่างไรก็ตาม เราสามารถ log ชื่อ form class ที่ถูกใช้ได้
-        form_class = super().get_login_form_class(request)
-        logger.debug(f"[DebugAdapter] Login form class being used: {form_class}")
-        return form_class
+class MyCustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
-    # คุณอาจจะ override method อื่นๆ ที่เกี่ยวข้องกับการสร้าง form
-    # หรือการประมวลผล view ถ้าต้องการ debug เพิ่มเติม
-    # เช่น get_form_kwargs, get_context_data ใน view ที่เกี่ยวข้อง
+    def pre_social_login(self, request, sociallogin):
+        # ... (โค้ดเดิมของคุณใน pre_social_login) ...
+        if sociallogin.is_existing:
+            return
 
-    # ตัวอย่างการดักจับ form ใน view ผ่าน adapter อาจจะไม่ตรงจุดนัก
-    # แต่ถ้า allauth มี signal ที่ส่ง form instance เราสามารถใช้ signal receiver ได้
-    # หรือวิธีที่ง่ายกว่าคือการ print field ของ form ใน template ด้วย loop ดังนี้:
+        try:
+            email_address = sociallogin.account.extra_data.get('email')
+            if email_address:
+                users = User.objects.filter(email=email_address)
+                if users.exists():
+                     pass # ปล่อยให้ allauth จัดการตาม settings
 
-    # เพิ่มโค้ดนี้ใน template login.html ชั่วคราว:
-    # {% for field_name, field_object in form.fields.items %}
-    #     <p>Field Name: {{ field_name }} | Widget: {{ field_object.widget }}</p>
-    # {% endfor %}
-    # {% for field in form %}
-    # <p>Visible Field Name in form loop: {{ field.name }} | Label: {{ field.label }}</p>
-    # {% endfor %}
+        except User.DoesNotExist:
+            pass
+
+    def populate_user(self, request, sociallogin, data):
+        """
+        Override เพื่อ populate first_name และ last_name ด้วย
+        """
+        user = super().populate_user(request, sociallogin, data)
+
+        # ดึง first_name และ last_name จาก extra_data ของ social account
+        # key อาจต่างกันไปในแต่ละ provider (สำหรับ Google คือ 'given_name', 'family_name')
+        first_name = sociallogin.account.extra_data.get('given_name', '')
+        last_name = sociallogin.account.extra_data.get('family_name', '')
+        full_name = sociallogin.account.extra_data.get('name', '') # Fallback
+
+        # เติมค่าถ้าฟิลด์ใน user model ยังว่างอยู่
+        if not user.first_name and first_name:
+            user.first_name = first_name
+        elif not user.first_name and full_name and not last_name:
+             # ลองแยกจาก full name ถ้าไม่มี first/last แยกมา
+             parts = full_name.split(' ', 1)
+             user.first_name = parts[0]
+             if len(parts) > 1:
+                 user.last_name = parts[1] # เติมนามสกุลถ้าแยกได้
+
+        if not user.last_name and last_name:
+            user.last_name = last_name
+
+        # email และ username มักจะถูกจัดการโดย default หรือ signup form อยู่แล้ว
+
+        return user
+
+    def save_user(self, request, sociallogin, form=None):
+        """
+        ตรวจสอบให้แน่ใจว่า first_name และ last_name จาก social provider ถูกบันทึก
+        """
+        user = super().save_user(request, sociallogin, form=form)
+        # อาจจะต้อง populate อีกครั้งเผื่อ user object ถูกสร้างใหม่
+        first_name = sociallogin.account.extra_data.get('given_name', '')
+        last_name = sociallogin.account.extra_data.get('family_name', '')
+        full_name = sociallogin.account.extra_data.get('name', '')
+
+        needs_save = False
+        if not user.first_name and first_name:
+            user.first_name = first_name
+            needs_save = True
+        elif not user.first_name and full_name and not last_name:
+             parts = full_name.split(' ', 1)
+             user.first_name = parts[0]
+             if len(parts) > 1 and not user.last_name:
+                 user.last_name = parts[1]
+             needs_save = True
+
+        if not user.last_name and last_name:
+            user.last_name = last_name
+            needs_save = True
+
+        if needs_save:
+             user.save(update_fields=['first_name', 'last_name']) # ระบุ field ที่ต้องการ update
+
+        return user
+
+
+class MyCustomAccountAdapter(DefaultAccountAdapter):
+    # ... (โค้ดเดิมของคุณใน MyCustomAccountAdapter) ...
+     def get_login_redirect_url(self, request):
+         return resolve_url(settings.LOGIN_REDIRECT_URL)
+
+     def get_signup_redirect_url(self, request):
+         return resolve_url(settings.LOGIN_REDIRECT_URL)
