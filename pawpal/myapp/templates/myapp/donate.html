@@ -215,20 +215,88 @@
         margin-bottom: 25px;
         position: relative;
         padding-bottom: 15px; }
-    .pet-cases-header h2 { font-family: 'Grandstander', cursive; color: #444; font-size: 28px; margin: 0; }
-    .pet-cases-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: linear-gradient(90deg, var(--pawpal-green), #3e7a42); border-radius: 3px; }
-    .pet-case-card { display: flex; background-color: #fff; border-radius: var(--border-radius-soft); overflow: hidden; margin-bottom: 20px; box-shadow: var(--card-shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; padding: 15px; text-decoration: none; color: inherit; border-left: 5px solid var(--pawpal-green); }
-    .pet-case-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); }
-    .pet-photo { width: 120px; height: 120px; flex-shrink: 0; border-radius: 12px; overflow: hidden; margin-right: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
-    .pet-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .pet-case-card:hover .pet-photo img { transform: scale(1.08); }
-    .pet-info { flex-grow: 1; padding: 0; position: relative; }
-    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .case-number { font-size: 18px; font-weight: 700; display: flex; align-items: center; color: var(--pawpal-green); font-family: 'Outfit', sans-serif; }
-    .paw-icon { margin-left: 8px; color: var(--pawpal-primary); font-size: 1.1em; }
-    .gender-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #66b0f5; color: #ffffff; font-size: 18px; display: flex; justify-content: center; align-items: center; font-weight: bold; flex-shrink: 0; }
-    .gender-icon.female { background-color: #ff69b4; color: #fdeef5; }
-    .condition-section {}
+
+    .pet-cases-header h2 { 
+        font-family: 'Grandstander', 
+        cursive; color: #444; 
+        font-size: 28px;
+         margin: 0; }
+    .pet-cases-header::after { 
+        content: ''; 
+        position: absolute; 
+        bottom: 0; left: 50%; 
+        transform: translateX(-50%);
+         width: 80px; height: 3px; 
+         background: linear-gradient(90deg, var(--pawpal-green), #3e7a42); 
+         border-radius: 3px; 
+        }
+    .pet-case-card {
+         display: flex; 
+         background-color: #fff;
+         border-radius: var(--border-radius-soft);
+         overflow: hidden; margin-bottom: 20px;
+         box-shadow: var(--card-shadow); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 15px; text-decoration: none; color: inherit; 
+        border-left: 5px solid var(--pawpal-green); 
+    }
+    .pet-case-card:hover { 
+        transform: translateY(-5px);
+         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); 
+        }
+    .pet-photo { 
+        width: 120px; height: 120px; 
+        flex-shrink: 0; border-radius: 12px;
+         overflow: hidden; margin-right: 20px; 
+         box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+         }
+
+    .pet-photo img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover;
+         transition: transform 0.5s ease; 
+        }
+    .pet-case-card:hover .pet-photo img { 
+        transform: scale(1.08);
+     }
+    .pet-info { flex-grow: 1; 
+        padding: 0; 
+        position: relative; }
+    .case-header { display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 12px; 
+    }
+    .case-number { font-size: 18px;
+         font-weight: 700;
+          display: flex; 
+         align-items: center; 
+         color: var(--pawpal-green);
+        font-family: 'Outfit', sans-serif;
+         }
+    .paw-icon {
+        margin-left: 8px;
+        color: var(--pawpal-primary);
+        font-size: 1.1em; 
+    }
+    .gender-icon { 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        background-color: #66b0f5; 
+        color: #ffffff; 
+        font-size: 18px; display: flex; 
+        justify-content: center; align-items: center; 
+        font-weight: bold; 
+        flex-shrink: 0; }
+
+    .gender-icon.female { 
+        background-color: #ff69b4; 
+        color: #fdeef5; 
+    }
+  
+    
     .condition-label { display: flex; align-items: center; font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #444; font-family: 'Outfit', sans-serif; }
     .notebook-icon { margin-right: 8px; color: var(--pawpal-green); }
     .case-description { font-size: 15px; line-height: 1.6; }
@@ -295,7 +363,7 @@
         </div>
 
         <button type="button" id="initiateGeneralDonation" class="donate-button" style="margin-bottom: 25px;">
-            <i class="fas fa-hand-holding-heart" style="margin-right: 8px;"></i> บริจาคทั่วไป
+            <i class="fas fa-hand-holding-heart" style="margin-right: 8px;"></i> Help us help others
         </button>
 
         <div class="donation-form-card" id="generalDonationSection" style="display: none;">
@@ -336,7 +404,7 @@
             </div>
 
             <button type="button" id="createQrOrProceedButton" class="action-button">
-                <i class="fas fa-qrcode" style="margin-right: 8px;"></i> สร้าง QR Code
+                <i class="fas fa-qrcode" style="margin-right: 8px;"></i> QR Code
             </button>
 
             <div id="generatedQrContainerGeneral" class="generated-qr-container" style="display: none;">
@@ -449,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCreateQrButtonText() {
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethodForm"]:checked').value;
         if (selectedPaymentMethod === 'PromptPay') {
-            createQrOrProceedButton.innerHTML = '<i class="fas fa-qrcode" style="margin-right: 8px;"></i> สร้าง QR Code';
+            createQrOrProceedButton.innerHTML = '<i class="fas fa-qrcode" style="margin-right: 8px;"></i>  QR Code';
         } else {
             createQrOrProceedButton.innerHTML = '<i class="fas fa-donate" style="margin-right: 8px;"></i> บริจาคเลย';
         }

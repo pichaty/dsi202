@@ -237,9 +237,19 @@ def donate_detail(request, pk):
     case = get_object_or_404(DonationCase.objects.select_related('pet'), pk=pk)
     donation_settings = DonationSettings.objects.first()
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-    # Use PromptPay ID from the specific case if available, else from settings, else fallback
-    promptpay_id_for_template = case.pet.promptpay_id if case.pet and case.pet.promptpay_id else (donation_settings.promptpay_qr_code.name if donation_settings and hasattr(donation_settings, 'promptpay_qr_code') and donation_settings.promptpay_qr_code else "0811072299")
 
+    # --- ปรับ Logic การดึง promptpay_id ที่ถูกต้อง ---
+    # 1. ใช้ promptpay_id จาก DonationCase ถ้ามี และไม่เป็นค่าว่าง
+    # 2. ถ้าไม่มีใน Case หรือเป็นค่าว่าง ให้ใช้ default_promptpay_id จาก DonationSettings
+    # 3. ถ้าไม่มีใน Settings หรือเป็นค่าว่าง ให้ใช้ค่า Fallback
+    promptpay_id_for_template = None
+    if hasattr(case, 'promptpay_id') and case.promptpay_id: # ตรวจสอบว่าเคสนี้มี field และค่า promptpay_id หรือไม่
+        promptpay_id_for_template = case.promptpay_id
+    elif donation_settings and hasattr(donation_settings, 'default_promptpay_id') and donation_settings.default_promptpay_id: # ถ้าไม่มี ให้ใช้ ID หลักจาก Settings
+        promptpay_id_for_template = donation_settings.default_promptpay_id
+    else:
+        promptpay_id_for_template = "0811072299" # ถ้าไม่มีทั้งคู่ ให้ใช้ค่า Fallback
+    # --- สิ้นสุดการปรับ Logic ---
 
     if request.method == 'POST' and is_ajax:
         action = request.POST.get('action')
@@ -255,7 +265,7 @@ def donate_detail(request, pk):
             return JsonResponse({'success': False, 'error': 'รูปแบบจำนวนเงินไม่ถูกต้อง'})
 
         if action == 'generate_qr_case' and payment_method == 'PromptPay':
-            target_promptpay_id_case = promptpay_id_for_template
+            target_promptpay_id_case = promptpay_id_for_template # ใช้ ID ที่ได้จาก logic ด้านบน
 
             if target_promptpay_id_case and amount > 0:
                 try:
@@ -286,7 +296,7 @@ def donate_detail(request, pk):
                     payment_method=payment_method,
                     slip_image=slip_image
                 )
-                case.amount_raised = Decimal(case.amount_raised or 0) + amount # Ensure amount_raised is not None
+                case.amount_raised = Decimal(case.amount_raised or 0) + amount
                 case.save()
                 return JsonResponse({'success': True, 'action': 'slip_submitted_case', 'message': 'ส่งสลิปสำเร็จ ขอบคุณสำหรับการบริจาค'})
             except Exception as e:
@@ -311,14 +321,12 @@ def donate_detail(request, pk):
 
         return JsonResponse({'success': False, 'error': 'Invalid request parameters for POST on detail page.'})
 
-
     context = {
         'case': case,
         'donation_settings': donation_settings,
-        'promptpay_id_display': promptpay_id_for_template # Pass this to template for display
+        'promptpay_id_display': promptpay_id_for_template
     }
     return render(request, 'myapp/donate_detail.html', context)
-
 
 def donation_thank_you_view(request):
     return render(request, 'myapp/donation_thank_you.htm')
