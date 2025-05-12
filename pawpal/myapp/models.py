@@ -333,3 +333,20 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications', verbose_name="ผู้รับการแจ้งเตือน")
+    message = models.TextField(verbose_name="ข้อความแจ้งเตือน")
+    link = models.URLField(max_length=200, blank=True, null=True, verbose_name="ลิงก์ที่เกี่ยวข้อง") # สำหรับคลิกไปยังหน้ารายละเอียด
+    is_read = models.BooleanField(default=False, verbose_name="อ่านแล้ว")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="เวลาที่สร้าง")
+    notification_type = models.CharField(max_length=50, blank=True, null=True, verbose_name="ประเภทการแจ้งเตือน") # เช่น 'adoption_status', 'appointment_confirm'
+
+    class Meta:
+        ordering = ['-created_at'] # แสดงอันล่าสุดก่อน
+        verbose_name = "การแจ้งเตือน"
+        verbose_name_plural = "การแจ้งเตือนทั้งหมด"
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.message[:30]}"
+

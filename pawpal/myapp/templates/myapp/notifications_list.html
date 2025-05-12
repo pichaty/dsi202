@@ -1,0 +1,149 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"การแจ้งเตือน" }} - PawPal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .notifications-page-container {
+        max-width: 750px;
+        margin: 20px auto;
+        padding: 0;
+    }
+    .section-header-notif { /* ตั้งชื่อ class ใหม่เพื่อไม่ให้ชนกับ style อื่น */
+        background-color: var(--primary); /* สีส้มหลัก */
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: 'Grandstander', cursive;
+        margin-bottom: 0;
+    }
+    .content-box-notif { /* ตั้งชื่อ class ใหม่ */
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .notification-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .notification-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s ease;
+    }
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+    .notification-item.unread {
+        background-color: #fff9e6; /* สีพื้นหลังอ่อนๆ สำหรับอันที่ยังไม่อ่าน */
+        font-weight: bold;
+    }
+    .notification-item a { /* ทำให้ทั้ง item คลิกได้ */
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        width: 100%;
+    }
+    .notification-item:hover {
+        background-color: #f8f8f8;
+    }
+    .notification-icon {
+        margin-right: 15px;
+        font-size: 1.8em; /* ขนาดไอคอน */
+        color: var(--green); /* สีเขียว */
+        flex-shrink: 0;
+        padding-top: 3px;
+    }
+    /* ไอคอนตามประเภทการแจ้งเตือน */
+    .notification-icon.adoption-status { color: var(--primary); } /* ส้ม */
+    .notification-icon.appointment { color: #17a2b8; } /* ฟ้า */
+    .notification-icon.general { color: var(--secondary); } /* น้ำตาล */
+
+    .notification-content {
+        flex-grow: 1;
+    }
+    .notification-content .message {
+        margin: 0 0 5px 0;
+        font-size: 0.95em;
+        line-height: 1.5;
+    }
+    .notification-item.unread .message {
+        color: #333;
+    }
+    .notification-item:not(.unread) .message {
+        color: #555;
+        font-weight: normal;
+    }
+    .notification-content .timestamp {
+        font-size: 0.8em;
+        color: #888;
+    }
+    .no-notifications {
+        text-align: center;
+        color: #777;
+        margin-top: 25px;
+        font-size: 1em;
+        padding: 15px;
+    }
+    .mark-all-read-link {
+        display: block;
+        text-align: right;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+        color: var(--primary);
+        text-decoration: none;
+    }
+    .mark-all-read-link:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notifications-page-container">
+    <h1 class="section-header-notif">
+        <i class="fas fa-bell" style="margin-right: 10px;"></i>
+        {{ page_title|default:"การแจ้งเตือน" }}
+        {% if unread_notifications_count > 0 %}
+            <span style="font-size: 0.7em; background-color: var(--accent-red); color: white; padding: 3px 7px; border-radius: 10px; vertical-align: middle; margin-left: 5px;">{{ unread_notifications_count }}</span>
+        {% endif %}
+    </h1>
+    <div class="content-box-notif">
+        {% if notifications_list %}
+            <a href="{% url 'notifications_list' %}?mark_all_read=true" class="mark-all-read-link">ทำเครื่องหมายว่าอ่านทั้งหมด</a>
+            <ul class="notification-list">
+                {% for notif in notifications_list %}
+                <li class="notification-item {% if not notif.is_read %}unread{% endif %}">
+                    <a href="{{ notif.link|default:'#' }}{% if notif.link and notif.link != '#' %}?read_id={{ notif.id }}{% elif notif.link == '#' %}javascript:void(0);{% else %}{% url 'notifications_list' %}?read_id={{ notif.id }}{% endif %}">
+                        <div class="notification-icon
+                            {% if 'adoption_status' in notif.notification_type %}adoption-status{% elif 'appointment' in notif.notification_type %}appointment{% else %}general{% endif %}">
+                            {% if 'adoption_status' in notif.notification_type or 'adoption_submitted' in notif.notification_type %}
+                                <i class="fas fa-paw"></i>
+                            {% elif 'appointment' in notif.notification_type %}
+                                <i class="fas fa-calendar-check"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="notification-content">
+                            <p class="message">{{ notif.message }}</p>
+                            <p class="timestamp">{{ notif.created_at|date:"d M Y, H:i" }}</p>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-notifications"><i class="fas fa-envelope-open-text" style="font-size: 1.5em; margin-bottom: 10px;"></i><br>ยังไม่มีการแจ้งเตือน</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

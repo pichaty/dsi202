@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Pet, DonationCase, DonationSettings, DonationRecord # เพิ่ม DonationSettings, DonationRecord
+from .models import Pet, DonationCase, DonationSettings, DonationRecord,Notification # เพิ่ม DonationSettings, DonationRecord
 from django.contrib import admin
 from .models import Product
 from django.contrib import admin
@@ -272,5 +272,12 @@ class AdoptionApplicationAdmin(admin.ModelAdmin):
     approve_selected_applications.short_description = "Approve selected applications"
 
     actions = [approve_selected_applications]
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('recipient', 'message', 'notification_type', 'is_read', 'created_at')
+    list_filter = ('is_read', 'notification_type', 'created_at')
+    search_fields = ('recipient__username', 'message')
+    readonly_fields = ('created_at',)
 
 

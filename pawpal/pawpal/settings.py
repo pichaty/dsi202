@@ -74,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request', # Important for allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'myapp.context_processors.favorite_count', # Your custom context processor
+                'myapp.context_processors.common_context', 
                 
                 
 

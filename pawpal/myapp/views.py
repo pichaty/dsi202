@@ -12,6 +12,7 @@ from datetime import datetime # ถูกต้อง
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib import messages
+from .models import Notification
 
 from .models import (
     Pet, UserFavorite, BlogPost, AboutContent, PetStatistics,
@@ -113,10 +114,7 @@ def account_settings_view(request):
     # This is a placeholder, actual settings form would be needed
     return render(request, 'myapp/account_settings.html')
 
-@login_required
-def notifications_placeholder_view(request):
-    # This is a placeholder
-    return render(request, 'myapp/notifications_placeholder.html')
+
 
 
 # --- Main Application Views ---
@@ -578,3 +576,35 @@ def cancel_adoption_application_view(request, application_id):
     else:
         messages.warning(request, f"ไม่สามารถยกเลิกคำขอนี้ได้ เนื่องจากสถานะปัจจุบันคือ '{application.get_status_display()}'")
         return redirect('my_adoption_applications')
+    
+@login_required
+def notifications_view(request): # เปลี่ยนชื่อ view function
+    notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
+    unread_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+
+    # ตัวอย่าง: หากผู้ใช้คลิกที่การแจ้งเตือน สามารถส่ง parameter เพื่อ mark as read
+    notification_id_to_read = request.GET.get('read_id')
+    if notification_id_to_read:
+        try:
+            notif = Notification.objects.get(id=notification_id_to_read, recipient=request.user)
+            notif.is_read = True
+            notif.save()
+            if notif.link:
+                return redirect(notif.link) # Redirect ไปยังลิงก์ของการแจ้งเตือนนั้น
+            else:
+                return redirect('notifications_list') # Redirect กลับมาหน้า notifications
+        except Notification.DoesNotExist:
+            pass # หรือจัดการ error
+
+    # Mark all as read (ถ้าต้องการปุ่ม "Mark all as read")
+    if request.GET.get('mark_all_read') == 'true':
+        Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+        return redirect('notifications_list')
+
+
+    context = {
+        'notifications_list': notifications, # ส่ง list ของ notifications ไปยัง template
+        'unread_notifications_count': unread_count, # ส่งจำนวนที่ยังไม่อ่าน
+        'page_title': 'Notifications'
+    }
+    return render(request, 'myapp/notifications_list.html', context) # เปลี่ยนชื่อ template

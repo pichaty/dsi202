@@ -179,67 +179,85 @@
         }
 
         .logo {
-            height: 150px; /* Maintain original size */
-            width: auto;    /* Maintain original size */
+            height: 150px;
+            width: auto;
             object-fit: contain;
         }
 
         .header-right-icons {
             display: flex;
             align-items: center;
-            gap: 10px; /* Adjust gap as needed */
+            gap: 10px; /* เพิ่ม gap ระหว่างไอคอน Favorites และ Notifications */
         }
 
         .favorite-icon-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            position: relative; /* สำหรับ notification count positioning */
         }
 
-        .favorite-icon-img { /* Renamed from .favorite-icon to avoid clash if original .favorite-icon is still used elsewhere with different styling */
-            width: 60px; /* Adjust size as needed */
+        .favorite-icon-img {
+            width: 60px; /* ขนาดไอคอน Favorites */
             height: auto;
         }
 
-        .notifications { /* Assuming this is for chat or general notifications */
-            position: relative;
+        .notifications-link { /* Class ใหม่สำหรับ <a> tag ของไอคอน Notifications */
+            position: relative; /* สำหรับ badge positioning */
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px; /* Base size for the icon container */
-            height: 30px;
+            transform: translateX(-5px);
+             
+            /* สามารถกำหนด width/height ที่นี่ได้ถ้าต้องการให้มีขนาดตายตัว */
+            /* width: 30px; */
+            /* height: 30px; */
         }
 
-        .notifications img {
-            height: 24px; /* Size of the actual icon image */
+        .notification-bell-icon { /* Class ใหม่สำหรับ <img> tag ของไอคอน Notifications */
+            height: 40px; /* ปรับขนาดไอคอนรูประฆังตามต้องการ */
             width: auto;
         }
+        /* --- END: ปรับปรุงส่วนไอคอน --- */
 
+
+        /* Style ทั่วไปสำหรับ Notification Count Badges */
         .notification-count {
             position: absolute;
-            top: 6px; /* Adjust for visual alignment with favorite icon */
-            right: 6px; /* Adjust for visual alignment */
             background-color: var(--accent-red);
             color: white;
             border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 0.65em; /* Small font for count */
+            width: 18px;
+            height: 18px;
+            font-size: 0.75em; /* ปรับขนาดฟอนต์ให้พอดีกับ badge */
             display: flex;
             align-items: center;
             justify-content: center;
-            line-height: 1; /* Ensure text is centered vertically */
+            line-height: 1;
             font-weight: bold;
+            border: 1px solid white;
+            box-sizing: border-box;
         }
+
+        /* ตำแหน่งสำหรับ Favorite Count Badge (บนไอคอนรูปบ้านที่มีหัวใจ) */
+        .favorite-count-badge { /* ชื่อ class ใหม่ */
+            top: 2px;   /* ปรับค่านี้: ลดลง (-) จะเลื่อนขึ้น, เพิ่มขึ้น (+) จะเลื่อนลง */
+            right: 2px; /* ปรับค่านี้: ลดลง (-) จะเลื่อนไปทางขวา, เพิ่มขึ้น (+) จะเลื่อนไปทางซ้าย */
+        }
+
+        /* ตำแหน่งสำหรับ Notification Bell Badge (บนไอคอนรูประฆัง) */
+        .notification-bell-badge { /* ชื่อ class ใหม่ */
+            top: -10px;     /* ปรับค่านี้เพื่อให้ตรงกับ Favorite Badge หรือตามต้องการ */
+            right: -8px;  /* ปรับค่านี้เพื่อขยับไปทางซ้ายมากขึ้น (เช่น 5px, 8px, 10px) */
+        }
+
 
         main {
             flex-grow: 1;
             width: 100%;
         }
 
-        /* If you have a general .favorite-icon class for heart icons on cards, keep it separate */
-        /* This is an example if you use it on pet cards */
+        /* General .favorite-icon class for heart icons on cards (ไม่เปลี่ยนแปลง) */
         .favorite-icon {
             position: absolute;
             top: 10px;
@@ -251,13 +269,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ccc; /* Default color for inactive icon */
+            color: #ccc;
             z-index: 10;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .favorite-icon i.fas.fa-heart { color: #ccc; } /* Default FontAwesome heart color */
-        .favorite-icon i.fas.fa-heart.active { color: var(--accent-red); } /* Active color */
+        .favorite-icon i.fas.fa-heart { color: #ccc; }
+        .favorite-icon i.fas.fa-heart.active { color: var(--accent-red); }
+
+        /* Badge for notification count inside dropdown menu */
+        .dropdown-notification-badge { /* เปลี่ยนชื่อ class เพื่อไม่ให้ซ้ำ */
+            background-color: var(--accent-red);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            margin-left: 8px;
+            vertical-align: super;
+            font-weight: bold;
+        }
 
     </style>
     {% block extra_head %}{% endblock %}
@@ -277,12 +307,19 @@
                     <ul>
                         <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>Profile</a></li>
                         <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>Adoption status</a></li>
-                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>history</a></li>
+                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>History</a></li>
                         <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>My paws</a></li>
                         <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>Favorites</a></li>
                         <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>My Donations</a></li>
                         <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>Settings</a></li>
-                        <li><a href="{% url 'notifications_placeholder' %}"><i class="fas fa-bell"></i>Notification</a></li>
+                        <li>
+                            <a href="{% url 'notifications_list' %}">
+                                <i class="fas fa-bell"></i>Notification
+                                {% if unread_notifications_count > 0 %}
+                                    <span class="dropdown-notification-badge">{{ unread_notifications_count }}</span> {# <--- เปลี่ยน class ที่นี่ #}
+                                {% endif %}
+                            </a>
+                        </li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
                     </ul>
@@ -304,12 +341,14 @@
             <a href="{% url 'favorites' %}" class="favorite-icon-link" title="My Favorites">
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
                 {% if favorite_count > 0 %}
-                    <span class="notification-count">{{ favorite_count }}</span>
+                    <span class="notification-count favorite-count-badge">{{ favorite_count }}</span> {# ใช้ class ใหม่ #}
                 {% endif %}
             </a>
-            <a href="{% url 'chat_page' %}" class="notifications" title="Chat with Admin">
-                <img src="{% static 'myapp/images/message_box.png' %}" alt="Chat">
-                {# <span class="notification-count">2</span> #} {# Example notification count for chat #}
+            <a href="{% url 'notifications_list' %}" class="notifications-link" title="Notifications"> {# ใช้ class ใหม่ #}
+                 <img src="{% static 'myapp/images/noti.png' %}" alt="Notifications Icon" class="notification-bell-icon"> {# ใช้ class ใหม่ #}
+                {% if unread_notifications_count > 0 %}
+                    <span class="notification-count notification-bell-badge">{{ unread_notifications_count }}</span> {# ใช้ class ใหม่ #}
+                {% endif %}
             </a>
         </div>
     </header>
