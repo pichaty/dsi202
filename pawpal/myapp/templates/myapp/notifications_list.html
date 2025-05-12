@@ -35,7 +35,7 @@
     .notification-item {
         display: flex;
         align-items: flex-start;
-        padding: 15px 0;
+        padding: 16px 0;
         border-bottom: 1px solid #eee;
         transition: background-color 0.2s ease;
     }
@@ -50,18 +50,21 @@
         text-decoration: none;
         color: inherit;
         display: flex;
-        width: 100%;
+        width: 110%;
     }
     .notification-item:hover {
         background-color: #f8f8f8;
     }
     .notification-icon {
-        margin-right: 15px;
-        font-size: 1.8em; /* ขนาดไอคอน */
+        margin-right: 30px;
+        font-size: 1.6em; /* ขนาดไอคอน */
         color: var(--green); /* สีเขียว */
         flex-shrink: 0;
         padding-top: 3px;
+        margin-left: 18px;
+       
     }
+    
     /* ไอคอนตามประเภทการแจ้งเตือน */
     .notification-icon.adoption-status { color: var(--primary); } /* ส้ม */
     .notification-icon.appointment { color: #17a2b8; } /* ฟ้า */
