@@ -32,6 +32,7 @@ class PetAdmin(admin.ModelAdmin):
     list_filter = ('pet_type', 'gender', 'size', 'vaccinated') # <--- เพิ่ม 'size' ตรงนี้เพื่อใช้เป็นตัวกรอง
     search_fields = ('name', 'breed', 'story', 'personality', 'size') # <--- เพิ่ม 'size' ตรงนี้เพื่อให้ค้นหาได้
     readonly_fields = ('image_tag',)
+    inlines = [PetImageInline] 
 
     def image_tag(self, obj):
         if obj.photo:

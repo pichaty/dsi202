@@ -355,7 +355,7 @@
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
                 
                  <span class="notification-count favorite-count-badge"
-                     style="display: {% if favorite_count > 0 and favorite_count != None %}flex{ % else %}none{% endif %};">
+                    style="display: {% if favorite_count > 0 and favorite_count != None %}flex{ % else %}none{% endif %};">
                  {{ favorite_count|default:"0" }}
                 </span>
             </a>
