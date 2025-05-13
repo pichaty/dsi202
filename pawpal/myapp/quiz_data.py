@@ -46,7 +46,7 @@ QUIZ_DATA = [
         'id': 5,
         'text': "สภาพแวดล้อมในบ้านที่คุณชอบคือ?",
         'answers': [
-            {'text': "กว้างขวาง มีพื้นที่ให้วิ่งเล่น", 'tags': ['Dog', 'Energetic', 'Large']},
+            {'text': "กว้างขวาง มีพื้นที่ให้วิ่งเล่น", 'tags': ['Dog', 'Energetic', 'Large','friendly']},
             {'text': "อบอุ่น สบาย อาจมีมุมรับแดด", 'tags': ['Cat', 'Calm']},
             {'text': "เป็นระเบียบเรียบร้อย", 'tags': ['Cat']},
             {'text': "ไม่สำคัญ ตราบใดที่มีคนที่รักอยู่ด้วย", 'tags': ['Dog', 'Social', 'Affectionate']},
@@ -56,7 +56,7 @@ QUIZ_DATA = [
         'id': 6,
         'text': "คุณรับมือกับปัญหาอย่างไร?",
         'answers': [
-            {'text': "เผชิญหน้าตรงๆ อาจจะเห่าบ้างเล็กน้อย", 'tags': ['Dog', 'Energetic']},
+            {'text': "เผชิญหน้าตรงๆ อาจจะเสียงดังบ้างเล็กน้อย", 'tags': ['Dog', 'Energetic']},
             {'text': "วิเคราะห์อย่างรอบคอบก่อนตัดสินใจ", 'tags': ['Cat', 'Independent']},
             {'text': "ขอความช่วยเหลือหรือการสนับสนุนจากเพื่อน", 'tags': ['Dog', 'Social']},
             {'text': "หาที่เงียบๆ เพื่อคิดทบทวน", 'tags': ['Cat', 'Calm', 'Independent']},
@@ -66,9 +66,9 @@ QUIZ_DATA = [
         'id': 7,
         'text': "วิธีการเล่นที่คุณชอบที่สุด?",
         'answers': [
-            {'text': "วิ่งเล่น คาบของ เกมที่ต้องเคลื่อนไหว", 'tags': ['Dog', 'Energetic']},
+            {'text': "วิ่งเล่น เกมที่ต้องเคลื่อนไหว", 'tags': ['Dog', 'Energetic']},
             {'text': "ของเล่นลับสมอง เกมวางแผน หรือฝึกซุ่มโจมตี", 'tags': ['Cat', 'Independent']},
-            {'text': "เล่นเบาๆ และมีปฏิสัมพันธ์กัน", 'tags': ['Calm', 'Social']},
+            {'text': "เล่นเบาๆ และมีปฏิสัมพันธ์กัน", 'tags': ['Calm', 'Social','friendly']},
             {'text': "แค่ดูคนอื่นเล่นก็พอใจแล้ว", 'tags': ['Calm', 'Cat']},
         ]
     },
@@ -78,7 +78,7 @@ QUIZ_DATA = [
         'answers': [
             {'text': "มาก - ชอบทำอะไรด้วยตัวเอง", 'tags': ['Cat', 'Independent']},
             {'text': "ค่อนข้าง - ให้ความสำคัญกับเวลาส่วนตัว แต่ก็ชอบมีเพื่อน", 'tags': ['Dog', 'Independent', 'Cat', 'Social']},
-            {'text': "ไม่มาก - ชอบอยู่กับคนอื่นมากกว่า", 'tags': ['Dog', 'Social', 'Affectionate']},
+            {'text': "ไม่มาก - ชอบอยู่กับคนอื่นมากกว่า", 'tags': ['Dog', 'Social', 'Affectionate','friendly']},
         ]
     },
     {
@@ -109,11 +109,11 @@ TAG_TO_PET_FILTER = {
     'Cat': {'pet_type': 'Cat'}, # ใช้ pet_type แทน species
     # ใช้ icontains ค้นหาใน personality field (TextField)
     # อาจต้องปรับ keyword ให้ตรงกับข้อมูลใน database ของคุณ
-    'Energetic': {'personality__icontains': 'energetic'}, # หรือ 'playful', 'active', 'ร่าเริง', 'พลังเยอะ'
-    'Calm': {'personality__icontains': 'calm'},        # หรือ 'quiet', 'relaxed', 'สงบ', 'เรียบร้อย'
-    'Social': {'personality__icontains': 'social'},      # หรือ 'friendly', 'sociable', 'เข้ากับคนง่าย', 'เข้ากับสัตว์อื่นง่าย'
+    'Energetic': {'personality__icontains': 'energetic''playful' 'active'}, # หรือ 'playful', 'active', 'ร่าเริง', 'พลังเยอะ'
+    'Calm': {'personality__icontains': 'calm' 'relaxed'},        # หรือ 'quiet', 'relaxed', 'สงบ', 'เรียบร้อย'
+    'Social': {'personality__icontains': 'social' 'friendly' 'sociable'},      # หรือ 'friendly', 'sociable', 'เข้ากับคนง่าย', 'เข้ากับสัตว์อื่นง่าย'
     'Independent': {'personality__icontains': 'independent'},# หรือ 'alone', 'สันโดษ'
-    'Affectionate': {'personality__icontains': 'affectionate'},# หรือ 'cuddly', 'loving', 'ขี้อ้อน'
+    'Affectionate': {'personality__icontains': 'affectionate''loving'},# หรือ 'cuddly', 'loving', 'ขี้อ้อน'
     # ไม่มีฟิลด์ size โดยตรง อาจจะ map ยาก หรือ map กับ age/breed ถ้าเป็นไปได้
     'Large': {}, # อาจจะปล่อยว่าง หรือลอง map กับ breed ที่มักจะตัวใหญ่
     'Small': {}, # อาจจะปล่อยว่าง หรือลอง map กับ breed ที่มักจะตัวเล็ก หรือ age='Puppy'/'Kitten'

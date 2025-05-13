@@ -129,16 +129,7 @@
         border-radius: 50%; */
     }
 
-    /* Style the container when selected */
-    .quiz-options .answer-option input[type="radio"]:checked ~ label {
-         /* Optional: change text color when selected */
-         /* color: var(--selected-border); */
-    }
-    .quiz-options .answer-option input[type="radio"]:checked {
-        /* This targets the hidden radio, we style the container instead */
-        /* Use sibling selector on the div containing the radio */
-        /* Not directly possible with standard CSS, but we can style the label's container */
-    }
+    
     /* Find the parent div and style it when the radio inside is checked */
     /* This requires the input to be *before* the label/styled element */
     .quiz-options .answer-option:has(input[type="radio"]:checked) { /* :has() might not be fully supported */
@@ -148,10 +139,7 @@
     }
 
 
-    /* Fallback for browsers not supporting :has() - style label/before directly */
-    .quiz-options .answer-option input[type="radio"]:checked + label {
-        /* Already handled text color if needed */
-    }
+    
 
     /* --- Submit Button --- */
     .quiz-submit-button {
@@ -195,7 +183,8 @@
 <div class="quiz-container">
     {# Progress Bar #}
     <div class="progress-bar-container">
-        <div class="progress-bar-custom" style="width: {{ progress }}%;" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar-custom" style="width: {{ progress }}% ;
+        " role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 
     {# Question Number and Text #}

@@ -722,7 +722,7 @@ def quiz_results(request):
     personality_tags = {tag: count for tag, count in tag_counts.items() if tag not in ['Dog', 'Cat', 'Large', 'Small']}
     dominant_personality = max(personality_tags, key=personality_tags.get) if personality_tags else None
 
-    result_description = f"บุคลิกของคุณคล้ายกับ {result_species} ที่ {dominant_personality.lower() if dominant_personality else 'มีลักษณะเฉพาะตัว'}!"
+    result_description = f"Your personality matches that of this pet {result_species} that {dominant_personality.lower() if dominant_personality else 'มีลักษณะเฉพาะตัว'}!"
     # คุณอาจจะสร้าง description ที่ซับซ้อนกว่านี้ได้
 
     # --- ค้นหาสัตว์เลี้ยงที่ตรงกัน ---
