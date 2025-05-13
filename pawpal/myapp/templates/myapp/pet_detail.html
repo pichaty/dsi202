@@ -158,6 +158,7 @@
           <p><span class="icon">🐕</span>Breed: {{ pet.breed }}</p>
           <p><span class="icon">🚻</span>Gender: {{ pet.get_gender_display }}</p>
           <p><span class="icon">📅</span>Age: {{ pet.age }}</p>
+          <p><span class="icon">📏</span>Size: {{ pet.get_size_display|default:"-" }}</p>
           <p><span class="icon">💉</span>Vaccine: {% if pet.vaccinated %}Yes{% else %}No{% endif %}</p>
           <p><span class="icon">♿</span>Disability: {{ pet.disability|default:"-" }}</p>
           <p><span class="icon">😊</span>Personality: {{ pet.personality|default:"-" }}</p>

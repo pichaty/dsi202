@@ -28,16 +28,24 @@ class PetImageInline(admin.TabularInline): # หรือ admin.StackedInline
 
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
-    list_display = ('name', 'pet_type', 'breed', 'gender', 'age', 'vaccinated', 'image_tag','detail','story')
-    list_filter = ('pet_type', 'gender', 'vaccinated','detail','story')
-    search_fields = ('name', 'breed', 'story', 'personality','story')
-    inlines = [DonationCaseInline, PetImageInline] 
+    list_display = ('name', 'pet_type', 'breed', 'gender', 'age', 'size', 'vaccinated', 'image_tag', 'detail', 'story') # <--- เพิ่ม 'size' ตรงนี้
+    list_filter = ('pet_type', 'gender', 'size', 'vaccinated') # <--- เพิ่ม 'size' ตรงนี้เพื่อใช้เป็นตัวกรอง
+    search_fields = ('name', 'breed', 'story', 'personality', 'size') # <--- เพิ่ม 'size' ตรงนี้เพื่อให้ค้นหาได้
+    readonly_fields = ('image_tag',)
 
     def image_tag(self, obj):
         if obj.photo:
-            return format_html('<img src="{}" width="60" height="60" style="object-fit: cover;" />', obj.photo.url)
+            return format_html('<img src="{}" width="150" height="auto" />', obj.photo.url)
         return "-"
-    image_tag.short_description = 'Photo'
+    image_tag.short_description = 'Image Preview'
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj and obj.photo:
+            form.base_fields['photo'].required = False
+        elif not obj:
+            form.base_fields['photo'].required = True # หรือ False ตามต้องการ
+        return form
 
 @admin.register(DonationCase)
 class DonationCaseAdmin(admin.ModelAdmin):

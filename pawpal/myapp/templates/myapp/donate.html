@@ -2,22 +2,22 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@400;600;700&family=Outfit:wght@400;600&family=Quicksand:wght@400;600;700&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
     /* --- General Variables (consider moving to base.html or a separate CSS if not already) --- */
     :root {
         --pawpal-primary: #d55e00; /* Main Orange */
         --pawpal-secondary: #8d6e63; /* Brownish */
-        --pawpal-green: #8db38b;   /* Main Green */
+        --pawpal-green: #8db38b;     /* Main Green */
         --pawpal-light-green-bg: #f4f8f4; /* Very Light Green for QR Background Option 2 */
         --pawpal-brown-text: #795548; /* Softer Brown for text */
         --pawpal-light-orange-accent: #ffccbc; /* Lighter Orange for accents on QR card */
         --pawpal-background: #f8f7f2; /* Page Background */
         --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Softer, slightly larger shadow */
         --border-radius-soft: 16px; /* Softer border radius */
+        --pawpal-orange-dark: #e65100; /* Darker Orange for active toggle */
+        --pawpal-light-grey-border: #ddd;
+        --pawpal-grey-text: #555;
     }
 
     body {
@@ -29,75 +29,63 @@
     }
 
     /* Existing styles from your donate.html */
-    .donate-page-header { /* ใช้ class ใหม่ที่เราเพิ่มใน HTML */
-    background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%); /* เปลี่ยนเป็นสีเขียว (ใช้ var หรือ hardcode) */
-    color: white;
-    padding: 30px 20px; /* ปรับ padding ให้เหมือน about.html */
-    text-align: center;
-    border-radius: 0 0 30px 30px; /* ความโค้งมนด้านล่าง */
-    /* ชดเชย header หลัก */
-    margin-bottom: 25px; /* ระยะห่างจาก content ด้านล่าง */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* ใช้ var(--card-shadow) ถ้ามี */
-    position: relative;
-    overflow: hidden; /* สำหรับ ::before, ::after ถ้าจะใช้ */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    letter-spacing: 1px;
-}
-.donate-page-header .page-title {
-   
-    font-family: 'Grandstander', cursive; /* << เปลี่ยน 'Grandstander', cursive เป็นชื่อฟอนต์ที่คุณต้องการ */
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 5px;
-    position: relative;
-    z-index: 1;
-}
-.donate-page-header::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    background: rgba(255,255,255,0.08); /* ปรับ opacity หรือสีตามความเหมาะสม */
-    border-radius: 50%;
-}
+    .donate-page-header { 
+        background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%); 
+        color: white;
+        padding: 30px 20px; 
+        text-align: center;
+        border-radius: 0 0 30px 30px; 
+        margin-bottom: 25px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+        position: relative;
+        overflow: hidden; 
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 1px;
+    }
+    .donate-page-header .page-title {
+        font-family: 'Grandstander', cursive; 
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+    }
+    .donate-page-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.08); 
+        border-radius: 50%;
+    }
 
-.donate-page-header::after {
-    content: '';
-    position: absolute;
-    bottom: -30px;
-    left: -30px;
-    width: 100px;
-    height: 100px;
-    background: rgba(255,255,255,0.08); /* ปรับ opacity หรือสีตามความเหมาะสม */
-    border-radius: 50%;
-}
+    .donate-page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30px;
+        left: -30px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.08); 
+        border-radius: 50%;
+    }
 
-/* สไตล์สำหรับ page-title และ page-subtitle ภายใน .donate-page-header */
-.donate-page-header .page-title {
-    font-family: 'Grandstander', cursive; /* ฟอนต์เดียวกับ about.html หรือฟอนต์ที่ต้องการ */
-    font-size: 28px; /* ปรับขนาดตามต้องการ */
-    font-weight: 700;
-    margin-bottom: 5px;
-    position: relative;
-    z-index: 1;
-}
-
-.donate-page-header .page-subtitle {
-    font-family: 'Sarabun', sans-serif; /* ฟอนต์เดียวกับ about.html หรือฟอนต์ที่ต้องการ */
-    font-size: 16px;
-    font-weight: 400;
-    opacity: 0.9;
-    position: relative;
-    z-index: 1;
-    margin-top: 5px;
-}
+    .donate-page-header .page-subtitle {
+        font-family: 'Sarabun', sans-serif; 
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+        margin-top: 5px;
+    }
 
 
     .content-area {
         padding: 20px;
-        padding-top: 40px;
+        padding-top: 0px; /* Adjusted padding as header now has margin-bottom */
         max-width: 1000px;
         margin: 0 auto;
     }
@@ -117,62 +105,211 @@
     .pet-image:hover::after { opacity: 1; }
     .pet-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .pet-image:hover img { transform: scale(1.05); }
-    .mission-text { padding: 25px; font-size: 17px; font-family: 'Sarabun', sans-serif; font-weight: 500; color: #444; line-height: 1.7; text-align: center; background-color: #fff; position: relative; }
+    .mission-text { padding: 25px; font-size: 17px; font-family: 'Quicksand', sans-serif; font-weight: 500; color: #444; line-height: 1.7; text-align: center; background-color: #fff; position: relative; }
     .mission-text::before { content: '"'; font-size: 60px; color: var(--pawpal-green); opacity: 0.2; position: absolute; top: 0; left: 15px; font-family: serif; }
 
+    /* --- Styling for the Donation Form Card - UI Update --- */
     .donation-form-card {
         background-color: #fff;
         border-radius: var(--border-radius-soft);
-        padding: 25px;
+        padding: 30px; /* Increased padding */
         margin-bottom: 25px;
         box-shadow: var(--card-shadow);
         position: relative;
-        overflow: hidden;
+        overflow: hidden; /* Keep for ::before element */
     }
-    .donation-form-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--pawpal-primary), var(--pawpal-light-orange-accent)); } /* Reversed gradient */
+    /* Removing the top gradient border from ::before to match new UI */
+    .donation-form-card::before { 
+        content: ''; 
+        position: absolute; 
+        top: 0; left: 0; 
+        width: 100%; height: 0px; /* Effectively hiding it */
+        background: none; 
+    }
 
-    .radio-options { margin-bottom: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-    .radio-option { display: flex; align-items: center; font-weight: 600; font-size: 16px; font-family: 'Outfit', sans-serif; position: relative; cursor: pointer; }
-    .radio-option input[type="radio"] { margin-right: 8px; accent-color: var(--pawpal-primary); width: 18px; height: 18px; cursor: pointer; }
+    .form-section-title {
+        font-family: 'Grandstander', cursive; /* Or 'Outfit' if preferred */
+        font-size: 22px; /* Adjusted size */
+        font-weight: 600;
+        color: var(--pawpal-brown-text);
+        margin-bottom: 10px; /* Space below title */
+        position: relative;
+        padding-bottom: 8px; /* Space for the accent line */
+    }
+    .form-section-title::after { /* Green accent line */
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px; /* Length of the accent line */
+        height: 3px; /* Thickness of the line */
+        background-color: var(--pawpal-green);
+        border-radius: 2px;
+    }
 
-    .amount-field { display: flex; align-items: center; background-color: #f9f9f9; border-radius: 12px; padding: 12px 15px; margin-bottom: 20px; border: 2px solid #eee; transition: border-color 0.3s ease; }
-    .amount-field:focus-within { border-color: var(--pawpal-primary); }
-    .currency-symbol { margin-right: 10px; font-size: 18px; font-weight: bold; color: #666; }
-    .amount-field input { border: none; outline: none; width: 100%; background: transparent; font-size: 16px; font-weight: 600; color: #333; font-family: 'Outfit', sans-serif; }
+    .donation-type-toggle {
+        display: flex;
+        margin-bottom: 25px;
+        border-radius: 25px; /* Rounded container */
+        overflow: hidden; /* To make inner buttons conform to rounded container */
+        border: 1px solid var(--pawpal-light-grey-border); /* Optional: border for the toggle group */
+    }
+    .donation-type-toggle .toggle-btn {
+        flex: 1;
+        padding: 12px 15px; /* Adjusted padding */
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
+        text-align: center;
+        background-color: #f8f9fa; /* Light grey inactive */
+        color: var(--pawpal-grey-text);
+        border: none; 
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        outline: none;
+    }
+    .donation-type-toggle .toggle-btn:not(:last-child) {
+         border-right: 1px solid var(--pawpal-light-grey-border); /* Separator line */
+    }
+    .donation-type-toggle .toggle-btn.active {
+        background-color: var(--pawpal-orange-dark); /* Darker orange for active */
+        color: white;
+    }
+    /* Hide original radio buttons */
+    .donation-type-toggle input[type="radio"] { display: none; }
 
-    .payment-section { margin-bottom: 20px; }
-    .section-label { font-size: 16px; font-weight: bold; margin-bottom: 12px; display: block; font-family: 'Outfit', sans-serif; color: #444; text-align: center; }
-    .payment-methods { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .payment-method input[type="radio"] { display: none; }
-    .payment-label { display: inline-flex; align-items: center; justify-content: center; border: 2px solid #ddd; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; background-color: #fff; color: #333; white-space: nowrap; padding: 8px 20px; min-height: 50px; min-width: 110px; font-size: 15px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .payment-label.selected { background: linear-gradient(135deg, var(--pawpal-primary) 0%, #e65100 100%); color: white; border-color: #e65100; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(213, 94, 0, 0.25); } /* Darker orange */
-    .payment-label:hover:not(.selected) { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: #ccc; }
-    .payment-label.promptpay-label { padding: 0; border: 2px solid #ddd; background-color: #fff; overflow: hidden; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-    .payment-label.promptpay-label img { height: 70px; width: auto; display: block; }
+
+    .amount-field-new { /* New class for amount field */
+        display: flex;
+        align-items: center;
+        background-color: #ffffff; /* White background */
+        border-radius: 12px; /* Rounded corners */
+        padding: 5px 15px; /* Adjusted padding */
+        margin-bottom: 30px; /* Increased margin */
+        border: 1px solid var(--pawpal-light-grey-border); /* Border */
+        transition: border-color 0.3s ease;
+    }
+    .amount-field-new:focus-within {
+        border-color: var(--pawpal-primary); /* Orange border on focus */
+        box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2); /* Orange glow */
+    }
+    .currency-symbol-new { /* New class for currency symbol */
+        margin-right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--pawpal-brown-text); /* Brown text color */
+    }
+    .amount-field-new input[type="number"] {
+        border: none;
+        outline: none;
+        width: 100%;
+        background: transparent;
+        font-size: 18px; /* Larger font */
+        font-weight: 600;
+        color: #333;
+        font-family: 'Outfit', sans-serif;
+        padding: 10px 0; /* Vertical padding for input */
+    }
+
+    .payment-methods-new { /* New class for payment methods container */
+        display: flex;
+        gap: 15px; /* Gap between payment options */
+        margin-bottom: 30px;
+    }
+    .payment-method-option { /* New class for each payment option block */
+        flex: 1;
+        padding: 15px;
+        border: 2px solid var(--pawpal-light-grey-border);
+        border-radius: 12px; /* Rounded corners for option block */
+        cursor: pointer;
+        text-align: center;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        position: relative; /* For checkmark or other indicators */
+    }
+    .payment-method-option input[type="radio"] {
+        display: none; /* Hide original radio button */
+    }
+    .payment-method-option:hover {
+        border-color: var(--pawpal-secondary); /* Brownish border on hover */
+    }
+    .payment-method-option.selected {
+        border-color: var(--pawpal-primary); /* Orange border when selected */
+        box-shadow: 0 0 0 2px rgba(213, 94, 0, 0.2); /* Orange glow */
+    }
+    .payment-method-option img.payment-icon { /* For PromptPay image */
+        height: 50px; /* Adjust as needed */
+        margin-bottom: 8px;
+    }
+    .payment-method-option .fas { /* For Font Awesome icon (e.g., fa-wallet) */
+        font-size: 36px; /* Adjust icon size */
+        color: var(--pawpal-green); /* Green icon color */
+        margin-bottom: 8px;
+    }
+    .payment-method-option .payment-label-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--pawpal-grey-text);
+        display: block;
+    }
+
+    /* --- End of Styling for Donation Form --- */
+
+  
+
+    /* --- Styling for "Generate QR Code" Button (New UI) --- */
+    .generate-qr-btn-new {
+        background-color: var(--pawpal-green);
+        color: white;
+        border: none;
+        border-radius: 30px; /* Fully rounded */
+        padding: 15px 30px; /* Ample padding */
+        width: 100%; /* Full width */
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'Outfit', sans-serif;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 10px; /* Space above button */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .generate-qr-btn-new:hover {
+        background-color: #76a074; /* Darker green on hover */
+        transform: translateY(-2px);
+    }
+    .generate-qr-btn-new:active {
+        transform: translateY(0);
+    }
+    .generate-qr-btn-new .fas { /* Icon within the button */
+        margin-right: 10px;
+        font-size: 1.2em;
+    }
+    /* --- End of Generate QR Code Button Styling --- */
+
 
     /* === STYLE 2: WARM & SIMPLE QR CODE CONTAINER === */
     .generated-qr-container {
         text-align: center;
-        margin: 25px auto; /* Center the block if it's narrower */
+        margin: 25px auto; 
         padding: 25px 20px;
-        border: 1px solid #E0E0E0; /* Softer border color */
-        border-radius: var(--border-radius-soft); /* Consistent soft radius */
-        background-color: #FFFAF0; /* Warm white / Floral white */
+        border: 1px solid #E0E0E0; 
+        border-radius: var(--border-radius-soft); 
+        background-color: #FFFAF0; 
         animation: fadeIn 0.5s ease;
-        box-shadow: 0 0 0 8px rgba(255, 224, 178, 0.3), /* Outer glow - PawPal light orange */
-                    var(--card-shadow); /* Inner subtle shadow */
+        box-shadow: 0 0 0 8px rgba(255, 224, 178, 0.3), 
+                     var(--card-shadow); 
         position: relative;
-        max-width: 400px; /* Limit width for better appearance */
+        max-width: 400px; 
     }
-
-    /* Small decorative element like a ribbon or tag */
     .generated-qr-container::before {
         content: "SCAN ME!";
         position: absolute;
         top: -12px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: var(--pawpal-primary); /* PawPal Orange */
+        background-color: var(--pawpal-primary); 
         color: white;
         padding: 4px 12px;
         border-radius: 10px 10px 0 0;
@@ -181,42 +318,39 @@
         font-family: 'Grandstander', cursive;
         box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     }
-
-
-    .generated-qr-container img { /* The QR code image itself */
-        max-width: 170px; /* Adjusted size */
+    .generated-qr-container img { 
+        max-width: 170px; 
         height: auto;
-        border: none; /* Remove previous border */
-        padding: 5px; /* Small padding if needed, or remove for borderless QR */
-        border-radius: 10px; /* Softer radius for QR image */
-        background-color: white; /* Ensure QR background is white if image has no bg */
+        border: none; 
+        padding: 5px; 
+        border-radius: 10px; 
+        background-color: white; 
         margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow on QR */
-        display: block; /* Ensure it's a block for centering */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        display: block; 
         margin-left: auto;
         margin-right: auto;
     }
-
     .generated-qr-container p {
         font-weight: 500;
         margin-top: 8px;
         font-size: 0.95em;
-        color: var(--pawpal-brown-text); /* Softer brown text */
+        color: var(--pawpal-brown-text); 
     }
-    .generated-qr-container .qr-amount-text { /* Class for amount text */
+    .generated-qr-container .qr-amount-text { 
         font-weight: bold;
-        color: var(--pawpal-primary); /* Orange for amount */
+        color: var(--pawpal-primary); 
         font-size: 1.1em;
     }
-    .generated-qr-container .qr-promptpay-id { /* Class for PromptPay ID */
+    .generated-qr-container .qr-promptpay-id { 
         font-size: 0.85em;
-        color: #888; /* Lighter grey */
+        color: #888; 
         margin-bottom: 10px;
     }
     .generated-qr-container .qr-instruction {
-        color: var(--pawpal-secondary); /* Brownish for instruction */
+        color: var(--pawpal-secondary); 
         font-size: 0.9em;
-        margin-top: 15px; /* More space before instruction */
+        margin-top: 15px; 
         font-weight: 500;
         border-top: 1px dashed var(--pawpal-light-orange-accent);
         padding-top: 15px;
@@ -227,16 +361,17 @@
     #slipUploadSection {
         margin-top: 20px;
         animation: fadeIn 0.5s ease;
-     }
+    }
     #promptpay-details-general .form-group {
         margin-bottom: 15px;
         text-align: center;
-     }
+    }
     #promptpay-details-general .form-group label {
         display: block; margin-bottom: 8px;
         font-weight: bold;
         color: #555;
-        font-size: 15px; }
+        font-size: 15px; 
+    }
     #promptpay-details-general .form-group input[type="file"] {
         display: inline-block;
         width: auto; max-width: 280px;
@@ -244,111 +379,66 @@
         background-color: #fff; border: 2px dashed var(--pawpal-secondary);
         border-radius: 25px; cursor: pointer;
         transition: border-color 0.3s ease,background-color 0.3s ease;
-        font-size: 14px; color: var(--pawpal-brown-text); }
+        font-size: 14px; color: var(--pawpal-brown-text); 
+    }
 
-    #promptpay-details-general .form-group input[type="file"]::file-selector-button { background-color: var(--pawpal-secondary); color: white; border: none; padding: 8px 12px; border-radius: 20px; margin-right: 10px; cursor: pointer; }
-    #promptpay-details-general .form-group input[type="file"]:hover { border-color: var(--pawpal-primary); background-color: #fff8e1; } /* Lighter orange hover */
+    #promptpay-details-general .form-group input[type="file"]::file-selector-button { 
+        background-color: var(--pawpal-secondary); 
+        color: white; border: none; padding: 8px 12px; 
+        border-radius: 20px; margin-right: 10px; cursor: pointer; 
+    }
+    #promptpay-details-general .form-group input[type="file"]:hover { 
+        border-color: var(--pawpal-primary); background-color: #fff8e1; 
+    }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .action-button { background: linear-gradient(135deg, var(--pawpal-primary) 0%, var(--pawpal-light-orange-accent) 100%); /* Adjusted gradient */ color: white; border: none; border-radius: 30px; padding: 12px 30px; width: auto; max-width: 280px; font-size: 16px; font-weight: bold; font-family: 'Outfit', sans-serif; cursor: pointer; transition: all 0.3s ease; margin: 15px auto 10px; display: block; box-shadow: 0 5px 15px rgba(213, 94, 0, 0.3); letter-spacing: 0.5px; }
-    .action-button:hover { background: linear-gradient(135deg, #e65100 0%, var(--pawpal-primary) 100%); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(213, 94, 0, 0.4); }
+    
+    .action-button { /* Kept for slip upload confirmation */
+        background: linear-gradient(135deg, var(--pawpal-primary) 0%, var(--pawpal-light-orange-accent) 100%); 
+        color: white; border: none; border-radius: 30px; 
+        padding: 12px 30px; width: auto; max-width: 280px; 
+        font-size: 16px; font-weight: bold; font-family: 'Outfit', sans-serif; 
+        cursor: pointer; transition: all 0.3s ease; 
+        margin: 15px auto 10px; display: block; 
+        box-shadow: 0 5px 15px rgba(213, 94, 0, 0.3); 
+        letter-spacing: 0.5px; 
+    }
+    .action-button:hover { 
+        background: linear-gradient(135deg, #e65100 0%, var(--pawpal-primary) 100%); 
+        transform: translateY(-3px); box-shadow: 0 8px 20px rgba(213, 94, 0, 0.4); 
+    }
     .action-button:active { transform: translateY(1px); }
 
-    .donate-button { background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%); color: white; border: none; border-radius: 30px; padding: 15px 40px; width: auto; max-width: 300px; font-size: 18px; font-weight: bold; font-family: 'Outfit', sans-serif; cursor: pointer; transition: all 0.3s ease; margin: 20px auto; display: block; box-shadow: 0 5px 15px rgba(0, 128, 0, 0.2); letter-spacing: 1px; }
-    .donate-button:hover { background: linear-gradient(135deg, #6bc570 0%, #4a8a4e 100%); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 128, 0, 0.3); }
+    .donate-button { 
+        background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%); 
+        color: white; border: none; border-radius: 30px; 
+        padding: 15px 40px; width: auto; max-width: 300px; 
+        font-size: 18px; font-weight: bold; font-family: 'Outfit', sans-serif; 
+        cursor: pointer; transition: all 0.3s ease; margin: 20px auto; 
+        display: block; box-shadow: 0 5px 15px rgba(0, 128, 0, 0.2); 
+        letter-spacing: 1px; 
+    }
+    .donate-button:hover { 
+        background: linear-gradient(135deg, #6bc570 0%, #4a8a4e 100%); 
+        transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 128, 0, 0.3); 
+    }
     .donate-button:active { transform: translateY(1px); }
 
-    .pet-cases
-    { margin-top: 35px; }
-
-    .pet-cases-header
-    { text-align: center;
-        margin-bottom: 25px;
-        position: relative;
-        padding-bottom: 15px; }
-
-    .pet-cases-header h2 { 
-        font-family: 'Grandstander', 
-        cursive; color: #444; 
-        font-size: 28px;
-         margin: 0; }
-    .pet-cases-header::after { 
-        content: ''; 
-        position: absolute; 
-        bottom: 0; left: 50%; 
-        transform: translateX(-50%);
-         width: 80px; height: 3px; 
-         background: linear-gradient(90deg, var(--pawpal-green), #3e7a42); 
-         border-radius: 3px; 
-        }
-    .pet-case-card {
-         display: flex; 
-         background-color: #fff;
-         border-radius: var(--border-radius-soft);
-         overflow: hidden; margin-bottom: 20px;
-         box-shadow: var(--card-shadow); 
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        padding: 15px; text-decoration: none; color: inherit; 
-        border-left: 5px solid var(--pawpal-green); 
-    }
-    .pet-case-card:hover { 
-        transform: translateY(-5px);
-         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); 
-        }
-    .pet-photo { 
-        width: 120px; height: 120px; 
-        flex-shrink: 0; border-radius: 12px;
-         overflow: hidden; margin-right: 20px; 
-         box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-         }
-
-    .pet-photo img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover;
-         transition: transform 0.5s ease; 
-        }
-    .pet-case-card:hover .pet-photo img { 
-        transform: scale(1.08);
-     }
-    .pet-info { flex-grow: 1; 
-        padding: 0; 
-        position: relative; }
-    .case-header { display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        margin-bottom: 12px; 
-    }
-    .case-number { font-size: 18px;
-         font-weight: 700;
-          display: flex; 
-         align-items: center; 
-         color: var(--pawpal-green);
-        font-family: 'Outfit', sans-serif;
-         }
-    .paw-icon {
-        margin-left: 8px;
-        color: var(--pawpal-primary);
-        font-size: 1.1em; 
-    }
-    .gender-icon { 
-        width: 30px; 
-        height: 30px; 
-        border-radius: 50%; 
-        background-color: #66b0f5; 
-        color: #ffffff; 
-        font-size: 18px; display: flex; 
-        justify-content: center; align-items: center; 
-        font-weight: bold; 
-        flex-shrink: 0; }
-
-    .gender-icon.female { 
-        background-color: #ff69b4; 
-        color: #fdeef5; 
-    }
-  
-    
+    .pet-cases { margin-top: 35px; }
+    .pet-cases-header { text-align: center; margin-bottom: 25px; position: relative; padding-bottom: 15px; }
+    .pet-cases-header h2 { font-family: 'Grandstander', cursive; color: #444; font-size: 28px; margin: 0; }
+    .pet-cases-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: linear-gradient(90deg, var(--pawpal-green), #3e7a42); border-radius: 3px; }
+    .pet-case-card { display: flex; background-color: #fff; border-radius: var(--border-radius-soft); overflow: hidden; margin-bottom: 20px; box-shadow: var(--card-shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; padding: 15px; text-decoration: none; color: inherit; border-left: 5px solid var(--pawpal-green); }
+    .pet-case-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); }
+    .pet-photo { width: 120px; height: 120px; flex-shrink: 0; border-radius: 12px; overflow: hidden; margin-right: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+    .pet-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .pet-case-card:hover .pet-photo img { transform: scale(1.08); }
+    .pet-info { flex-grow: 1; padding: 0; position: relative; } /* Ensure this pet-info class doesn't conflict if you meant the one inside .card for catalog */
+    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .case-number { font-size: 18px; font-weight: 700; display: flex; align-items: center; color: var(--pawpal-green); font-family: 'Outfit', sans-serif; }
+    .paw-icon { margin-left: 8px; color: var(--pawpal-primary); font-size: 1.1em; }
+    .gender-icon { width: 30px; height: 30px; border-radius: 50%; background-color: #66b0f5; color: #ffffff; font-size: 18px; display: flex; justify-content: center; align-items: center; font-weight: bold; flex-shrink: 0; }
+    .gender-icon.female { background-color: #ff69b4; color: #fdeef5; }
     .condition-label { display: flex; align-items: center; font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #444; font-family: 'Outfit', sans-serif; }
     .notebook-icon { margin-right: 8px; color: var(--pawpal-green); }
     .case-description { font-size: 15px; line-height: 1.6; }
@@ -371,31 +461,43 @@
         .pet-case-card { flex-direction: column; padding: 12px; }
         .pet-photo { width: 100%; height: 180px; margin-right: 0; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
         .pet-photo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        /* --- Responsive adjustments for new donation form elements --- */
+        .donation-type-toggle { flex-direction: column; border-radius: 12px; }
+        .donation-type-toggle .toggle-btn { border-radius: 0; border-bottom: 1px solid var(--pawpal-light-grey-border); }
+        .donation-type-toggle .toggle-btn:last-child { border-bottom: none; }
+        .payment-methods-new { flex-direction: column; }
+        /* --- End of responsive adjustments --- */
+
+        /* Original responsive styles from user */
         .radio-options { flex-direction: column; gap: 10px; align-items: flex-start; }
-        .payment-methods { justify-content: space-between; }
-        .payment-method { flex: 0 0 48%; }
-        .payment-label { width: 100%; }
-        .donate-button, .action-button { width: 80%; }
+        .payment-methods { justify-content: space-between; } /* Old payment methods */
+        .payment-method { flex: 0 0 48%; } /* Old payment methods */
+        .payment-label { width: 100%; } /* Old payment label */
+
+        .donate-button, .action-button, .generate-qr-btn-new { width: 100%; max-width: none; } /* Full width buttons on mobile */
         .section-label { text-align: left; }
-        .generated-qr-container { max-width: 90%; } /* Ensure it fits small screens */
+        .generated-qr-container { max-width: 90%; } 
 
     }
     @media (max-width: 480px) {
-        .payment-method { flex: 0 0 100%; }
+        /* Old .payment-method for old UI if still partially used elsewhere */
+        /* For new UI, .payment-methods-new will already be column from above */
         .content-area { padding-top: 20px; }
-        .page-header-title { font-size: 20px; padding: 15px 10px;}
-        .generated-qr-container::before { display: none; } /* Hide tag on very small screens if it causes layout issues */
+        .donate-page-header .page-title { font-size: 24px; } /* Adjusted from page-header-title */
+        .donate-page-header .page-subtitle { font-size: 14px; }
+        .generated-qr-container::before { display: none; } 
     }
 </style>
 {% endblock %}
 
 {% block content %}
-   <div class="page-header donate-page-header"> {# เพิ่ม class donate-page-header เพื่อ styling เฉพาะ #}
-    <div class="page-title">
-        <i class="fas fa-donate" style="margin-right: 10px;"></i>Donate 
+    <div class="page-header donate-page-header">
+        <div class="page-title">
+            <i class="fas fa-donate" style="margin-right: 10px;"></i>Donate 
+        </div>
+        <div class="page-subtitle">Your contribution makes a difference for animals in need.</div>
     </div>
-    <div class="page-subtitle">Your contribution makes a difference for animals in need.</div> {# เพิ่ม subtitle ถ้าต้องการ #}
-</div>
 
     <div class="content-area">
         <div class="mission-card">
@@ -404,7 +506,7 @@
                     <img src="{% static 'myapp/images/dog1.jpg' %}" alt="Rescue Dog">
                 </div>
                 <div class="pet-image">
-                     <img src="{% static 'myapp/images/cat1.jpg' %}" alt="Rescue Cat">
+                    <img src="{% static 'myapp/images/cat1.jpg' %}" alt="Rescue Cat">
                 </div>
                 <div class="pet-image">
                     <img src="{% static 'myapp/images/paw.jpg' %}" alt="Pet Paw">
@@ -422,106 +524,98 @@
         </button>
 
         <div class="donation-form-card" id="generalDonationSection" style="display: none;">
-            <div class="radio-options">
-                <div class="radio-option">
-                    <input type="radio" id="monthlyDonation" name="donationType" value="monthly">
-                    <label for="monthlyDonation">Monthly Donation</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="oneOffDonation" name="donationType" value="one-time" checked>
-                    <label for="oneOffDonation">One-off Donation</label>
-                </div>
+            <h3 class="form-section-title">Make Your Donation</h3>
+
+            <div class="donation-type-toggle">
+                <input type="radio" id="oneTimeDonationNew" name="donationTypeNew" value="one-time" checked hidden>
+                <button type="button" class="toggle-btn active" data-value="one-time">One-time</button>
+                
+                <input type="radio" id="monthlyDonationNew" name="donationTypeNew" value="monthly" hidden>
+                <button type="button" class="toggle-btn" data-value="monthly">Monthly</button>
             </div>
 
-            <div class="amount-field">
-                <span class="currency-symbol">฿</span>
-                <input type="number" id="donationAmountInput" value="200" min="10" required>
+            <label for="donationAmountInputNew" class="section-label" style="text-align: left; font-size:1em; margin-bottom:8px;">Donation Amount</label>
+            <div class="amount-field-new">
+                <span class="currency-symbol-new">B</span>
+                <input type="number" id="donationAmountInputNew" value="200" min="10" required>
             </div>
 
-            <div class="payment-section">
-                <div class="section-label">
-                    <i class="fas fa-credit-card" style="margin-right: 8px;"></i> Donate By
-                </div>
-                <div class="payment-methods">
-                     <div class="payment-method">
-                         <input type="radio" id="promptPayGeneral" name="paymentMethodForm" value="PromptPay" checked>
-                         <label for="promptPayGeneral" class="payment-label promptpay-label selected">
-                            <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay">
-                        </label>
-                     </div>
-                     <div class="payment-method">
-                         <input type="radio" id="otherPaymentGeneral" name="paymentMethodForm" value="Other">
-                         <label for="otherPaymentGeneral" class="payment-label">
-                             <i class="fas fa-wallet" style="margin-right: 8px;"></i> Other
-                         </label>
-                     </div>
-                </div>
+            <label class="section-label" style="text-align: left; font-size:1em; margin-bottom:12px;">Select Payment Method</label>
+            <div class="payment-methods-new">
+                <label for="promptPayGeneralNew" class="payment-method-option selected" data-value="PromptPay">
+                    <input type="radio" id="promptPayGeneralNew" name="paymentMethodNew" value="PromptPay" checked hidden>
+                    <img src="{% static 'myapp/images/promptpay.png' %}" alt="PromptPay" class="payment-icon">
+                    <span class="payment-label-text">PromptPay</span>
+                </label>
+                <label for="otherPaymentGeneralNew" class="payment-method-option" data-value="Other">
+                    <input type="radio" id="otherPaymentGeneralNew" name="paymentMethodNew" value="Other" hidden>
+                    <i class="fas fa-wallet payment-icon"></i>
+                    <span class="payment-label-text">Other</span>
+                </label>
             </div>
 
-            <button type="button" id="createQrOrProceedButton" class="action-button">
-                <i class="fas fa-qrcode" style="margin-right: 8px;"></i> QR Code
+            <button type="button" id="createQrOrProceedButtonNew" class="generate-qr-btn-new">
+                <i class="fas fa-qrcode"></i> Generate QR Code
             </button>
 
             <div id="generatedQrContainerGeneral" class="generated-qr-container" style="display: none;">
-                {# QR code content will be injected here by JavaScript, HTML structure changed slightly #}
+                {# QR code content will be injected here by JavaScript #}
             </div>
 
             <div id="slipUploadSection" style="display: none;">
                 <form id="general-donation-slip-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" name="donationAmount" id="hiddenDonationAmountSlip">
-                    <input type="hidden" name="paymentMethod" value="PromptPay">
-                    <input type="hidden" name="form_type" value="general_donation_slip">
+                    <input type="hidden" name="paymentMethod" id="hiddenPaymentMethodSlip"> <input type="hidden" name="donationType" id="hiddenDonationTypeSlip"> <input type="hidden" name="form_type" value="general_donation_slip">
 
                     <div id="promptpay-details-general">
-                         <div class="form-group">
-                             <label for="slip_image_general">
-                                 <i class="fas fa-receipt" style="margin-right: 5px;"></i> แนบสลิป (หลังจากโอนเงินแล้ว):
-                             </label>
-                             <input type="file" id="slip_image_general" name="slip_image" accept="image/*" required>
-                         </div>
+                        <div class="form-group">
+                            <label for="slip_image_general">
+                                <i class="fas fa-receipt" style="margin-right: 5px;"></i> Attach Slip (after transfer):
+                            </label>
+                            <input type="file" id="slip_image_general" name="slip_image" accept="image/*" required>
+                        </div>
                     </div>
                     <button type="submit" class="action-button" id="confirmDonationWithSlipButton">
-                        <i class="fas fa-check" style="margin-right: 8px;"></i> ยืนยันการบริจาค
+                        <i class="fas fa-check" style="margin-right: 8px;"></i> Confirm Donation
                     </button>
                 </form>
             </div>
         </div>
-
         <div class="pet-cases">
-             <div class="pet-cases-header">
+            <div class="pet-cases-header">
                 <h2><i class="fas fa-paw" style="margin-right: 10px;"></i> Animals Needing Your Help</h2>
             </div>
             {% for case_item in donation_cases %}
-               <a href="{% url 'donate_detail' pk=case_item.pk %}" class="pet-case-card">
-                   <div class="pet-photo">
-                       {% if case_item.image %}<img src="{{ case_item.image.url }}" alt="{{ case_item.title }}">
-                       {% elif case_item.pet.photo %}<img src="{{ case_item.pet.photo.url }}" alt="{{ case_item.pet.name }}">
-                       {% else %}<img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">{% endif %}
-                   </div>
-                   <div class="pet-info">
-                       <div class="case-header">
-                           <div class="case-number">No. {{ case_item.case_id }} <span class="paw-icon"><i class="fas fa-paw"></i></span></div>
-                           <div class="gender-icon {% if case_item.pet.gender|lower == 'female' %}female{% endif %}">
-                               {% if case_item.pet.gender|lower == 'male' %}♂{% elif case_item.pet.gender|lower == 'female' %}♀{% else %}?{% endif %}
-                           </div>
-                       </div>
-                       <div class="condition-section">
-                           <div class="condition-label"><span class="notebook-icon"><i class="fas fa-clipboard-list"></i></span> Description of the condition</div>
-                           <div class="case-description"><p>{{ case_item.description|truncatechars:100 }}</p></div>
-                       </div>
-                   </div>
-               </a>
-           {% empty %}
-               <div class="no-cases"><i class="fas fa-info-circle" style="margin-right: 5px; font-size: 20px;"></i> No donation cases available at the moment.</div>
-           {% endfor %}
-       </div>
+                <a href="{% url 'donate_detail' pk=case_item.pk %}" class="pet-case-card">
+                    <div class="pet-photo">
+                        {% if case_item.image %}<img src="{{ case_item.image.url }}" alt="{{ case_item.title }}">
+                        {% elif case_item.pet.photo %}<img src="{{ case_item.pet.photo.url }}" alt="{{ case_item.pet.name }}">
+                        {% else %}<img src="{% static 'myapp/images/default_pet.png' %}" alt="No image available">{% endif %}
+                    </div>
+                    <div class="pet-info"> {# This pet-info is for case_item card #}
+                        <div class="case-header">
+                            <div class="case-number">No. {{ case_item.case_id }} <span class="paw-icon"><i class="fas fa-paw"></i></span></div>
+                            <div class="gender-icon {% if case_item.pet.gender|lower == 'female' %}female{% endif %}">
+                                {% if case_item.pet.gender|lower == 'male' %}&#9794;{% elif case_item.pet.gender|lower == 'female' %}&#9792;{% else %}?{% endif %}
+                            </div>
+                        </div>
+                        <div class="condition-section"> {# Changed from condition-label to condition-section for clarity #}
+                            <div class="condition-label"><span class="notebook-icon"><i class="fas fa-clipboard-list"></i></span> Description of the condition</div>
+                            <div class="case-description"><p>{{ case_item.description|truncatechars:100 }}</p></div>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="no-cases"><i class="fas fa-info-circle" style="margin-right: 5px; font-size: 20px;"></i> No donation cases available at the moment.</div>
+            {% endfor %}
+        </div>
     </div>
 
     <div id="thank-you-popup-general" class="popup-overlay">
         <div class="popup-content">
             <button class="close-btn" onclick="document.getElementById('thank-you-popup-general').classList.remove('visible');">&times;</button>
-            <div class="icon">❤️</div>
+            <div class="icon">&#10084;&#65039;</div> {# Red Heart Emoji #}
             <h4>Thank you for your donation!</h4>
             <p>Your support helps us care for animals in need.</p>
         </div>
@@ -534,16 +628,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const initiateGeneralDonationButton = document.getElementById('initiateGeneralDonation');
     const generalDonationSection = document.getElementById('generalDonationSection');
 
-    const donationAmountInput = document.getElementById('donationAmountInput');
-    const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethodForm"]');
-    const createQrOrProceedButton = document.getElementById('createQrOrProceedButton');
+    // --- New UI Elements ---
+    const donationTypeToggleButtons = document.querySelectorAll('.donation-type-toggle .toggle-btn');
+    const donationAmountInputNew = document.getElementById('donationAmountInputNew');
+    const paymentMethodOptions = document.querySelectorAll('.payment-methods-new .payment-method-option');
+    const createQrOrProceedButtonNew = document.getElementById('createQrOrProceedButtonNew');
+    
+    // Hidden fields for slip form
+    const hiddenDonationAmountSlip = document.getElementById('hiddenDonationAmountSlip');
+    const hiddenPaymentMethodSlip = document.getElementById('hiddenPaymentMethodSlip');
+    const hiddenDonationTypeSlip = document.getElementById('hiddenDonationTypeSlip');
+
+
+    // --- Original Elements (if still needed for logic outside the form, or for QR/Slip) ---
+    // const donationAmountInput = document.getElementById('donationAmountInput'); // Old one, replaced by New
+    // const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethodForm"]'); // Old ones
+    // const createQrOrProceedButton = document.getElementById('createQrOrProceedButton'); // Old one
 
     const generatedQrContainer = document.getElementById('generatedQrContainerGeneral');
     const slipUploadSection = document.getElementById('slipUploadSection');
     const generalDonationSlipForm = document.getElementById('general-donation-slip-form');
-    const hiddenDonationAmountSlip = document.getElementById('hiddenDonationAmountSlip');
     const slipImageInput = document.getElementById('slip_image_general');
-
     const thankYouPopup = document.getElementById('thank-you-popup-general');
 
     function getCookie(name) {
@@ -566,45 +671,60 @@ document.addEventListener('DOMContentLoaded', function() {
             generalDonationSection.style.display = 'block';
             this.style.display = 'none';
             generalDonationSection.scrollIntoView({ behavior: 'smooth' });
+            // Set initial states for new UI
+            updateQrButtonTextNewUI(); 
         });
     }
 
-    function updateCreateQrButtonText() {
-        const selectedPaymentMethod = document.querySelector('input[name="paymentMethodForm"]:checked').value;
-        if (selectedPaymentMethod === 'PromptPay') {
-            createQrOrProceedButton.innerHTML = '<i class="fas fa-qrcode" style="margin-right: 8px;"></i>  QR Code';
-        } else {
-            createQrOrProceedButton.innerHTML = '<i class="fas fa-donate" style="margin-right: 8px;"></i> บริจาคเลย';
-        }
-    }
-
-    paymentMethodRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            document.querySelectorAll('.payment-label').forEach(label => {
-                label.classList.remove('selected');
-            });
-            if (this.checked) {
-                const currentLabel = document.querySelector(`label[for="${this.id}"]`);
-                if (currentLabel) {
-                    currentLabel.classList.add('selected');
-                }
-            }
-            updateCreateQrButtonText();
-            // Always show the "Create QR Code / Donate Now" button when payment method changes
-            createQrOrProceedButton.style.display = 'block';
-            generatedQrContainer.style.display = 'none'; // Hide QR if previously shown
-            slipUploadSection.style.display = 'none'; // Hide slip upload if previously shown
+    // --- Logic for New Donation Type Toggle ---
+    let currentDonationType = 'one-time'; // Default
+    donationTypeToggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            donationTypeToggleButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            currentDonationType = this.dataset.value;
+            // console.log("Selected donation type:", currentDonationType);
         });
     });
-    updateCreateQrButtonText();
 
-    if (createQrOrProceedButton) {
-        createQrOrProceedButton.addEventListener('click', function() {
-            const amount = donationAmountInput.value;
-            const paymentMethod = document.querySelector('input[name="paymentMethodForm"]:checked').value;
+    // --- Logic for New Payment Method Selection ---
+    let currentPaymentMethod = 'PromptPay'; // Default
+    paymentMethodOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            paymentMethodOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            currentPaymentMethod = this.dataset.value;
+            // Update radio button check state for form submission if needed, though we read from currentPaymentMethod
+            const radioInput = this.querySelector('input[type="radio"]');
+            if(radioInput) radioInput.checked = true;
+            
+            updateQrButtonTextNewUI();
+            // Hide QR and slip sections when payment method changes, until QR is generated
+            generatedQrContainer.style.display = 'none';
+            slipUploadSection.style.display = 'none';
+            if (createQrOrProceedButtonNew) createQrOrProceedButtonNew.style.display = 'flex'; // Ensure button is visible
+        });
+    });
+    
+    function updateQrButtonTextNewUI() {
+        if (!createQrOrProceedButtonNew) return;
+        if (currentPaymentMethod === 'PromptPay') {
+            createQrOrProceedButtonNew.innerHTML = '<i class="fas fa-qrcode"></i> Generate QR Code';
+        } else {
+            createQrOrProceedButtonNew.innerHTML = '<i class="fas fa-donate"></i> Donate Now';
+        }
+    }
+    
+    // Initialize button text based on default payment method
+    updateQrButtonTextNewUI();
+
+
+    if (createQrOrProceedButtonNew) {
+        createQrOrProceedButtonNew.addEventListener('click', function() {
+            const amount = donationAmountInputNew.value;
 
             if (!amount || parseFloat(amount) <= 0) {
-                alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');
+                alert('Please enter a valid donation amount.');
                 return;
             }
 
@@ -612,105 +732,126 @@ document.addEventListener('DOMContentLoaded', function() {
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Processing...';
 
-            if (paymentMethod === 'PromptPay') {
+            // Update hidden fields for slip form
+            if(hiddenDonationAmountSlip) hiddenDonationAmountSlip.value = amount;
+            if(hiddenPaymentMethodSlip) hiddenPaymentMethodSlip.value = currentPaymentMethod;
+            if(hiddenDonationTypeSlip) hiddenDonationTypeSlip.value = currentDonationType;
+
+
+            if (currentPaymentMethod === 'PromptPay') {
                 const formData = new FormData();
                 formData.append('donationAmount', amount);
-                formData.append('paymentMethod', 'PromptPay');
+                formData.append('paymentMethod', 'PromptPay'); // Keep this as 'PromptPay' for backend
+                formData.append('donationType', currentDonationType);
                 formData.append('action', 'generate_qr');
                 formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
-                fetch("{% url 'donate' %}", {
+                fetch("{% url 'donate' %}", { // Assuming this URL handles QR generation
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    this.disabled = false; // Re-enable button
-                    this.innerHTML = originalButtonHTML; // Restore original button text
+                    this.disabled = false;
+                    this.innerHTML = originalButtonHTML;
 
                     if (data.success && data.action === 'qr_generated' && data.qr_code_image) {
                         generatedQrContainer.innerHTML = `
-                            <p class="qr-amount-text">สแกน QR Code นี้เพื่อบริจาคจำนวน ${data.amount} บาท</p>
+                            <p class="qr-amount-text">Scan this QR Code to donate ${data.amount} THB</p>
                             ${data.promptpay_id_display ? `<p class="qr-promptpay-id">(PromptPay ID: ${data.promptpay_id_display})</p>` : ''}
                             <img src="data:image/png;base64,${data.qr_code_image}" alt="Generated PromptPay QR Code">
-                            <p class="qr-instruction">หลังจากสแกนและโอนเงินเรียบร้อยแล้ว กรุณาแนบสลิปด้านล่างเพื่อยืนยัน</p>
+                            <p class="qr-instruction">After scanning and completing the transfer, please attach the slip below to confirm.</p>
                         `;
                         generatedQrContainer.style.display = 'block';
                         slipUploadSection.style.display = 'block';
-                        if(hiddenDonationAmountSlip) hiddenDonationAmountSlip.value = amount;
-                        // createQrOrProceedButton.style.display = 'none'; // Keep button visible
+                        // createQrOrProceedButtonNew.style.display = 'none'; // Hide after generating QR
                     } else {
-                        alert('เกิดข้อผิดพลาดในการสร้าง QR Code: ' + (data.error || 'Unknown error'));
+                        alert('Error generating QR Code: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error creating QR Code:', error);
-                    alert('เกิดข้อผิดพลาดในการสร้าง QR Code');
-                    this.disabled = false; // Re-enable button
-                    this.innerHTML = originalButtonHTML; // Restore original button text
+                    alert('Error generating QR Code. Please try again.');
+                    this.disabled = false;
+                    this.innerHTML = originalButtonHTML;
                 });
 
-            } else {
+            } else { // 'Other' payment method
                 const formData = new FormData();
                 formData.append('donationAmount', amount);
-                formData.append('paymentMethod', 'Other');
-                formData.append('form_type', 'general_donation_other');
+                formData.append('paymentMethod', 'Other'); // Keep this as 'Other' for backend
+                formData.append('donationType', currentDonationType);
+                formData.append('form_type', 'general_donation_other'); // As in your original form
                 formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
-                fetch("{% url 'donate' %}", {
+                fetch("{% url 'donate' %}", { // Assuming this URL handles 'Other' donations
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    this.disabled = false; // Re-enable button
-                    this.innerHTML = originalButtonHTML; // Restore original button text
+                    this.disabled = false;
+                    this.innerHTML = originalButtonHTML;
 
                     if (data.success && data.action === 'other_payment_submitted') {
                         if (thankYouPopup) thankYouPopup.classList.add('visible');
-                        donationAmountInput.value = "200";
-                        document.getElementById('oneOffDonation').checked = true;
-                        document.getElementById('promptPayGeneral').checked = true;
-                        document.querySelectorAll('.payment-label').forEach(label => label.classList.remove('selected'));
-                        document.querySelector('label[for="promptPayGeneral"]').classList.add('selected');
-                        updateCreateQrButtonText();
+                        // Reset form elements to default
+                        donationAmountInputNew.value = "200";
+                        currentDonationType = 'one-time';
+                        donationTypeToggleButtons.forEach(btn => {
+                            btn.classList.remove('active');
+                            if (btn.dataset.value === 'one-time') btn.classList.add('active');
+                        });
+                        
+                        currentPaymentMethod = 'PromptPay';
+                        paymentMethodOptions.forEach(opt => {
+                            opt.classList.remove('selected');
+                             const radio = opt.querySelector('input[type="radio"]');
+                            if (opt.dataset.value === 'PromptPay') {
+                                opt.classList.add('selected');
+                                if(radio) radio.checked = true;
+                            } else {
+                                if(radio) radio.checked = false;
+                            }
+                        });
+                        updateQrButtonTextNewUI();
 
                         generalDonationSection.style.display = 'none';
-                        initiateGeneralDonationButton.style.display = 'block';
-
+                        if (initiateGeneralDonationButton) initiateGeneralDonationButton.style.display = 'block';
                     } else {
-                        alert('เกิดข้อผิดพลาดในการบริจาค (ช่องทางอื่น): ' + (data.error || 'Unknown error'));
+                        alert('Error processing donation (Other): ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting "Other" donation:', error);
-                    alert('เกิดข้อผิดพลาดในการบริจาค (ช่องทางอื่น)');
-                    this.disabled = false; // Re-enable button
-                    this.innerHTML = originalButtonHTML; // Restore original button text
+                    alert('Error processing donation (Other). Please try again.');
+                    this.disabled = false;
+                    this.innerHTML = originalButtonHTML;
                 });
             }
         });
     }
+
 
     if (generalDonationSlipForm) {
         generalDonationSlipForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
             if (!slipImageInput.files || slipImageInput.files.length === 0) {
-                alert('กรุณาแนบสลิปเพื่อยืนยันการบริจาค');
+                alert('Please attach the slip to confirm your donation.');
                 return;
             }
-            if(hiddenDonationAmountSlip) hiddenDonationAmountSlip.value = donationAmountInput.value;
+            // Amount, PaymentMethod, DonationType are already set in hidden fields by createQrOrProceedButtonNew logic
 
-            const slipData = new FormData(this);
+            const slipData = new FormData(this); // 'this' is the form
             const confirmButton = this.querySelector('#confirmDonationWithSlipButton');
             const originalConfirmButtonHTML = confirmButton.innerHTML;
             confirmButton.disabled = true;
             confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Processing...';
 
-            fetch("{% url 'donate' %}", {
+            fetch("{% url 'donate' %}", { // Assuming this URL handles slip submission
                 method: 'POST',
                 body: slipData,
                 headers: {
@@ -725,31 +866,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (data.success && data.action === 'slip_submitted') {
                     if (thankYouPopup) thankYouPopup.classList.add('visible');
-                    generalDonationSlipForm.reset();
-                    donationAmountInput.value = "200";
-                    document.getElementById('oneOffDonation').checked = true;
-                    document.getElementById('promptPayGeneral').checked = true;
-
-                    document.querySelectorAll('.payment-label').forEach(label => label.classList.remove('selected'));
-                    const defaultLabel = document.querySelector('label[for="promptPayGeneral"]');
-                    if (defaultLabel) defaultLabel.classList.add('selected');
+                    generalDonationSlipForm.reset(); // Clears the file input
+                    
+                    // Reset main form to defaults
+                    donationAmountInputNew.value = "200";
+                    currentDonationType = 'one-time';
+                    donationTypeToggleButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.value === 'one-time') btn.classList.add('active');
+                    });
+                    
+                    currentPaymentMethod = 'PromptPay';
+                    paymentMethodOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        const radio = opt.querySelector('input[type="radio"]');
+                        if (opt.dataset.value === 'PromptPay') {
+                            opt.classList.add('selected');
+                            if(radio) radio.checked = true;
+                        } else {
+                             if(radio) radio.checked = false;
+                        }
+                    });
+                    updateQrButtonTextNewUI();
 
                     generatedQrContainer.style.display = 'none';
-                    generatedQrContainer.innerHTML = ''; // Clear QR content
+                    generatedQrContainer.innerHTML = ''; 
                     slipUploadSection.style.display = 'none';
-
-                    createQrOrProceedButton.style.display = 'block'; // Ensure "Create QR" button is visible again
-                    updateCreateQrButtonText();
-
+                    
+                    if (createQrOrProceedButtonNew) createQrOrProceedButtonNew.style.display = 'flex';
+                    
                     generalDonationSection.style.display = 'none';
-                    initiateGeneralDonationButton.style.display = 'block';
+                    if (initiateGeneralDonationButton) initiateGeneralDonationButton.style.display = 'block';
+
                 } else {
-                    alert('เกิดข้อผิดพลาดในการยืนยันการบริจาค: ' + (data.error || 'Unknown error'));
+                    alert('Error confirming donation: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Error submitting slip:', error);
-                alert('เกิดข้อผิดพลาดในการยืนยันการบริจาค');
+                alert('Error confirming donation. Please try again.');
                 confirmButton.disabled = false;
                 confirmButton.innerHTML = originalConfirmButtonHTML;
             });

@@ -529,6 +529,7 @@ def get_pet_detail_ajax(request, pet_id):
             'breed': pet.breed,
             'gender_display': pet.get_gender_display(), # Use the display name for choices
             'age': pet.age, # Assuming age is stored as a string or number
+            'size_display': pet.get_size_display() if pet.size else "-",
             'vaccinated': pet.vaccinated,
             'disability': pet.disability if pet.disability else "-",
             'personality': pet.personality if pet.personality else "-",

@@ -15,9 +15,16 @@ class Pet(models.Model):
     ]
     GENDER_CHOICES = [
         ('male', 'Male'),
+    
         ('female', 'Female'),
     ]
-
+    SIZE_CHOICES = [
+        ('small', 'Small'),
+        ('medium', 'Medium'),
+        ('large', 'Large'),
+        ('unknown', 'Unknown'), # เพิ่ม unknown หรือค่า default อื่นๆ ตามต้องการ
+    ]
+    size = models.CharField(max_length=10,choices=SIZE_CHOICES,default='unknown', blank=True ,null=True )         # อนุญาตให้เป็นค่า null ในฐานข้อมูล (ถ้า blank=True ก็มักจะใส่ null=True ด้วยสำหรับ CharField)
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     age = models.CharField(max_length=100, default='Unknown')

@@ -2,121 +2,215 @@
 {% load static %}
 
 {% block extra_head %}
-  {# Font Awesome ควรจะถูก include ใน base.html แล้ว #}
-  <style>
-    /* CSS เดิมของ adopt_catalog.html (Search, Filter, Grid, Card) */
+{# Font Awesome should be included in base.html #}
+<style>
+    /* Original CSS from adopt_catalog.html (Search, Grid, Card, Modal, Lightbox etc.) */
     .search-container {
-      display: flex;
-      padding: 10px;
-      background-color: #8db38b; /* var(--green) */
+        display: flex;
+        padding: 10px;
+        background-color: #8db38b; /* var(--green) */
+        align-items: center;
+        position: relative; /* For positioning the filter panel */
     }
     .search-bar {
-      flex: 1;
-      position: relative;
+        flex: 1;
+        position: relative;
     }
     .search-bar input {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      font-size: 0.9em;
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        font-size: 0.9em;
     }
     .search-icon {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8db38b; /* var(--green) */
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8db38b; /* var(--green) */
     }
-    .filter-button {
-      background-color: #4e7857; /* Darker green */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
-      margin-left: 10px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
+    .filter-button { /* This is the original filter button '≡' */
+        background-color: #4e7857; /* Darker green */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 1.2em;
     }
+
+    /* --- NEW CSS for the Filter Panel (Dropdown/Popup) --- */
+    .filter-panel {
+        display: none; /* Hidden by default */
+        position: absolute;
+        top: calc(100% + 5px); /* Position below the search container */
+        right: 0; /* Align to the right, near the filter button */
+        width: 320px;
+        max-height: 75vh;
+        overflow-y: auto;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        padding: 15px;
+        z-index: 1050;
+    }
+    .filter-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .filter-panel-header h4 {
+        margin: 0;
+        font-size: 1.1em;
+        color: #333;
+    }
+    .filter-panel-close-btn {
+        font-size: 1.5em;
+        color: #888;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+    .filter-panel-close-btn:hover {
+        color: #000;
+    }
+    .filter-panel .filter-section {
+        margin-bottom: 15px;
+    }
+    .filter-panel .filter-section h5 {
+        font-size: 0.9em;
+        font-weight: bold;
+        color: #4e7857;
+        margin-bottom: 8px;
+    }
+    .filter-panel .filter-options .btn {
+        font-size: 0.8em;
+        padding: 5px 10px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        border-radius: 15px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        color: #555;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .filter-panel .filter-options .btn:hover {
+        background-color: #e0e0e0;
+    }
+    .filter-panel .filter-options .btn.active {
+        background-color: #f9da91;
+        color: white;
+        border-color: #6a4d2a7f;
+         border-width: 2px;
+       
+    }
+    /* --- CSS for Clear All Button --- */
+    .filter-panel-footer {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        text-align: right;
+    }
+    .filter-panel-footer .btn-clear-all {
+        background-color: #dc3545; /* Bootstrap danger color */
+        color: white;
+        font-size: 0.85em;
+        padding: 6px 12px;
+        border-radius: 5px;
+    }
+    .filter-panel-footer .btn-clear-all:hover {
+        background-color: #c82333;
+    }
+    /* --- End of CSS for Filter Panel --- */
+
     .section-title-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #e8605c; /* var(--accent-red) */
-      color: white;
-      padding: 0.5em 1em; /* เพิ่ม padding ซ้ายขวา */
-      font-weight: bold;
-      font-size: 1em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e8605c;
+        color: white;
+        padding: 0.5em 1em;
+        font-weight: bold;
+        font-size: 1em;
     }
     .pet-count {
-      font-size: 0.8em;
-      font-weight: normal;
+        font-size: 0.8em;
+        font-weight: normal;
     }
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ปรับ minmax เล็กน้อย */
-      gap: 15px; /* เพิ่ม gap */
-      padding: 15px; /* ปรับ padding */
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+        padding: 15px;
     }
     .card {
-      background-color: white;
-      border-radius: 12px !important;
-      padding: 0.8em; /* ปรับ padding */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* ปรับเงา */
-      position: relative;
-      cursor: pointer; /* ทำให้รู้ว่าคลิกได้ */
-      transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; 
+        background-color: white;
+        border-radius: 12px !important;
+        padding: 0.8em;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
     }
     .card:hover {
         transform: translateY(-8px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .card img {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border-radius: 8px; /* ปรับมุมรูป */
-      margin-bottom: 8px; /* เพิ่มระยะห่างใต้รูป */
+    .card img.pet-card-image {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 8px;
     }
     .pet-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 4px;
     }
     .pet-name {
-      font-weight: bold;
-      font-size: 0.9em;
-      margin: 0;
-      color: #543c1f;
+        font-weight: bold;
+        font-size: 0.9em;
+        margin: 0;
+        color: #543c1f;
     }
     .pet-gender {
-      width: 20px; /* เพิ่มขนาด */
-      height: 20px; /* เพิ่มขนาด */
-      border-radius: 50%;
-      text-align: center;
-      line-height: 20px; /* ปรับให้ตรงกับ height */
-      font-size: 0.85em; /* ปรับขนาดตัวอักษร */
-      color: white;
-      font-weight: bold;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        font-size: 0.85em;
+        color: white;
+        font-weight: bold;
     }
     .pet-gender.male { background-color: #4088c9; }
     .pet-gender.female { background-color: #ff69b4; }
     .pet-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px; /* เพิ่ม gap */
-      margin-top: 6px; /* เพิ่ม margin */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 6px;
     }
     .badge {
-      background-color: #f0f0f0;
-      border-radius: 20px !important;
-      padding: 4px 10px; /* เพิ่ม padding */
-      font-size: 0.7em; /* ลดขนาดฟอนต์ badge เล็กน้อย */
-      color: #555 !important; /* ปรับสี */
+        background-color: #f0f0f0;
+        border-radius: 20px !important;
+        padding: 4px 10px;
+        font-size: 0.7em;
+        color: #555 !important;
     }
-    .heart-icon { /* Favorite icon บน Card ใน Catalog */
+    .heart-icon {
         position: absolute;
         top: 10px; right: 10px;
         background: white; border-radius: 50%;
@@ -128,51 +222,51 @@
     .heart-icon i.fas.fa-heart { color: #ccc; }
     .heart-icon i.fas.fa-heart.active { color: #e8605c; }
     .no-results {
-      grid-column: 1 / -1; /* ให้ span เต็ม grid */
-      text-align: center; padding: 30px; font-size: 1.1em; color: #777;
+        grid-column: 1 / -1;
+        text-align: center; padding: 30px; font-size: 1.1em; color: #777;
     }
 
-    /* --- CSS สำหรับ Modal --- */
+    /* CSS for Modal */
     .modal-overlay {
-      display: none; position: fixed; z-index: 1001;
-      left: 0; top: 0; width: 100%; height: 100%;
-      overflow-y: auto; /* ให้ scroll เฉพาะ modal ถ้า content ยาว */
-      background-color: rgba(0,0,0,0.65); /* เพิ่มความเข้ม overlay */
-      align-items: center; justify-content: center; /* จัดกลาง */
+        display: none; position: fixed; z-index: 1001;
+        left: 0; top: 0; width: 100%; height: 100%;
+        overflow-y: auto;
+        background-color: rgba(0,0,0,0.65);
+        align-items: center; justify-content: center;
     }
     .modal-content-wrapper {
-      background-color: #fcf8ee; /* สีพื้นหลังเดียวกับ body */
-      margin: 5vh auto; /* ปรับ margin ให้มีช่องว่างบนล่าง */
-      padding: 0; border: none;
-      width: 90%; max-width: 500px; /* ลด max-width ของ popup ลงเล็กน้อย */
-      border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      position: relative;
-      animation: fadeInModal 0.3s ease-out;
-      max-height: 90vh; /* จำกัดความสูง popup */
-      display: flex; /* เพิ่มเพื่อให้ content ภายใน scroll ได้ถ้าสูงเกิน */
-      flex-direction: column; /* เพิ่มเพื่อให้ content ภายใน scroll ได้ถ้าสูงเกิน */
+        background-color: #fcf8ee;
+        margin: 5vh auto;
+        padding: 0; border: none;
+        width: 90%; max-width: 500px;
+        border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        position: relative;
+        animation: fadeInModal 0.3s ease-out;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
     }
     @keyframes fadeInModal {
-      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+        from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .modal-close-button {
-      color: #777; position: absolute; top: 12px; left:15px;
-      font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;
-      padding: 5px; line-height: 1;
+        color: #777; position: absolute; top: 12px; left:15px;
+        font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10;
+        padding: 5px; line-height: 1;
     }
     .modal-close-button:hover, .modal-close-button:focus { color: #000; }
 
-    #modalPetContentContainer { /* ID นี้ใช้สำหรับ Modal ใน Catalog */
-        overflow-y: auto; /* ให้ content ภายใน modal scroll ได้ */
-        flex-grow: 1; /* ให้ content ขยายเต็มพื้นที่ที่เหลือใน wrapper */
+    #modalPetContentContainer {
+        overflow-y: auto;
+        flex-grow: 1;
     }
 
-    /* --- CSS สำหรับ Pet Detail Content ภายใน Modal (คัดลอกจาก pet_detail.html เดิม และปรับปรุง) --- */
+    /* CSS for Pet Detail Content within Modal */
     .card-detail-popup {
-      padding: 20px 25px 25px 25px; /* top | horiz | bottom */
-      text-align: center;
-      position: relative;
+        padding: 20px 25px 25px 25px;
+        text-align: center;
+        position: relative;
     }
     .pet-image-container-popup {
         width: 60%; max-width: 220px; margin: 0 auto 15px auto;
@@ -182,10 +276,10 @@
     .pet-image-popup { width: 100%; height: 100%; object-fit: cover; }
 
     .heart-icon-detail-popup {
-      position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.7);
-      border-radius: 50%; width: 35px; height: 35px; display: flex;
-      justify-content: center; align-items: center; cursor: pointer; z-index: 5;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%; width: 35px; height: 35px; display: flex;
+        justify-content: center; align-items: center; cursor: pointer; z-index: 5;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
     .heart-icon-detail-popup:hover { transform: scale(1.1); }
     .heart-icon-detail-popup i.fas.fa-heart { font-size: 18px; color: #ccc; transition: color 0.2s ease-in-out; }
@@ -198,322 +292,393 @@
     .story-section-popup { text-align: left; margin-top: 20px; padding: 12px; background-color: #fff; border-radius: 8px;}
     .story-title-popup { font-weight: bold; font-size: 1.05em; margin-bottom: 8px; color: #d55e00;}
     .story-content-popup { font-size: 0.9em; color: #444; line-height: 1.6;}
-    /* --- สิ้นสุด CSS สำหรับ Modal --- */
 
-    /* --- CSS สำหรับ Grid Gallery ภายใน Modal --- */
+    /* CSS for Grid Gallery within Modal */
     .additional-images-grid-section-popup {
-      text-align: left;
-      margin-top: 20px;
-      padding: 12px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
+        text-align: left; margin-top: 20px; padding: 12px;
+        background-color: #f8f9fa; border-radius: 8px;
     }
     .additional-images-title-popup {
-      font-weight: bold;
-      font-size: 1em;
-      margin-bottom: 10px;
-      color: #343a40;
+        font-weight: bold; font-size: 1em; margin-bottom: 10px; color: #343a40;
     }
     .additional-images-grid-popup {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 8px;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;
     }
-    .additional-image-grid-item-popup {
-      text-align: center;
-    }
+    .additional-image-grid-item-popup { text-align: center; }
     .additional-image-grid-item-popup a {
-      display: block;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid #dee2e6;
-      cursor: pointer;
+        display: block; border-radius: 6px; overflow: hidden;
+        border: 1px solid #dee2e6; cursor: pointer;
     }
     .additional-image-grid-thumb-popup {
-      width: 100%;
-      height: 80px;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.2s ease-in-out;
+        width: 100%; height: 80px; object-fit: cover; display: block;
+        transition: transform 0.2s ease-in-out;
     }
     .additional-image-grid-item-popup a:hover .additional-image-grid-thumb-popup {
-      transform: scale(1.05);
+        transform: scale(1.05);
     }
     .additional-image-caption-grid-popup {
-      font-size: 0.75em;
-      color: #6c757d;
-      margin-top: 3px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+        font-size: 0.75em; color: #6c757d; margin-top: 3px; line-height: 1.2;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    /* --- สิ้นสุด CSS สำหรับ Grid Gallery --- */
 
-    /* --- CSS สำหรับ Lightbox รูปภาพ (เหมือนกับใน home.html) --- */
-    .lightbox-overlay-custom { /* ใช้ class เดิมเพื่อแชร์สไตล์ */
-      display: none;
-      position: fixed;
-      z-index: 1002;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.85);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      box-sizing: border-box;
+    /* CSS for Image Lightbox */
+    .lightbox-overlay-custom {
+        display: none; position: fixed; z-index: 1002; left: 0; top: 0;
+        width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85);
+        align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
     }
     .lightbox-content-custom {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        max-width: 95%;
-        max-height: 95vh;
+        position: relative; display: flex; align-items: center; justify-content: center;
+        max-width: 95%; max-height: 95vh;
     }
     .lightbox-overlay-custom img {
-      display: block;
-      margin: auto;
-      max-width: 100%;
-      max-height: 100%;
-      border-radius: 5px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        display: block; margin: auto; max-width: 100%; max-height: 100%;
+        border-radius: 5px; box-shadow: 0 0 25px rgba(0,0,0,0.5);
     }
     .lightbox-close-button-custom {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      color: #f1f1f1;
-      font-size: 45px;
-      font-weight: bold;
-      transition: 0.3s;
-      cursor: pointer;
-      line-height: 1;
-      background-color: rgba(0,0,0,0.3);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-bottom: 5px;
+        position: absolute; top: -5px; right: -5px; color: #f1f1f1;
+        font-size: 45px; font-weight: bold; transition: 0.3s; cursor: pointer;
+        line-height: 1; background-color: rgba(0,0,0,0.3); border-radius: 50%;
+        width: 40px; height: 40px; display: flex; align-items: center;
+        justify-content: center; padding-bottom: 5px;
     }
     .lightbox-close-button-custom:hover,
     .lightbox-close-button-custom:focus {
-      color: #bbb;
-      background-color: rgba(0,0,0,0.5);
+        color: #bbb; background-color: rgba(0,0,0,0.5);
     }
     .lightbox-nav-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: rgba(0,0,0,0.3);
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        font-size: 24px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-        z-index: 1003;
+        position: absolute; top: 50%; transform: translateY(-50%);
+        background-color: rgba(0,0,0,0.3); color: white; border: none;
+        padding: 10px 15px; font-size: 24px; cursor: pointer;
+        border-radius: 5px; transition: background-color 0.3s; z-index: 1003;
     }
-    .lightbox-nav-button:hover {
-        background-color: rgba(0,0,0,0.6);
-    }
-    .lightbox-prev-button {
-        left: 20px;
-    }
-    .lightbox-next-button {
-        right: 20px;
-    }
-    .lightbox-nav-button.hidden {
-        display: none;
-    }
-    /* --- สิ้นสุด CSS สำหรับ Lightbox รูปภาพ --- */
-  </style>
+    .lightbox-nav-button:hover { background-color: rgba(0,0,0,0.6); }
+    .lightbox-prev-button { left: 20px; }
+    .lightbox-next-button { right: 20px; }
+    .lightbox-nav-button.hidden { display: none; }
+</style>
 {% endblock %}
 
 {% block content %}
-  <div class="search-container">
+<div class="search-container">
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="search...">
-      <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="search...">
+        <span class="search-icon">&#128269;</span>
     </div>
-    <button class="filter-button" id="filterButton">≡</button>
-  </div>
+    <button class="filter-button" id="catalogFilterButton">&#8801;</button>
 
-  <div class="section-title-bar">
+    <div class="filter-panel" id="catalogFilterPanel">
+        <div class="filter-panel-header">
+            <h4>Filter Pets</h4>
+            <button type="button" class="filter-panel-close-btn" id="closeCatalogFilterPanelBtn">&times;</button>
+        </div>
+
+        <div class="filter-section">
+            <h5>Type</h5>
+            <div class="filter-options" id="typeFilterContainer">
+                <button type="button" class="btn active" data-filter-group="type" data-filter-value="all">All</button>
+                <button type="button" class="btn" data-filter-group="type" data-filter-value="dog">Dog</button>
+                <button type="button" class="btn" data-filter-group="type" data-filter-value="cat">Cat</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Gender</h5>
+            <div class="filter-options" id="genderFilterContainer">
+                <button type="button" class="btn active" data-filter-group="gender" data-filter-value="all">All</button>
+                <button type="button" class="btn" data-filter-group="gender" data-filter-value="male">Male</button>
+                <button type="button" class="btn" data-filter-group="gender" data-filter-value="female">Female</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Personality</h5>
+            <div class="filter-options" id="personalityFilterContainer">
+                <button type="button" class="btn active" data-filter-group="personality" data-filter-value="all">All</button>
+                <button type="button" class="btn" data-filter-group="personality" data-filter-value="energetic">Energetic</button>
+                <button type="button" class="btn" data-filter-group="personality" data-filter-value="calm">Calm</button>
+                <button type="button" class="btn" data-filter-group="personality" data-filter-value="sleepy">Sleepy</button>
+                <button type="button" class="btn" data-filter-group="personality" data-filter-value="playful">Playful</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h5>Size</h5>
+            <div class="filter-options" id="sizeFilterContainer">
+                <button type="button" class="btn active" data-filter-group="size" data-filter-value="all">All</button>
+                <button type="button" class="btn" data-filter-group="size" data-filter-value="small">Small</button>
+                <button type="button" class="btn" data-filter-group="size" data-filter-value="medium">Medium</button>
+                <button type="button" class="btn" data-filter-group="size" data-filter-value="large">Large</button>
+            </div>
+        </div>
+
+        <div class="filter-panel-footer">
+            <button type="button" class="btn btn-clear-all" id="clearAllFiltersBtn">Clear All Filters</button>
+        </div>
+    </div>
+</div>
+
+<div class="section-title-bar">
     <div>Adopt pets</div>
     <div class="pet-count" id="petCount"></div>
-  </div>
+</div>
 
-  <div class="grid" id="petsGrid">
+<div class="grid" id="petsGrid">
     {% for pet in pets %}
     <div class="card"
-         data-pet-id="{{ pet.id }}"
-         data-pet-name="{{ pet.name|lower }}"
-         data-pet-breed="{{ pet.breed|lower }}"
-         data-pet-gender="{{ pet.gender|lower }}"
-         data-pet-detail="{{ pet.detail|lower }}"
-         onclick="openPetDetailModal('{{ pet.id }}')"> {# ID ของ Modal ใน Catalog คือ petDetailModalOverlay #}
+        data-pet-id="{{ pet.id }}"
+        data-pet-name="{{ pet.name|lower|default_if_none:'' }}"
+        data-pet-breed="{{ pet.breed|lower|default_if_none:'' }}"
+        data-pet-gender="{{ pet.gender|lower|default_if_none:'' }}"
+        data-pet-detail="{{ pet.detail|lower|default_if_none:'' }}"
+        data-pet-type="{{ pet.pet_type|lower|default_if_none:'' }}"
+        data-pet-personality="{{ pet.personality|lower|default_if_none:'' }}"
+        data-pet-size="{{ pet.size|lower|default_if_none:'unknown' }}"
+        onclick="openPetDetailModal('{{ pet.id }}')">
 
-      <div class="heart-icon" data-pet-id="{{ pet.id }}">
-          <i class="fas fa-heart"></i>
-      </div>
-      <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" />
-      <div class="pet-info">
-        <p class="pet-name">No. {{ pet.name }}</p>
-        {% if pet.gender|lower == 'male' %}
-          <span class="pet-gender male">♂</span>
-        {% elif pet.gender|lower == 'female' %}
-          <span class="pet-gender female">♀</span>
-        {% else %}
-          <span class="pet-gender">?</span>
-        {% endif %}
-      </div>
-      <div class="pet-badges">
-        <span class="badge">{{ pet.breed }}</span>
-        <span class="badge">{{ pet.age }}</span>
-        <span class="badge">{{ pet.detail|default_if_none:"" }}</span> {# เพิ่ม default_if_none #}
-      </div>
+        <div class="heart-icon" data-pet-id="{{ pet.id }}">
+            <i class="fas fa-heart"></i>
+        </div>
+        <img src="{% if pet.photo %}{{ pet.photo.url }}{% else %}{% static 'myapp/images/default_pet.png' %}{% endif %}" alt="{{ pet.name }}" class="pet-card-image"/>
+        <div class="pet-info">
+            <p class="pet-name">No. {{ pet.name }}</p>
+            {% if pet.gender|lower == 'male' %}
+            <span class="pet-gender male">&#9794;</span>
+            {% elif pet.gender|lower == 'female' %}
+            <span class="pet-gender female">&#9792;</span>
+            {% else %}
+            <span class="pet-gender">?</span>
+            {% endif %}
+        </div>
+        <div class="pet-badges">
+            <span class="badge">{{ pet.breed }}</span>
+            <span class="badge">{{ pet.age }}</span>
+            {% if pet.pet_type %}<span class="badge">{{ pet.get_pet_type_display }}</span>{% endif %}
+            {% if pet.size and pet.size != 'unknown' %}<span class="badge">{{ pet.get_size_display }}</span>{% endif %}
+        </div>
     </div>
     {% empty %}
     <div class="no-results">No pets available for adoption at the moment.</div>
     {% endfor %}
-  </div>
+</div>
 
-  {# --- HTML สำหรับ Modal Pet Detail (ID: petDetailModalOverlay) --- #}
-  <div id="petDetailModalOverlay" class="modal-overlay"> {# เปลี่ยน ID เป็น petDetailModalOverlay สำหรับ Catalog #}
+<div id="petDetailModalOverlay" class="modal-overlay">
     <div class="modal-content-wrapper">
-      <span class="modal-close-button" onclick="closePetDetailModal()">&times;</span> {# ฟังก์ชันปิด Modal ของ Catalog #}
-      <div id="modalPetContentContainer"> {# Container สำหรับเนื้อหา Modal ใน Catalog #}
-        <div style="padding: 50px; text-align: center;">Loading...</div>
-      </div>
+        <span class="modal-close-button" onclick="closePetDetailModal()">&times;</span>
+        <div id="modalPetContentContainer">
+            <div style="padding: 50px; text-align: center;">Loading...</div>
+        </div>
     </div>
-  </div>
-  {# --- สิ้นสุด HTML สำหรับ Modal --- #}
+</div>
 
-  {# --- HTML สำหรับ Lightbox รูปภาพ (ใช้ ID และ function ที่แตกต่างกันสำหรับ Catalog) --- #}
-  <div id="imageLightboxOverlayCatalog" class="lightbox-overlay-custom"> {# ID เฉพาะสำหรับ Catalog #}
+<div id="imageLightboxOverlayCatalog" class="lightbox-overlay-custom">
     <div class="lightbox-content-custom">
-      <button class="lightbox-nav-button lightbox-prev-button" onclick="showPrevImageCatalog()">&#10094;</button>
-      <img id="lightboxImageCatalog" src="" alt="Large image preview"> {# ID เฉพาะสำหรับ Catalog #}
-      <button class="lightbox-nav-button lightbox-next-button" onclick="showNextImageCatalog()">&#10095;</button>
+        <button class="lightbox-nav-button lightbox-prev-button" onclick="showPrevImageCatalog()">&#10094;</button>
+        <img id="lightboxImageCatalog" src="" alt="Large image preview">
+        <button class="lightbox-nav-button lightbox-next-button" onclick="showNextImageCatalog()">&#10095;</button>
     </div>
-    <span class="lightbox-close-button-custom" onclick="closeImageLightboxCatalog()">&times;</span> {# Function เฉพาะสำหรับ Catalog #}
-  </div>
-  {# --- สิ้นสุด HTML สำหรับ Lightbox รูปภาพ --- #}
+    <span class="lightbox-close-button-custom" onclick="closeImageLightboxCatalog()">&times;</span>
+</div>
 
 {% endblock %}
 
 {% block extra_scripts %}
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('searchInput');
-      const filterButton = document.getElementById('filterButton');
-      const petsGrid = document.getElementById('petsGrid');
-      const allPetCardsInCatalog = Array.from(document.querySelectorAll('#petsGrid .card'));
-      const petCountElement = document.getElementById('petCount');
-      const heartIconsInCatalog = document.querySelectorAll('#petsGrid .card .heart-icon');
-      const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const catalogFilterButton = document.getElementById('catalogFilterButton');
+    const catalogFilterPanel = document.getElementById('catalogFilterPanel');
+    const closeCatalogFilterPanelBtn = document.getElementById('closeCatalogFilterPanelBtn');
+    const clearAllFiltersBtn = document.getElementById('clearAllFiltersBtn'); // New Clear Button
+    const petsGrid = document.getElementById('petsGrid');
+    const allPetCardsInCatalog = Array.from(document.querySelectorAll('#petsGrid .card'));
+    const petCountElement = document.getElementById('petCount');
+    const heartIconsInCatalog = document.querySelectorAll('#petsGrid .card .heart-icon');
+    const userIsAuthenticated = '{{ request.user.is_authenticated }}' === 'True';
 
-      function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
-          }
-          return cookieValue;
-      }
+    const activeFilters = {
+        type: 'all',
+        gender: 'all',
+        personality: 'all',
+        size: 'all'
+    };
 
-      function updatePetCount(count) {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updatePetCount(count) {
         if (count === undefined) {
             count = allPetCardsInCatalog.filter(card => card.style.display !== 'none').length;
         }
-        petCountElement.textContent = `Displaying ${count} pet(s)`;
-      }
+        if (petCountElement) {
+            petCountElement.textContent = `Displaying ${count} pet(s)`;
+        }
+    }
 
-      function filterPets() {
+    function filterPets() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
         let hasResults = false;
 
         const existingNoResults = petsGrid.querySelector('.no-results');
-        if (existingNoResults) existingNoResults.remove();
+        if (existingNoResults) {
+            existingNoResults.remove();
+        }
 
         allPetCardsInCatalog.forEach(card => {
-          const petName = card.getAttribute('data-pet-name') || '';
-          const petBreed = card.getAttribute('data-pet-breed') || '';
-          const petGender = card.getAttribute('data-pet-gender') || '';
-          const petDetail = card.getAttribute('data-pet-detail') || '';
+            const petName = card.dataset.petName || '';
+            const petBreed = card.dataset.petBreed || '';
+            const petDetail = card.dataset.petDetail || '';
+            const petType = card.dataset.petType || '';
+            const petGender = card.dataset.petGender || '';
+            const petPersonality = card.dataset.petPersonality || '';
+            const petSize = card.dataset.petSize || '';
 
-          const matchesSearch = searchTerm === '' ||
-                      petName.includes(searchTerm) ||
-                      petBreed.includes(searchTerm) ||
-                      petDetail.includes(searchTerm);
+            const matchesSearch = searchTerm === '' || petName.includes(searchTerm) || petBreed.includes(searchTerm) || petDetail.includes(searchTerm);
+            const typeMatch = activeFilters.type === 'all' || petType === activeFilters.type;
+            const genderMatch = activeFilters.gender === 'all' || petGender === activeFilters.gender;
+            const personalityMatch = activeFilters.personality === 'all' || (petPersonality && petPersonality.includes(activeFilters.personality));
+            const sizeMatch = activeFilters.size === 'all' || petSize === activeFilters.size;
 
-          const genderFilterValue = filterButton.dataset.currentFilter || 'all';
-          const matchesGender = genderFilterValue === 'all' || petGender === genderFilterValue;
-
-          if (matchesSearch && matchesGender) {
-            card.style.display = '';
-            visibleCount++;
-            hasResults = true;
-          } else {
-            card.style.display = 'none';
-          }
+            if (matchesSearch && typeMatch && genderMatch && personalityMatch && sizeMatch) {
+                card.style.display = '';
+                visibleCount++;
+                hasResults = true;
+            } else {
+                card.style.display = 'none';
+            }
         });
 
-        if (!hasResults && searchTerm !== '') {
-          const noResultsElement = document.createElement('div');
-          noResultsElement.className = 'no-results';
-          noResultsElement.textContent = 'No pets match your search criteria.';
-          petsGrid.appendChild(noResultsElement);
+        if (!hasResults && (searchTerm !== '' || Object.values(activeFilters).some(f => f !== 'all'))) {
+            if (!petsGrid.querySelector('.no-results')) {
+                const noResultsElement = document.createElement('div');
+                noResultsElement.className = 'no-results';
+                noResultsElement.textContent = 'No pets match your criteria.';
+                petsGrid.appendChild(noResultsElement);
+            }
         }
         updatePetCount(visibleCount);
-      }
+    }
 
-      if (searchInput) searchInput.addEventListener('input', filterPets);
-      if (filterButton) {
-        filterButton.dataset.currentFilter = 'all';
-        filterButton.addEventListener('click', function() {
-            if (this.dataset.currentFilter === 'all') { this.dataset.currentFilter = 'male'; this.textContent = '♂'; }
-            else if (this.dataset.currentFilter === 'male') { this.dataset.currentFilter = 'female'; this.textContent = '♀'; }
-            else { this.dataset.currentFilter = 'all'; this.textContent = '≡'; }
-            filterPets();
+    if (searchInput) {
+        searchInput.addEventListener('input', filterPets);
+    }
+
+    if (catalogFilterButton && catalogFilterPanel) {
+        catalogFilterButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isPanelOpen = catalogFilterPanel.style.display === 'block';
+            catalogFilterPanel.style.display = isPanelOpen ? 'none' : 'block';
         });
-      }
-      updatePetCount();
 
-      // --- JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
-      function updateCatalogHeartIconUI(iconElement, isFavorite) {
+        if (closeCatalogFilterPanelBtn) {
+            closeCatalogFilterPanelBtn.addEventListener('click', function() {
+                catalogFilterPanel.style.display = 'none';
+            });
+        }
+
+        document.addEventListener('click', function(event) {
+            if (catalogFilterPanel.style.display === 'block' &&
+                !catalogFilterPanel.contains(event.target) &&
+                event.target !== catalogFilterButton &&
+                !catalogFilterButton.contains(event.target)) {
+                catalogFilterPanel.style.display = 'none';
+            }
+        });
+
+        catalogFilterPanel.querySelectorAll('.filter-options .btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const group = this.dataset.filterGroup;
+                const value = this.dataset.filterValue;
+
+                activeFilters[group] = value;
+
+                this.closest('.filter-options').querySelectorAll('.btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                filterPets();
+            });
+        });
+    }
+
+    // --- Event Listener for Clear All Filters Button ---
+    if (clearAllFiltersBtn) {
+        clearAllFiltersBtn.addEventListener('click', function() {
+            activeFilters.type = 'all';
+            activeFilters.gender = 'all';
+            activeFilters.personality = 'all';
+            activeFilters.size = 'all';
+
+            const filterGroups = ['type', 'gender', 'personality', 'size'];
+            filterGroups.forEach(group => {
+                const container = document.getElementById(`${group}FilterContainer`);
+                if (container) {
+                    container.querySelectorAll('.filter-options .btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    const allButton = container.querySelector('.btn[data-filter-value="all"]');
+                    if (allButton) {
+                        allButton.classList.add('active');
+                    }
+                }
+            });
+
+            // Optional: Clear search input
+            // if (searchInput) {
+            //    searchInput.value = '';
+            // }
+
+            filterPets();
+            // Optionally close the panel after clearing
+            // if (catalogFilterPanel) {
+            //     catalogFilterPanel.style.display = 'none';
+            // }
+        });
+    }
+
+
+    if(allPetCardsInCatalog.length > 0){
+        updatePetCount();
+    } else {
+        if (petCountElement) petCountElement.textContent = `Displaying 0 pet(s)`;
+        if (!petsGrid.querySelector('.no-results') && petsGrid.children.length === 0) {
+            const noResultsElement = document.createElement('div');
+            noResultsElement.className = 'no-results';
+            noResultsElement.textContent = 'No pets available for adoption at the moment.';
+            petsGrid.appendChild(noResultsElement);
+        }
+    }
+
+    // Favorite System JS
+    function updateCatalogHeartIconUI(iconElement, isFavorite) {
         const heartI = iconElement.querySelector('i.fas.fa-heart');
         if (heartI) {
-          if (isFavorite) heartI.classList.add('active');
-          else heartI.classList.remove('active');
+            if (isFavorite) { heartI.classList.add('active'); }
+            else { heartI.classList.remove('active'); }
         }
-      }
+    }
 
-      function genericToggleFavorite(petId, successCallback, errorCallback) {
+    function genericToggleFavorite(petId, successCallback, errorCallback) {
         if (!userIsAuthenticated) {
             alert('Please log in to manage favorites.');
             return;
         }
         fetch(`/toggle-favorite/${petId}/`, {
             method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => {
             if (response.redirected && response.url.includes('/accounts/login/')) {
@@ -544,33 +709,33 @@
         })
         .catch(error => {
             if (error.message && !error.message.startsWith('User not authenticated')) {
-                 console.error('Error in genericToggleFavorite:', error);
+                console.error('Error in genericToggleFavorite:', error);
             }
             if (errorCallback) errorCallback(error);
         });
-      }
+    }
 
-      heartIconsInCatalog.forEach(icon => {
-        icon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const petId = this.getAttribute('data-pet-id');
+    heartIconsInCatalog.forEach(icon => {
+        icon.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const petId = this.dataset.petId;
             const catalogIconElement = this;
             genericToggleFavorite(petId,
                 (data) => {
                     updateCatalogHeartIconUI(catalogIconElement, data.is_favorite);
                     const modalHeartIcon = document.querySelector(`#petDetailModalOverlay .heart-icon-detail-popup[data-pet-id="${petId}"] i.fas.fa-heart`);
-                    if (modalHeartIcon) { // Check if modal is open and showing this pet
-                        if (data.is_favorite) modalHeartIcon.classList.add('active');
-                        else modalHeartIcon.classList.remove('active');
+                    if (modalHeartIcon) {
+                        if (data.is_favorite) { modalHeartIcon.classList.add('active'); }
+                        else { modalHeartIcon.classList.remove('active'); }
                     }
                 }
             );
         });
-      });
+    });
 
-      function checkInitialCatalogFavorites() {
+    function checkInitialCatalogFavorites() {
         if (!userIsAuthenticated) return;
-        const petIdsInCatalog = Array.from(heartIconsInCatalog).map(icon => icon.getAttribute('data-pet-id')).filter(id => id);
+        const petIdsInCatalog = Array.from(heartIconsInCatalog).map(icon => icon.dataset.petId).filter(id => id);
         if (petIdsInCatalog.length === 0) return;
 
         fetch('/check-favorites/', {
@@ -586,158 +751,142 @@
             return response.json();
         })
         .then(data => {
-          if (data.favorites) {
-            heartIconsInCatalog.forEach(icon => {
-              const petId = icon.getAttribute('data-pet-id');
-              if (data.favorites[petId] !== undefined) {
-                updateCatalogHeartIconUI(icon, data.favorites[petId]);
-              }
-            });
-          }
+            if (data.favorites) {
+                heartIconsInCatalog.forEach(icon => {
+                    const petId = icon.dataset.petId;
+                    if (data.favorites[petId] !== undefined) {
+                        updateCatalogHeartIconUI(icon, data.favorites[petId]);
+                    }
+                });
+            }
         })
         .catch(error => {
             if (error.message && !error.message.startsWith('User not authenticated')) {
                 console.error('Error checking catalog favorites:', error);
             }
         });
-      }
-      if (heartIconsInCatalog.length > 0) checkInitialCatalogFavorites();
-      // --- สิ้นสุด JavaScript สำหรับ Favorite ของ Card ใน Catalog ---
+    }
+    if (heartIconsInCatalog.length > 0) {
+        checkInitialCatalogFavorites();
+    }
 
-      // --- JavaScript สำหรับ Modal Pet Detail ใน Catalog ---
-      const modalOverlay = document.getElementById('petDetailModalOverlay'); // ID ของ Modal ใน Catalog
-      const modalContentContainer = document.getElementById('modalPetContentContainer'); // ID ของ Container ใน Catalog
-      let currentModalPetId = null;
-      let catalogLightboxImages = []; // Array สำหรับเก็บรูปภาพใน Lightbox ของ Catalog
-      let catalogCurrentLightboxIndex = 0; // Index ปัจจุบันของ Lightbox ใน Catalog
+    // Modal Pet Detail JS
+    const modalOverlay = document.getElementById('petDetailModalOverlay');
+    const modalContentContainer = document.getElementById('modalPetContentContainer');
+    let currentModalPetId = null;
+    let catalogLightboxImages = [];
+    let catalogCurrentLightboxIndex = 0;
 
-      window.openPetDetailModal = function(petId) { // Function สำหรับ Modal ใน Catalog
+    window.openPetDetailModal = function(petId) {
         if (!petId) return;
         currentModalPetId = petId;
-        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
-        modalOverlay.style.display = 'flex';
-        catalogLightboxImages = []; // Reset lightbox images for the new pet
+        if(modalContentContainer) modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+        if(modalOverlay) modalOverlay.style.display = 'flex';
+        catalogLightboxImages = [];
 
         fetch(`/ajax/get-pet-detail/${petId}/`)
-          .then(response => {
+        .then(response => {
             if (response.redirected && response.url.includes('/accounts/login/')) {
                 window.location.href = response.url;
                 throw new Error('User not authenticated, redirecting to login.');
             }
             if (!response.ok) throw new Error(`Failed to fetch pet details (${response.status})`);
             return response.json();
-          })
-          .then(data => {
+        })
+        .then(data => {
             if (data.success && data.pet) {
-              const pet = data.pet;
-              const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
-              const photoUrl = pet.photo_url || defaultPhotoUrl;
-              const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
-
-              let additionalImagesHtml = '';
-              if (pet.additional_images && pet.additional_images.length > 0) {
-                additionalImagesHtml = `
-                  <div class="additional-images-grid-section-popup">
-                    <div class="additional-images-title-popup">More Photos:</div>
-                    <div class="additional-images-grid-popup">`;
-                pet.additional_images.forEach((img, index) => {
-                  catalogLightboxImages.push({ url: img.url, caption: img.caption || pet.name });
-                  additionalImagesHtml += `
-                    <div class="additional-image-grid-item-popup">
-                      <a href="javascript:void(0);" onclick="openImageLightboxCatalog(${index})" title="${img.caption || 'View image'}">
-                        <img src="${img.url}" alt="${img.caption || pet.name}" class="additional-image-grid-thumb-popup">
-                      </a>
-                      ${img.caption ? `<p class="additional-image-caption-grid-popup">${img.caption}</p>` : ''}
+                const pet = data.pet;
+                const defaultPhotoUrl = "{% static 'myapp/images/default_pet.png' %}";
+                const photoUrl = pet.photo_url || defaultPhotoUrl;
+                const storyHtml = pet.story ? pet.story.replace(/\n/g, '<br>') : "This pet doesn't have a story written yet...";
+                let additionalImagesHtml = '';
+                if (pet.additional_images && pet.additional_images.length > 0) {
+                    additionalImagesHtml = `<div class="additional-images-grid-section-popup"><div class="additional-images-title-popup">More Photos:</div><div class="additional-images-grid-popup">`;
+                    pet.additional_images.forEach((img, index) => {
+                        catalogLightboxImages.push({ url: img.url, caption: img.caption || pet.name });
+                        additionalImagesHtml += `<div class="additional-image-grid-item-popup"><a href="javascript:void(0);" onclick="openImageLightboxCatalog(${index})" title="${img.caption || 'View image'}"><img src="${img.url}" alt="${img.caption || pet.name}" class="additional-image-grid-thumb-popup"></a>${img.caption ? `<p class="additional-image-caption-grid-popup">${img.caption}</p>` : ''}</div>`;
+                    });
+                    additionalImagesHtml += `</div></div>`;
+                }
+                const petHtml = `
+                    <div class="card-detail-popup">
+                        <div class="heart-icon-detail-popup" data-pet-id="${pet.id}"><i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i></div>
+                        <div class="pet-image-container-popup"><img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup"></div>
+                        <div class="pet-id-popup">No. ${pet.name}</div>
+                        <div class="pet-info-popup">
+                            <p><span class="icon">&#127991;</span>Type: ${pet.type_display || pet.type || '-'}</p>
+                            <p><span class="icon">&#128054;</span>Breed: ${pet.breed || '-'}</p>
+                            <p><span class="icon">&#9895;&#9893;</span>Gender: ${pet.gender_display || '-'}</p>
+                            <p><span class="icon">&#128197;</span>Age: ${pet.age || '-'}</p>
+                            <p><span class="icon">&#128207;</span>Size: ${pet.size_display || pet.size || '-'}</p>
+                            <p><span class="icon">&#128137;</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
+                            <p><span class="icon">&#129497;</span>Disability: ${pet.disability || '-'}</p>
+                            <p><span class="icon">&#128522;</span>Personality: ${pet.personality || '-'}</p>
+                            <p><span class="icon">&#9997;</span>Detail: ${pet.detail || '-'}</p>
+                        </div>
+                        <div class="story-section-popup"><div class="story-title-popup">My Story:</div><div class="story-content-popup">${storyHtml}</div></div>
+                        ${additionalImagesHtml}
                     </div>`;
-                });
-                additionalImagesHtml += `</div></div>`;
-              }
-
-              const petHtml = `
-                <div class="card-detail-popup">
-                  <div class="heart-icon-detail-popup" data-pet-id="${pet.id}">
-                      <i class="fas fa-heart ${pet.is_favorite_by_current_user ? 'active' : ''}"></i>
-                  </div>
-                  <div class="pet-image-container-popup">
-                      <img src="${photoUrl}" alt="${pet.name}" class="pet-image-popup">
-                  </div>
-                  <div class="pet-id-popup">No. ${pet.name}</div>
-                  <div class="pet-info-popup">
-                    <p><span class="icon">🐕</span>Breed: ${pet.breed}</p>
-                    <p><span class="icon">🚻</span>Gender: ${pet.gender_display}</p>
-                    <p><span class="icon">📅</span>Age: ${pet.age}</p>
-                    <p><span class="icon">💉</span>Vaccine: ${pet.vaccinated ? 'Yes' : 'No'}</p>
-                    <p><span class="icon">♿</span>Disability: ${pet.disability}</p>
-                    <p><span class="icon">😊</span>Personality: ${pet.personality}</p>
-                    <p><span class="icon">✍️</span>Detail: ${pet.detail}</p>
-                  </div>
-                  <div class="story-section-popup">
-                    <div class="story-title-popup">My Story:</div>
-                    <div class="story-content-popup">${storyHtml}</div>
-                  </div>
-                  ${additionalImagesHtml}
-                </div>
-              `;
-              modalContentContainer.innerHTML = petHtml;
-
-              const heartIconInModal = modalContentContainer.querySelector('.heart-icon-detail-popup');
-              if (heartIconInModal) {
-                heartIconInModal.addEventListener('click', function(e) {
-                  e.stopPropagation();
-                  const currentPetIdInModal = this.getAttribute('data-pet-id');
-                  const modalIconElement = this;
-                  genericToggleFavorite(currentPetIdInModal,
-                    (data) => {
-                        updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
-                        const catalogCardHeart = document.querySelector(`#petsGrid .card[data-pet-id="${currentPetIdInModal}"] .heart-icon`);
-                        if (catalogCardHeart) {
-                            updateCatalogHeartIconUI(catalogCardHeart, data.is_favorite);
-                        }
-                    }
-                  );
-                });
-              }
+                if(modalContentContainer) modalContentContainer.innerHTML = petHtml;
+                const heartIconInModal = modalContentContainer.querySelector('.heart-icon-detail-popup');
+                if (heartIconInModal) {
+                    heartIconInModal.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        const currentPetIdInModal = this.dataset.petId;
+                        const modalIconElement = this;
+                        genericToggleFavorite(currentPetIdInModal,
+                            (data) => {
+                                updateModalHeartIconUI(modalIconElement.querySelector('i.fas.fa-heart'), data.is_favorite);
+                                const catalogCardHeart = document.querySelector(`#petsGrid .card[data-pet-id="${currentPetIdInModal}"] .heart-icon`);
+                                if (catalogCardHeart) {
+                                    updateCatalogHeartIconUI(catalogCardHeart, data.is_favorite);
+                                }
+                            }
+                        );
+                    });
+                }
             } else {
-              modalContentContainer.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
+                if(modalContentContainer) modalContentContainer.innerHTML = `<p style="text-align:center; padding:20px; color:red;">Error: ${data.error || 'Could not load pet details.'}</p>`;
             }
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             if (error.message && !error.message.startsWith('User not authenticated')) {
                 console.error('Error in openPetDetailModal:', error);
-                modalContentContainer.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
+                if(modalContentContainer) modalContentContainer.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Could not load pet details. Please try again.</p>';
             }
-          });
-      }
+        });
+    };
 
-      window.closePetDetailModal = function() { // Function ปิด Modal ของ Catalog
-        modalOverlay.style.display = 'none';
-        modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
+    window.closePetDetailModal = function() {
+        if(modalOverlay) modalOverlay.style.display = 'none';
+        if(modalContentContainer) modalContentContainer.innerHTML = '<div style="padding: 50px; text-align: center;">Loading...</div>';
         currentModalPetId = null;
-        catalogLightboxImages = []; // Clear lightbox images when catalog modal closes
-      }
+        catalogLightboxImages = [];
+    };
 
-      modalOverlay.addEventListener('click', function(event) {
-        if (event.target === modalOverlay) closePetDetailModal();
-      });
-      document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape" && modalOverlay.style.display === 'flex') closePetDetailModal();
-      });
+    if(modalOverlay) {
+        modalOverlay.addEventListener('click', function(event) {
+            if (event.target === modalOverlay) closePetDetailModal();
+        });
+    }
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape" && modalOverlay && modalOverlay.style.display === 'flex') closePetDetailModal();
+    });
 
-      function updateModalHeartIconUI(heartIconElement, isFavorite) {
+    function updateModalHeartIconUI(heartIconElement, isFavorite) {
         if (heartIconElement) {
-            if (isFavorite) heartIconElement.classList.add('active');
-            else heartIconElement.classList.remove('active');
+            if (isFavorite) { heartIconElement.classList.add('active'); }
+            else { heartIconElement.classList.remove('active'); }
         }
-      }
-      // --- สิ้นสุด JavaScript สำหรับ Modal Pet Detail ---
+    }
 
-      // --- JavaScript สำหรับ Image Lightbox ของ Catalog ---
-      const imageLightboxOverlayCatalog = document.getElementById('imageLightboxOverlayCatalog');
-      const lightboxImageCatalog = document.getElementById('lightboxImageCatalog');
-      const lightboxPrevButtonCatalog = document.querySelector('#imageLightboxOverlayCatalog .lightbox-prev-button');
-      const lightboxNextButtonCatalog = document.querySelector('#imageLightboxOverlayCatalog .lightbox-next-button');
+    // Image Lightbox JS
+    const imageLightboxOverlayCatalog = document.getElementById('imageLightboxOverlayCatalog');
+    const lightboxImageCatalog = document.getElementById('lightboxImageCatalog');
+    const lightboxPrevButtonCatalog = imageLightboxOverlayCatalog ? imageLightboxOverlayCatalog.querySelector('.lightbox-prev-button') : null;
+    const lightboxNextButtonCatalog = imageLightboxOverlayCatalog ? imageLightboxOverlayCatalog.querySelector('.lightbox-next-button') : null;
 
-      function updateCatalogLightboxNavButtons() {
+    function updateCatalogLightboxNavButtons() {
         if (!lightboxPrevButtonCatalog || !lightboxNextButtonCatalog) return;
         if (catalogLightboxImages.length <= 1) {
             lightboxPrevButtonCatalog.classList.add('hidden');
@@ -746,67 +895,63 @@
             lightboxPrevButtonCatalog.classList.toggle('hidden', catalogCurrentLightboxIndex === 0);
             lightboxNextButtonCatalog.classList.toggle('hidden', catalogCurrentLightboxIndex === catalogLightboxImages.length - 1);
         }
-      }
+    }
 
-      function displayCatalogLightboxImage(index) {
+    function displayCatalogLightboxImage(index) {
         if (index >= 0 && index < catalogLightboxImages.length) {
             const imgData = catalogLightboxImages[index];
-            lightboxImageCatalog.src = imgData.url;
-            lightboxImageCatalog.alt = imgData.caption || "Image preview";
+            if(lightboxImageCatalog) {
+                lightboxImageCatalog.src = imgData.url;
+                lightboxImageCatalog.alt = imgData.caption || "Image preview";
+            }
             catalogCurrentLightboxIndex = index;
             updateCatalogLightboxNavButtons();
         }
-      }
+    }
 
-      window.openImageLightboxCatalog = function(index) {
+    window.openImageLightboxCatalog = function(index) {
         if (catalogLightboxImages.length > 0 && lightboxImageCatalog && imageLightboxOverlayCatalog) {
-          displayCatalogLightboxImage(index);
-          imageLightboxOverlayCatalog.style.display = 'flex';
+            displayCatalogLightboxImage(index);
+            imageLightboxOverlayCatalog.style.display = 'flex';
         }
-      }
+    };
 
-      window.closeImageLightboxCatalog = function() {
+    window.closeImageLightboxCatalog = function() {
         if (imageLightboxOverlayCatalog) {
-          imageLightboxOverlayCatalog.style.display = 'none';
-          if (lightboxImageCatalog) {
-            lightboxImageCatalog.src = "";
-          }
+            imageLightboxOverlayCatalog.style.display = 'none';
+            if (lightboxImageCatalog) {
+                lightboxImageCatalog.src = "";
+            }
         }
-      }
+    };
 
-      window.showPrevImageCatalog = function() {
+    window.showPrevImageCatalog = function() {
         if (catalogCurrentLightboxIndex > 0) {
             displayCatalogLightboxImage(catalogCurrentLightboxIndex - 1);
         }
-      }
+    };
 
-      window.showNextImageCatalog = function() {
+    window.showNextImageCatalog = function() {
         if (catalogCurrentLightboxIndex < catalogLightboxImages.length - 1) {
             displayCatalogLightboxImage(catalogCurrentLightboxIndex + 1);
         }
-      }
+    };
 
-      if (imageLightboxOverlayCatalog) {
+    if (imageLightboxOverlayCatalog) {
         imageLightboxOverlayCatalog.addEventListener('click', function(event) {
             if (event.target === imageLightboxOverlayCatalog) {
                 closeImageLightboxCatalog();
             }
         });
-      }
-
-      document.addEventListener('keydown', function(event) {
-          if (imageLightboxOverlayCatalog && imageLightboxOverlayCatalog.style.display === 'flex') {
-            if (event.key === "Escape") {
-                closeImageLightboxCatalog();
-            } else if (event.key === "ArrowLeft") {
-                showPrevImageCatalog();
-            } else if (event.key === "ArrowRight") {
-                showNextImageCatalog();
+        document.addEventListener('keydown', function(event) {
+            if (imageLightboxOverlayCatalog.style.display === 'flex') {
+                if (event.key === "Escape") { closeImageLightboxCatalog(); }
+                else if (event.key === "ArrowLeft") { showPrevImageCatalog(); }
+                else if (event.key === "ArrowRight") { showNextImageCatalog(); }
             }
-          }
-      });
-      // --- สิ้นสุด JavaScript สำหรับ Image Lightbox ของ Catalog ---
+        });
+    }
 
-    });
-  </script>
+});
+</script>
 {% endblock %}
