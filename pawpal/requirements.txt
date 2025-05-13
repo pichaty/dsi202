@@ -9,3 +9,4 @@ PyJWT
 daphne
 promptpay
 django-debug-toolbar
+python-dotenv
