@@ -353,9 +353,11 @@
         <div class="header-right-icons">
             <a href="{% url 'favorites' %}" class="favorite-icon-link" title="My Favorites">
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
-                {% if favorite_count > 0 %}
-                    <span class="notification-count favorite-count-badge">{{ favorite_count }}</span>
-                {% endif %}
+                
+                 <span class="notification-count favorite-count-badge"
+                     style="display: {% if favorite_count > 0 and favorite_count != None %}flex{ % else %}none{% endif %};">
+                 {{ favorite_count|default:"0" }}
+                </span>
             </a>
             <a href="{% url 'notifications_list' %}" class="notifications-link" title="Notifications">
                  <img src="{% static 'myapp/images/noti.png' %}" alt="Notifications Icon" class="notification-bell-icon">

@@ -247,52 +247,78 @@
             });
 
             // Function to toggle favorite status (used for unfavoriting from this page)
-            function toggleFavorite(petId, element) {
-                 fetch(`/toggle-favorite/${petId}/`, { // Use the standardized toggle favorite URL
-                     method: 'POST', // Ensure POST method is used
-                     headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                })
-                .then(response => {
-                     if (!response.ok) {
-                        if (response.status === 403) {
-                             console.error('Error: User not authenticated. Cannot unfavorite.');
-                        } else {
-                            console.error('Error toggling favorite:', response.statusText);
-                        }
-                        return Promise.reject('Response not OK');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.removed) {
-                        // If pet was removed from favorites, remove the pet item from DOM
-                        element.closest('.pet-item').remove();
+            function toggleFavorite(petId, element) { // element คือ div.favorite-status
+    fetch(`/toggle-favorite/${petId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest' // สำคัญเพื่อให้ Django รู้ว่าเป็น AJAX
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            // จัดการ error ต่างๆ เช่น user ไม่ได้ login, server error
+            if (response.status === 403) { // Forbidden (user not authenticated)
+                alert('Please log in to manage your favorites.');
+                // อาจจะ redirect ไปหน้า login
+                // window.location.href = "{% url 'account_login' %}?next=" + window.location.pathname;
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+            console.error('Error toggling favorite:', response.status, response.statusText);
+            return Promise.reject('Response not OK: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) { // ถ้า server ส่ง error message กลับมา
+            alert('Error: ' + data.error);
+            return;
+        }
 
-                        // Check if there are any pets left
-                        const petItems = document.querySelectorAll('.pet-item');
-                        if (petItems.length === 0) {
-                            // Show empty state if no pets left
-                            const emptyState = `
-                                <div class="empty-state">
-                                    <i class="far fa-heart"></i>
-                                    <p>You don't have any favorites yet.<br>Go add some pets to your favorites!</p>
-                                </div>`;
-                            document.querySelector('.favorites-list').innerHTML = emptyState;
-                             // Hide the adopt button container if no pets are left
-                            const adoptButtonContainer = document.querySelector('.adopt-button-container');
-                            if (adoptButtonContainer) {
-                                adoptButtonContainer.style.display = 'none';
-                            }
-                        }
-                    }
-                     // Note: In the favorites page, we expect it to be removed.
-                     // If we were toggling from another page, we would check data.is_favorite
-                })
-                .catch(error => console.error('Error:', error));
+        if (data.is_favorite === false) { // ตรวจสอบว่า unfavorite สำเร็จ
+            const petItemElement = element.closest('.pet-item');
+            if (petItemElement) {
+                petItemElement.remove(); // ลบ pet item ออกจาก DOM
+            } else {
+                console.error("Could not find '.pet-item' ancestor of the clicked favorite icon.");
             }
 
+            // อัปเดตจำนวน fav ใน header
+            const favCountHeader = document.querySelector('header a[href="{% url "favorites" %}"] .favorite-count-badge');
+            if (favCountHeader && data.favorite_count !== undefined) {
+                favCountHeader.textContent = data.favorite_count;
+                favCountHeader.style.display = data.favorite_count > 0 ? 'flex' : 'none';
+                // ถ้า favCountHeader ถูกซ่อนไว้ตั้งแต่แรกเพราะ count เป็น 0, ต้องสร้าง element นี้ขึ้นมาใหม่หรือแสดงผล
+                // ซึ่งการแก้ไขที่ base.html ให้มี span เสมอจะช่วยเรื่องนี้
+            }
+
+            // ตรวจสอบว่ามี pet items เหลืออยู่หรือไม่
+            const remainingPetItems = document.querySelectorAll('.favorites-list .pet-item');
+            if (remainingPetItems.length === 0) {
+                const emptyStateHtml = `
+                    <div class="empty-state">
+                        <i class="far fa-heart"></i>
+                        <p>You don't have any favorites yet.<br>Go add some pets to your favorites!</p>
+                    </div>`;
+                const favoritesListContainer = document.querySelector('.favorites-list');
+                if (favoritesListContainer) {
+                    favoritesListContainer.innerHTML = emptyStateHtml;
+                }
+
+                const adoptButtonContainer = document.querySelector('.adopt-button-container');
+                if (adoptButtonContainer) {
+                    adoptButtonContainer.style.display = 'none';
+                }
+            }
+        }
+        // ไม่จำเป็นต้องทำอะไรถ้า data.is_favorite เป็น true ในหน้านี้ เพราะเราคาดหวังแค่การ unfavorite
+    })
+    .catch(error => {
+        console.error('Error during toggleFavorite fetch:', error);
+        // ไม่ต้องแสดง alert ซ้ำ ถ้า response.ok เป็น false ได้จัดการไปแล้ว
+    });
+}
             // Handle Adopt Selected Pets button click
             const adoptSelectedButton = document.getElementById('adoptSelectedButton');
             if (adoptSelectedButton) {
