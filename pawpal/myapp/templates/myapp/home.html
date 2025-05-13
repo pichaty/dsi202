@@ -5,56 +5,127 @@
 <style>
     /* --- CSS for Personality Test Banner (Enhanced) --- */
     .personality-test-banner {
-        background-color: #d55e00; /* สีพื้นหลังหลัก */
-        border-radius: 20px;
-        padding: 15px;
-        margin: 15px;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative; 
-        overflow: hidden; 
-    }
-    .banner-content { 
-        flex: 1; 
-        position: relative; 
-        z-index: 5; 
-    }
-    .banner-content h2 { 
-        font-weight: bold; 
-        margin-bottom: 5px; 
-        font-size: 18px; 
-    }
-    .banner-content p { 
-        margin-bottom: 15px; 
-        font-size: 14px; 
-    }
-    .btn-test {
-        background-color: white; 
-        color: black; 
-        border-radius: 50px;
-        padding: 5px 15px; 
-        border: none; 
-        font-size: 14px; 
-        font-weight: bold;
-        transition: all 0.3s ease; 
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        z-index: 5; /* ให้ปุ่มอยู่บนสุด */
-    }
-    .btn-test:hover {
-        transform: scale(1.05);
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    }
-    .banner-image { 
-        max-width: 120px; /* ปรับตามขนาดรูปภาพใหม่ */
-        position: relative; 
-        z-index: 5; 
-        animation: float 3s ease-in-out infinite;
-    }
+    background-color: #d55e00; /* คงสีส้มเดิม */
+    border-radius: 20px; /* คงความมนเท่าเดิม */
+    padding: 22px 25px;
+    margin: 15px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(213, 94, 0, 0.2); /* เงาสีส้มอ่อนๆ */
     
+}
+
+.banner-content {
+    flex: 1;
+    position: relative;
+    z-index: 5;
+    padding-right: 10px;
+}
+
+.banner-content h2 {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 22px;
+    color: white;
+    font-family:'Grandstander' ;
+}
+
+.banner-content p {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+}
+
+.btn-test {
+    background-color: white;
+    color: #d55e00;
+    border-radius: 50px; /* คงความมนของปุ่มเดิม */
+    padding: 8px 18px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    
+}
+
+.btn-test:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.banner-image {
+    max-width: 120px; /* คงขนาดเดิม */
+    position: relative;
+    z-index: 5;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease;
+}
+
+.banner-image:hover {
+    transform: translateY(-3px);
+}
+
+    /* --- Floating Wavy Shape (Solid White, Wavy - MODIFIED) --- */
+    .personality-test-banner::after {
+        content: '';
+        position: absolute;
+        width: 250px;
+        height: 200px;
+        background: white;
+        border-radius: 42% 58% 70% 30% / 30% 60% 40% 70%;
+        z-index: 0;
+        opacity: 0.9;
+        animation-name: floatCloserToEdges; /* MODIFIED: Updated animation name */
+        animation-duration: 45s; /* MODIFIED: Increased duration for slower, longer lingering effect */
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+    /* --- Keyframes for Animation (MODIFIED with more steps for more frequent looping within banner) --- */
+   @keyframes floatCloserToEdges {
+        0% { /* ใกล้ บน-ซ้าย */
+            transform: translate(-15vw, -8vh) rotate(-15deg) scale(0.85);
+            border-radius: 42% 58% 70% 30% / 30% 60% 40% 70%;
+        }
+        15% { /* ใกล้ บน-กลาง / ขอบบน */
+            transform: translate(0vw, -10vh) rotate(5deg) scale(0.9);
+            border-radius: 50% 50% 60% 40% / 40% 50% 50% 60%;
+        }
+        30% { /* ใกล้ บน-ขวา */
+            transform: translate(15vw, -8vh) rotate(20deg) scale(0.95);
+            border-radius: 60% 40% 55% 45% / 50% 45% 65% 35%;
+        }
+        45% { /* ใกล้ กลาง-ขวา / ขอบขวา */
+            transform: translate(18vw, 0vh) rotate(-5deg) scale(1);
+            border-radius: 50% 50% 30% 70% / 65% 35% 70% 30%;
+        }
+        60% { /* ใกล้ ล่าง-ขวา */
+            transform: translate(15vw, 8vh) rotate(10deg) scale(0.9);
+            border-radius: 35% 65% 45% 55% / 40% 60% 30% 70%;
+        }
+        75% { /* ใกล้ ล่าง-ซ้าย */
+            transform: translate(-15vw, 8vh) rotate(-20deg) scale(1.05);
+            border-radius: 70% 30% 60% 40% / 30% 70% 50% 50%;
+        }
+        90% { /* ใกล้ กลาง-ซ้าย / ขอบซ้าย */
+            transform: translate(-18vw, 0vh) rotate(10deg) scale(0.8);
+            border-radius: 45% 55% 50% 50% / 55% 45% 40% 60%;
+        }
+        100% { /* กลับไปใกล้ บน-ซ้าย */
+            transform: translate(-15vw, -8vh) rotate(-15deg) scale(0.85);
+            border-radius: 42% 58% 70% 30% / 30% 60% 40% 70%;
+        }
+    }
+
     /* --- Animated Decorations (Paw, Bubble) --- */
     @keyframes float {
         0%, 100% { transform: translateY(0); }
@@ -148,48 +219,7 @@
         80% { opacity: 1; transform: scale(1.1) rotate(5deg); }
     }
 
-    /* --- Wavy Background Effect (REVISED for softer look) --- */
-    .personality-test-banner::before,
-    .personality-test-banner::after {
-        content: '';
-        position: absolute;
-        left: -50%; 
-        width: 200%; 
-        height: 160px; /* เพิ่มความสูงของคลื่นเล็กน้อย */
-        z-index: 0; 
-        border-radius: 45% 55% 60% 40% / 50% 50% 50% 50% ; /* ทำให้โค้งไม่สมมาตร ดูเป็นธรรมชาติ */
-        animation: subtleWave 20s linear infinite alternate; 
-        filter: blur(2px); /* เพิ่มความเบลอเล็กน้อย */
-    }
-
-    .personality-test-banner::before {
-        bottom: -105px; 
-        background: #E76F51; /* สีส้มอ่อน (เหมือนพระอาทิตย์ตก) */
-        opacity: 0.35; /* ปรับความโปร่งแสง */
-        animation-duration: 22s;
-    }
-
-    .personality-test-banner::after {
-        bottom: -120px; 
-        background: #F4A261; /* สีส้มเหลือง */
-        opacity: 0.25; /* ปรับความโปร่งแสง */
-        animation-duration: 28s;
-        animation-delay: -7s; 
-    }
-
-    @keyframes subtleWave {
-        0% {
-            transform: translateX(0%) translateY(0%) rotate(-3deg);
-            border-radius: 45% 55% 60% 40% / 50% 50% 50% 50% ;
-        }
-        50% {
-            transform: translateX(-5%) translateY(2%) rotate(0deg);
-        }
-        100% {
-            transform: translateX(-10%) translateY(-2%) rotate(3deg);
-            border-radius: 55% 45% 40% 60% / 50% 50% 50% 50% ;
-        }
-    }
+    /* -------------------------------------------------------------------- */
 
     /* --- CSS from Original File 1 (Modal, Pet Cards, etc. - REMAIN UNCHANGED FROM PREVIOUS MERGE) --- */
     /* ... (โค้ด CSS ส่วนที่เหลือทั้งหมดจากไฟล์ที่แล้ว: .section-header, .pet-cards, modals, lightbox etc. ให้คงไว้เหมือนเดิม) ... */
@@ -203,6 +233,7 @@
     .pet-cards {
         display: flex; overflow-x: auto; padding: 10px 15px;
         gap: 15px; scrollbar-width: none;
+         transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; 
     }
     .pet-cards::-webkit-scrollbar { display: none; }
     .pet-card {
@@ -211,7 +242,10 @@
         position: relative; cursor: pointer;
         transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
     }
-    .pet-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+    .pet-card:hover {
+         transform: translateY(-8px); 
+         box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+        }
     .pet-image { height: 160px; object-fit: cover; width: 100%; }
     .favorite-icon {
         position: absolute; top: 10px; right: 10px; background: white;
@@ -241,6 +275,8 @@
         border-radius: 15px; padding: 15px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1); gap: 10px; margin: 0;
         overflow: hidden;
+        margin-top: 6px;
+         transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; 
     }
     .donate-image-horizontal {
         width: 100px; height: 100px;
@@ -258,7 +294,7 @@
         white-space: nowrap; line-height: normal;
     }
     .donate-card.horizontal:hover {
-        transform: translateY(-3px);
+        transform: translateY(-5px);
         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
 
@@ -467,11 +503,13 @@
         <span class="sparkle sparkle-s7"></span>
         <span class="sparkle sparkle-s8"></span>
         
-        <div class="banner-content">
-            <h2>Find Your Perfect Pet Match!</h2> 
-            <p>Take our fun personality test to discover which furry friend suits you best</p> 
-            <button class="btn-test">🎮 Take the test!</button> 
-        </div>
+        {% comment %} ตรวจสอบว่า 'myapp/templates/myapp/home.html' {% endcomment %}
+    <div class="banner-content">
+        <h2>Find Your Perfect Pet Match !</h2>
+        <p>Find your paw 🐾 </p>
+     {# เปลี่ยน button เป็น a และเพิ่ม href โดยใช้ url tag #}
+        <a href="{% url 'quiz_start' %}" class="btn-test">🎮 test!</a>
+    </div>
         <img src="{% static 'myapp/images/person_with_dog.png' %}" alt="Woman with dog" class="banner-image">
     </div>
 

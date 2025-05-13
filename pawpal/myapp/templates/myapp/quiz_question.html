@@ -1,0 +1,229 @@
+{% extends 'myapp/base.html' %}
+{% block extra_head %}
+<style>
+    :root {
+        /* Define colors (can also be defined in base.html if used elsewhere) */
+        --cream: #fdf6e9;          /* Cream background for options */
+        --soft-border: #e8e1d3;   /* Soft border for options */
+        --cream-hover: #fbf0db;   /* Cream color on hover */
+        --selected-border: var(--primary, #d55e00); /* Primary color for selected border */
+        --selected-bg: #fffbf2;   /* Slightly different background when selected */
+        --cute-font: 'Kanit', cursive; /* Font for question */
+        --option-font: 'Itim', sans-serif; /* Font for options */
+    }
+
+    .quiz-container {
+        max-width: 700px;
+        margin: 30px auto; /* More vertical margin */
+        padding: 30px 40px; /* Increased padding */
+        background-color: #fff;
+        border-radius: 20px; /* Slightly softer corners for the container */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07); /* Softer shadow */
+    }
+    .progress-bar-container {
+        height: 14px; /* Slightly thicker */
+        background-color: #f0f0f0; /* Lighter background */
+        border-radius: 7px;
+        margin-bottom: 30px; /* More space */
+        overflow: hidden;
+    }
+    .progress-bar-custom {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green, #8db38b), #a8d5a7); /* Gradient effect */
+        border-radius: 7px;
+        transition: width 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smoother transition */
+    }
+    .quiz-question-number {
+        font-family: var(--option-font); /* Consistent font */
+        font-size: 0.95em;
+        color: var(--text_secondary, #757575);
+        margin-bottom: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+    .quiz-question-text {
+        font-family: var(--cute-font); /* Using Grandstander */
+        font-size: 1.7em; /* Make question stand out more */
+        font-weight: 500;
+        color: var(--primary_dark, #c05500);
+        margin-bottom: 35px;
+        text-align: center;
+        line-height: 1.45;
+    }
+
+    /* --- Styling for Answer Options --- */
+    .quiz-options .answer-option {
+        display: block;
+        background-color: var(--cream, #fdf6e9);
+        border: 2px solid var(--soft-border, #e8e1d3);
+        padding: 18px 25px;
+        margin-bottom: 15px;
+        border-radius: 25px; /* Nicely rounded */
+        cursor: pointer;
+        transition: all 0.25s ease-in-out; /* Smooth transition for all properties */
+        text-align: left;
+        position: relative; /* Needed for custom radio */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow */
+    }
+    .quiz-options .answer-option:hover {
+        border-color: var(--primary_light, #ffe0b2);
+        background-color: var(--cream-hover, #fbf0db);
+        transform: translateY(-3px) scale(1.01); /* Add slight lift and scale */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.07); /* Slightly enhance shadow on hover */
+    }
+    .quiz-options .answer-option input[type="radio"] {
+        display: none; /* Hide original radio button */
+    }
+    .quiz-options .answer-option label {
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 0;
+        font-family: var(--option-font); /* Using Quicksand */
+        font-size: 1.1em;
+        font-weight: 500;
+        color: var(--text_primary, #424242);
+        display: flex;
+        align-items: center;
+        transition: color 0.2s ease; /* Smooth color transition */
+    }
+
+    /* --- Custom Radio Button Appearance --- */
+    .quiz-options .answer-option label::before {
+        content: '';
+        width: 22px;
+        height: 22px;
+        border: 2px solid #adb5bd;
+        border-radius: 50%;
+        margin-right: 18px;
+        background-color: white;
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        flex-shrink: 0;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Inner shadow for depth */
+    }
+    /* Change appearance when selected */
+    .quiz-options .answer-option input[type="radio"]:checked + label::before {
+        border-color: var(--selected-border);
+        background-color: var(--selected-border); /* Fill color */
+        box-shadow: none; /* Remove inner shadow when checked */
+    }
+     /* Add checkmark inside the circle (optional, looks cute) */
+    .quiz-options .answer-option input[type="radio"]:checked + label::after {
+        content: ''; /* Use background image or pseudo-element trick */
+        position: absolute;
+        left: 34px; /* Adjust based on padding/size */
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        width: 6px; /* Checkmark line width */
+        height: 12px; /* Checkmark line height */
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        /* If you prefer a simpler dot */
+        /* content: '';
+        position: absolute;
+        left: 36px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-color: white;
+        border-radius: 50%; */
+    }
+
+    /* Style the container when selected */
+    .quiz-options .answer-option input[type="radio"]:checked ~ label {
+         /* Optional: change text color when selected */
+         /* color: var(--selected-border); */
+    }
+    .quiz-options .answer-option input[type="radio"]:checked {
+        /* This targets the hidden radio, we style the container instead */
+        /* Use sibling selector on the div containing the radio */
+        /* Not directly possible with standard CSS, but we can style the label's container */
+    }
+    /* Find the parent div and style it when the radio inside is checked */
+    /* This requires the input to be *before* the label/styled element */
+    .quiz-options .answer-option:has(input[type="radio"]:checked) { /* :has() might not be fully supported */
+        border-color: var(--selected-border);
+        background-color: var(--selected-bg, #fffbf2);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    }
+
+
+    /* Fallback for browsers not supporting :has() - style label/before directly */
+    .quiz-options .answer-option input[type="radio"]:checked + label {
+        /* Already handled text color if needed */
+    }
+
+    /* --- Submit Button --- */
+    .quiz-submit-button {
+        background: var(--green, #8db38b);
+        color: white;
+        border: none;
+        border-radius: 25px; /* Match option roundness */
+        padding: 12px 35px; /* Generous padding */
+        font-family: var(--option-font); /* Consistent font */
+        font-size: 1.15em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 25px; /* Space above button */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .quiz-submit-button:hover {
+        background-color: var(--green_dark, #6f9a6e); /* Slightly darker green */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+    }
+    .quiz-submit-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+     /* --- Error Message --- */
+     .alert-danger {
+        font-family: var(--option-font);
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+        font-size: 0.95em;
+        padding: 12px 15px;
+        border-radius: 10px; /* Softer radius */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    {# Progress Bar #}
+    <div class="progress-bar-container">
+        <div class="progress-bar-custom" style="width: {{ progress }}%;" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    {# Question Number and Text #}
+    <div class="quiz-question-number">คำถาม {{ question_number }}/{{ total_questions }}</div>
+    <h2 class="quiz-question-text">{{ question.text }}</h2>
+
+    {# Error Message (if any) #}
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    {# Quiz Form #}
+    <form method="post" action="{% url 'quiz_question' question_id=question.id %}">
+        {% csrf_token %}
+        <div class="quiz-options">
+            {% for answer in question.answers %}
+            {# Wrap each option in a div to easily style based on :checked state if :has is not supported #}
+            <div class="answer-option">
+                <input class="form-check-input" type="radio" name="answer" id="answer{{ forloop.counter0 }}" value="{{ forloop.counter0 }}" required>
+                <label class="form-check-label" for="answer{{ forloop.counter0 }}">
+                    {{ answer.text }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="text-align: center;"> {# Center the button #}
+            <button type="submit" class="quiz-submit-button">ถัดไป</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

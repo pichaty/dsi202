@@ -1,0 +1,197 @@
+{% block extra_head %}
+ <style>
+    .quiz-result-container {
+        max-width: 800px; /* Adjust as needed */
+        margin: 20px auto;
+        padding: 25px;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    .result-header {
+        font-family: 'Grandstander', cursive;
+        color: var(--primary_dark, #c05500);
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+    .result-description-box { /* Changed from .result-description */
+        background-color: var(--primary_light, #ffe0b2); /* Use your theme color */
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        font-size: 1.2em;
+        color: var(--primary_dark, #c05500); /* Text color that contrasts with background */
+        line-height: 1.5;
+    }
+    .suggested-pets-header {
+        font-family: 'Sarabun', sans-serif;
+        font-weight: bold;
+        color: var(--text_primary, #424242);
+        font-size: 1.8em;
+        margin-bottom: 25px;
+    }
+
+    /* Re-use pet card styles from adopt_catalog.html or home.html for consistency */
+    /* Assuming you have .pet-cards and .pet-card from other pages */
+    .results-pet-cards-container { /* New container for scrolling if needed */
+        display: flex;
+        overflow-x: auto; /* Allows horizontal scrolling if many pets */
+        padding: 10px 0; /* Padding for scrollbar */
+        gap: 20px; /* Space between cards */
+        justify-content: flex-start; /* Align cards to the start */
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary_light, #ffe0b2) #f0f0f0;
+    }
+    .results-pet-cards-container::-webkit-scrollbar {
+        height: 8px;
+    }
+    .results-pet-cards-container::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 4px;
+    }
+    .results-pet-cards-container::-webkit-scrollbar-thumb {
+        background-color: var(--primary_light, #ffe0b2);
+        border-radius: 4px;
+    }
+
+    .pet-card-result { /* Specific for quiz result to avoid style conflicts if needed */
+        min-width: 220px; /* Adjust card width */
+        max-width: 250px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .pet-card-result:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    .pet-card-result-img {
+        width: 100%;
+        height: 180px; /* Adjust image height */
+        object-fit: cover;
+    }
+    .pet-card-result-body {
+        padding: 15px;
+        text-align: left;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .pet-card-result-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--primary, #d55e00);
+        margin-bottom: 8px;
+    }
+    .pet-card-result-text {
+        font-size: 0.9em;
+        color: var(--text_secondary, #757575);
+        margin-bottom: 5px;
+        line-height: 1.4;
+    }
+    .pet-card-result-text strong {
+        color: var(--text_primary, #424242);
+    }
+    .pet-card-result-button { /* Button within the card */
+        background-color: var(--green, #8db38b);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        margin-top: auto; /* Pushes button to the bottom of the card body */
+        transition: background-color 0.2s ease;
+    }
+    .pet-card-result-button:hover {
+        background-color: var(--green_dark, #38783a);
+    }
+
+    .quiz-result-actions {
+        margin-top: 30px;
+    }
+    .quiz-result-actions .btn {
+        margin: 0 10px;
+        padding: 10px 25px;
+        font-size: 1.05em;
+        border-radius: 25px;
+        font-weight: bold;
+        min-width: 180px; /* Ensure buttons have a decent width */
+    }
+    .btn-retake-quiz {
+        background-color: var(--secondary, #8d6e63);
+        color: white;
+        border-color: var(--secondary, #8d6e63);
+    }
+    .btn-retake-quiz:hover {
+        background-color: #7a5c51; /* Darker shade */
+        border-color: #7a5c51;
+    }
+    .btn-view-all-pets {
+        background-color: var(--primary, #d55e00);
+        color: white;
+        border-color: var(--primary, #d55e00);
+    }
+    .btn-view-all-pets:hover {
+        background-color: var(--primary_dark, #c05500);
+        border-color: var(--primary_dark, #c05500);
+    }
+ </style>
+ {% endblock %}
+
+{% block content %}
+<div class="quiz-result-container">
+    <h1 class="result-header">ผลลัพธ์ Quiz ของคุณ</h1>
+
+    <div class="result-description-box">
+        <p>{{ result_description }}</p>
+    </div>
+
+    <h2 class="suggested-pets-header">น้องๆ ที่อาจจะเข้ากับคุณ:</h2>
+
+    {% if suggested_pets %}
+        <div class="results-pet-cards-container"> {# Changed from "row justify-content-center pet-catalog" #}
+            {% for pet in suggested_pets %}
+                <div class="pet-card-result"> {# New specific class #}
+                    {% if pet.photo %} {# Assuming 'photo' is the field for the main image #}
+                        <img src="{{ pet.photo.url }}" class="pet-card-result-img" alt="{{ pet.name }}">
+                    {% else %}
+                         <img src="{% static 'myapp/images/default_pet.png' %}" class="pet-card-result-img" alt="Default image">
+                    {% endif %}
+                    <div class="pet-card-result-body">
+                        <h5 class="pet-card-result-title">{{ pet.name }}</h5>
+                        <p class="pet-card-result-text"><strong>สายพันธุ์:</strong> {{ pet.breed }}</p>
+                        <p class="pet-card-result-text"><strong>อายุ:</strong> {{ pet.age }}</p> {# Assuming age is a direct attribute #}
+                        <p class="pet-card-result-text flex-grow-1"><strong>ลักษณะ:</strong> {{ pet.personality|default:pet.detail|truncatewords:12 }}</p>
+                        <a href="{% url 'pet_detail' pet.id %}" class="pet-card-result-button">ดูรายละเอียด</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="font-size: 1.1em; color: var(--text_secondary, #757575); margin-top: 20px;">ไม่พบสัตว์เลี้ยงที่ตรงกับบุคลิกของคุณในขณะนี้ ลองดูสัตว์เลี้ยงทั้งหมดใน <a href="{% url 'adopt_catalog' %}" style="color: var(--primary, #d55e00); font-weight: bold;">Catalog</a> ของเรา</p>
+    {% endif %}
+
+    <div class="quiz-result-actions">
+        <a href="{% url 'quiz_start' %}" class="btn btn-retake-quiz">ทำแบบทดสอบอีกครั้ง</a>
+        <a href="{% url 'adopt_catalog' %}" class="btn btn-view-all-pets">ดูสัตว์เลี้ยงทั้งหมด</a>
+    </div>
+
+    {# Debug Info (optional) #}
+    {# <hr style="margin-top: 30px; margin-bottom: 15px;">
+    <details style="font-size: 0.9em; text-align: left; color: #666;">
+        <summary style="font-weight: bold; cursor: pointer;">Debug Info</summary>
+        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 6px; white-space: pre-wrap; word-break: break-all;">
+Tag Counts: {{ tag_counts }}
+Filters Used: {{ filters_used }}
+        </pre>
+    </details> #}
+</div>
+{% endblock %}

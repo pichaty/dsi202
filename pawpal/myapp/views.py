@@ -533,7 +533,7 @@ def get_pet_detail_ajax(request, pet_id):
             'disability': pet.disability if pet.disability else "-",
             'personality': pet.personality if pet.personality else "-",
             'detail': pet.detail if pet.detail else "-",
-            'story': pet.story if pet.story else "เรื่องราวของน้องยังไม่ได้ถูกบันทึกไว้...",
+            'story': pet.story if pet.story else "The story has not yet been recorded...",
             'photo_url': pet.photo.url if pet.photo else None, # Handle cases where photo might be missing
             'is_favorite_by_current_user': is_favorite,
             'additional_images': additional_images_data
@@ -642,3 +642,150 @@ def user_profile_view(request):
         'edit_mode': edit_mode, # ส่งสถานะ edit_mode ไปยัง template
     }
     return render(request, 'myapp/user_profile.html', context)
+
+from .quiz_data import QUIZ_DATA, TAG_TO_PET_FILTER # Import ข้อมูล Quiz
+from collections import Counter
+import random
+
+def quiz_start(request):
+    # ล้าง session เก่า (ถ้ามี) ก่อนเริ่มใหม่
+    if 'quiz_answers' in request.session:
+        del request.session['quiz_answers']
+    return render(request, 'myapp/quiz_start.html')
+
+def quiz_question(request, question_id):
+    try:
+        question = next(q for q in QUIZ_DATA if q['id'] == question_id)
+    except StopIteration:
+        # ถ้าหา question_id ไม่เจอ อาจจะ redirect ไปหน้าแรกของ quiz หรือแสดง error
+        return redirect('quiz_start')
+
+    total_questions = len(QUIZ_DATA)
+    progress = int((question_id / total_questions) * 100) # คำนวณ progress bar
+
+    if request.method == 'POST':
+        selected_answer_index = request.POST.get('answer')
+        if selected_answer_index:
+            try:
+                selected_answer = question['answers'][int(selected_answer_index)]
+                tags = selected_answer['tags']
+
+                # เก็บ tags ลง session
+                if 'quiz_answers' not in request.session:
+                    request.session['quiz_answers'] = []
+                request.session['quiz_answers'].extend(tags)
+                request.session.modified = True # บอก Django ว่า session มีการเปลี่ยนแปลง
+
+                # ไปคำถามถัดไป หรือไปหน้าผลลัพธ์
+                next_question_id = question_id + 1
+                if next_question_id <= total_questions:
+                    return redirect(reverse('quiz_question', args=[next_question_id]))
+                else:
+                    return redirect('quiz_results')
+            except (IndexError, ValueError):
+                # จัดการกรณี index ไม่ถูกต้อง (อาจเกิดจากการแก้ไข HTML)
+                pass # หรือแสดง error message
+
+        # ถ้าไม่มีการเลือกคำตอบ หรือเกิด error ก็แสดงหน้าคำถามเดิม
+        context = {
+            'question': question,
+            'question_number': question_id,
+            'total_questions': total_questions,
+            'progress': progress,
+            'error_message': 'กรุณาเลือกคำตอบ' # เพิ่ม error message ถ้าต้องการ
+        }
+        return render(request, 'myapp/quiz_question.html', context)
+
+    # ถ้าเป็น GET request
+    context = {
+        'question': question,
+        'question_number': question_id,
+        'total_questions': total_questions,
+        'progress': progress,
+    }
+    return render(request, 'myapp/quiz_question.html', context)
+
+
+def quiz_results(request):
+    if 'quiz_answers' not in request.session:
+        # ถ้ายังไม่ได้ตอบคำถาม ให้กลับไปหน้าแรก
+        return redirect('quiz_start')
+
+    all_tags = request.session.get('quiz_answers', [])
+    tag_counts = Counter(all_tags)
+
+    # --- ตรรกะการหาผลลัพธ์ (ตัวอย่างง่ายๆ) ---
+    result_species = 'Dog' if tag_counts.get('Dog', 0) >= tag_counts.get('Cat', 0) else 'Cat'
+
+    # หา tag บุคลิกภาพที่เด่นที่สุด (ไม่รวม Dog/Cat)
+    personality_tags = {tag: count for tag, count in tag_counts.items() if tag not in ['Dog', 'Cat', 'Large', 'Small']}
+    dominant_personality = max(personality_tags, key=personality_tags.get) if personality_tags else None
+
+    result_description = f"บุคลิกของคุณคล้ายกับ {result_species} ที่ {dominant_personality.lower() if dominant_personality else 'มีลักษณะเฉพาะตัว'}!"
+    # คุณอาจจะสร้าง description ที่ซับซ้อนกว่านี้ได้
+
+    # --- ค้นหาสัตว์เลี้ยงที่ตรงกัน ---
+    filters = {}
+    # 1. กรองตาม Species หลัก
+    species_filter = TAG_TO_PET_FILTER.get(result_species, {})
+    filters.update(species_filter)
+
+    # 2. กรองตามบุคลิกภาพหลัก
+    if dominant_personality:
+        personality_filter = TAG_TO_PET_FILTER.get(dominant_personality, {})
+        # ระวังการเขียนทับ filter เดิม ถ้า key ซ้ำกัน (เช่น energy_level)
+        for key, value in personality_filter.items():
+            if key in filters and isinstance(filters[key], list) and isinstance(value, list):
+                 # รวม list ถ้าเป็น __in (เช่น ['High', 'Moderate'] + ['Low', 'Moderate'])
+                 # อาจจะต้องซับซ้อนกว่านี้ ขึ้นอยู่กับว่าต้องการ AND หรือ OR
+                 filters[key] = list(set(filters[key] + value))
+            else:
+                 filters[key] = value
+
+    # 3. อาจจะเพิ่มการกรองตาม Size ถ้ามีข้อมูล
+    size_tag = 'Large' if tag_counts.get('Large', 0) >= tag_counts.get('Small', 0) else 'Small'
+    if tag_counts.get('Large', 0) > 0 or tag_counts.get('Small', 0) > 0:
+         size_filter = TAG_TO_PET_FILTER.get(size_tag, {})
+         # ใช้ตรรกะคล้ายๆ กับ personality filter ในการรวมเงื่อนไข
+         for key, value in size_filter.items():
+             if key in filters and isinstance(filters[key], list) and isinstance(value, list):
+                 filters[key] = list(set(filters[key] + value))
+             elif key not in filters: # เพิ่มเฉพาะถ้ายังไม่มี filter นี้
+                 filters[key] = value
+
+    # กรองสัตว์เลี้ยงที่ยังไม่ถูกรับเลี้ยง (is_adopted=False)
+    filters['is_adopted'] = False
+
+    # Debug: พิมพ์ filter ที่ใช้
+    print("Filtering pets with:", filters)
+
+    matching_pets = Pet.objects.filter(**filters)
+
+    # ถ้าไม่มีสัตว์เลี้ยงตรงเป๊ะ อาจจะลองลดเงื่อนไขลง หรือสุ่มจาก species หลัก
+    if not matching_pets.exists():
+        print("No exact match found, trying broader search...")
+        filters.pop('size__in', None) # ลองเอา size ออก
+        if dominant_personality:
+             # ลองเอา personality ออก เหลือแค่ species
+             personality_filter_keys = TAG_TO_PET_FILTER.get(dominant_personality, {}).keys()
+             for key in list(filters.keys()): # ใช้ list() เพื่อให้ลบ key ได้ขณะ loop
+                  if key in personality_filter_keys and key != 'species':
+                       del filters[key]
+        matching_pets = Pet.objects.filter(**filters)
+
+
+    # สุ่มเลือกสัตว์เลี้ยงมาแสดงผล (เช่น 3 ตัว)
+    suggested_pets = list(matching_pets)
+    random.shuffle(suggested_pets)
+    suggested_pets = suggested_pets[:3]
+
+    # ล้าง session หลังจากคำนวณผลแล้ว
+    del request.session['quiz_answers']
+
+    context = {
+        'result_description': result_description,
+        'suggested_pets': suggested_pets,
+        'tag_counts': tag_counts, # ส่งไปเผื่อ debug หรือแสดงผลเพิ่มเติม
+        'filters_used': filters # ส่งไปเผื่อ debug
+    }
+    return render(request, 'myapp/quiz_result.html', context)

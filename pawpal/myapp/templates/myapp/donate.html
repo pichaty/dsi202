@@ -29,19 +29,71 @@
     }
 
     /* Existing styles from your donate.html */
-    .page-header-title {
-        background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%);
-        color: white;
-        padding: 20px 15px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: 700;
-        font-family: 'Grandstander', cursive;
-        margin-top: 160px; /* Assuming fixed header height */
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        letter-spacing: 1px;
-    }
+    .donate-page-header { /* ใช้ class ใหม่ที่เราเพิ่มใน HTML */
+    background: linear-gradient(135deg, var(--pawpal-green) 0%, #3e7a42 100%); /* เปลี่ยนเป็นสีเขียว (ใช้ var หรือ hardcode) */
+    color: white;
+    padding: 30px 20px; /* ปรับ padding ให้เหมือน about.html */
+    text-align: center;
+    border-radius: 0 0 30px 30px; /* ความโค้งมนด้านล่าง */
+    /* ชดเชย header หลัก */
+    margin-bottom: 25px; /* ระยะห่างจาก content ด้านล่าง */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* ใช้ var(--card-shadow) ถ้ามี */
+    position: relative;
+    overflow: hidden; /* สำหรับ ::before, ::after ถ้าจะใช้ */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    letter-spacing: 1px;
+}
+.donate-page-header .page-title {
+   
+    font-family: 'Grandstander', cursive; /* << เปลี่ยน 'Grandstander', cursive เป็นชื่อฟอนต์ที่คุณต้องการ */
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+.donate-page-header::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255,255,255,0.08); /* ปรับ opacity หรือสีตามความเหมาะสม */
+    border-radius: 50%;
+}
+
+.donate-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.08); /* ปรับ opacity หรือสีตามความเหมาะสม */
+    border-radius: 50%;
+}
+
+/* สไตล์สำหรับ page-title และ page-subtitle ภายใน .donate-page-header */
+.donate-page-header .page-title {
+    font-family: 'Grandstander', cursive; /* ฟอนต์เดียวกับ about.html หรือฟอนต์ที่ต้องการ */
+    font-size: 28px; /* ปรับขนาดตามต้องการ */
+    font-weight: 700;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.donate-page-header .page-subtitle {
+    font-family: 'Sarabun', sans-serif; /* ฟอนต์เดียวกับ about.html หรือฟอนต์ที่ต้องการ */
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+    margin-top: 5px;
+}
+
 
     .content-area {
         padding: 20px;
@@ -338,9 +390,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-header-title">
-        <i class="fas fa-donate" style="margin-right: 8px;"></i> Donate
+   <div class="page-header donate-page-header"> {# เพิ่ม class donate-page-header เพื่อ styling เฉพาะ #}
+    <div class="page-title">
+        <i class="fas fa-donate" style="margin-right: 10px;"></i>Donate 
     </div>
+    <div class="page-subtitle">Your contribution makes a difference for animals in need.</div> {# เพิ่ม subtitle ถ้าต้องการ #}
+</div>
 
     <div class="content-area">
         <div class="mission-card">

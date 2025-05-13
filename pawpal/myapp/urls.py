@@ -31,4 +31,7 @@ urlpatterns = [
       path('accounts/my-adoptions/cancel/<int:application_id>/', views.cancel_adoption_application_view, name='cancel_adoption_application'),
       path('accounts/my-adoptions/history/', views.adoption_application_history_view, name='adoption_application_history'),
        path('notifications/', views.notifications_view, name='notifications_list'),
+    path('quiz/', views.quiz_start, name='quiz_start'),
+    path('quiz/question/<int:question_id>/', views.quiz_question, name='quiz_question'),
+    path('quiz/results/', views.quiz_results, name='quiz_results'),
 ]

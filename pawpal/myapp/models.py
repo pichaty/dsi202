@@ -28,7 +28,7 @@ class Pet(models.Model):
     disability = models.CharField(max_length=100, blank=True)
     photo = models.ImageField(upload_to='pets/', blank=True, null=True)
     pet_type = models.CharField(max_length=10, choices=PET_TYPE_CHOICES)
-    detail = models.CharField(max_length=200, blank=True)
+    detail = models.CharField(max_length=500, blank=True)
     favorited_by = models.ManyToManyField(User, related_name='favorite_pets', blank=True)
 
     def __str__(self):

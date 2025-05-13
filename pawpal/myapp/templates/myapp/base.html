@@ -7,23 +7,22 @@
     <title>{% block title %}PawPal{% endblock %}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Itim&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* Base styles for header, body, main, etc. */
-        :root { /* Define color variables here for consistency */
-            --primary: #d55e00;
-            --primary-light: #ffe0b2; /* Example light orange */
-            --primary-dark: #c05500;  /* Example dark orange */
-            --secondary: #8d6e63;
-            --green: #8db38b;
-            --green_dark: #38783a; /* For text on light green bg */
-            --green_light: #a7d7a9; /* For border on light green bg */
-            --light-orange: #d99a56;
-            --background: #f9f4e8;
-            --accent-red: #e8605c;
+        a {
+       
+        text-decoration: none !important; /* << ลบขีดเส้นใต้เสมอ */
+        transition: filter 0.2s ease;
+}
+         a:hover, a:focus {
+            text-decoration: none !important; /* << ย้ำว่าไม่เอาขีดเส้นใต้ */
+            /* ทำให้สีเข้มขึ้น โดยไม่เปลี่ยนสีไปเป็นสีอื่น */
+            filter: brightness(85%); /* << ทำให้สีปัจจุบันเข้มขึ้น (ปรับ % ได้) */
+            /* ไม่ต้องกำหนด color ที่นี่ เพื่อให้ใช้ filter แทน */
         }
-
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: var(--background);
@@ -305,13 +304,13 @@
                         <small>{{ user.email }}</small>
                     </div>
                     <ul>
-                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>Profile</a></li>
-                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>Adoption status</a></li>
-                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>History</a></li>
-                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>My paws</a></li>
-                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>Favorites</a></li>
-                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>My Donations</a></li>
-                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>Settings</a></li>
+                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>  Profile</a></li>
+                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>  Adoption status</a></li>
+                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>  History</a></li>
+                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>  My paws</a></li>
+                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>  Favorites</a></li>
+                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>  My Donations</a></li>
+                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>  Settings</a></li>
                         <li>
                             <a href="{% url 'notifications_list' %}">
                                 <i class="fas fa-bell"></i>Notification
