@@ -1,3 +1,2 @@
-# dsi202
+# dsi202 Pawpal project
 
-Pawpal project DSI201 123
