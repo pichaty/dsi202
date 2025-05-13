@@ -1,0 +1,237 @@
+{% extends 'myapp/base.html' %} {% comment %} หรือ base template อื่นๆ ที่คุณใช้งาน เช่น 'admin/base_site.html' หากต้องการให้คล้ายหน้า admin หลัก {% endcomment %}
+{% load static %}
+{% load i18n %} {# หากมีการใช้ i18n tags เช่น get_status_display ที่แปลภาษา #}
+
+{% block title %}{{ page_title|default:"Admin Dashboard" }}{% endblock %}
+
+{% block head_extra %}
+<style>
+    .dashboard-card {
+        margin-bottom: 1.5rem;
+    }
+    .dashboard-card .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .dashboard-card .card-text {
+        font-size: 0.9rem;
+        color: #e9ecef; /* สีข้อความรองใน card */
+    }
+    .dashboard-card.bg-primary .card-text { color: #cce5ff; }
+    .dashboard-card.bg-success .card-text { color: #d4edda; }
+    .dashboard-card.bg-info .card-text { color: #cff4fc; }
+    .dashboard-card.bg-warning .card-text { color: #fff3cd; } /* ปรับสีให้ตัดกับพื้นหลัง warning */
+
+    .list-group-item .badge {
+        font-size: 0.9em;
+    }
+    .card-header {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-6">
+            <h1 class="mb-0">{{ page_title|default:"Admin Dashboard" }}</h1>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-cog me-1"></i> Django Admin
+            </a>
+            {% comment %} สามารถเพิ่มปุ่มหรือลิงก์อื่นๆ ที่นี่ได้ {% endcomment %}
+        </div>
+    </div>
+
+
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card text-white bg-primary dashboard-card">
+                <div class="card-header">Total Users</div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ total_users|default:"N/A" }}</h4>
+                    <p class="card-text">{{ new_users_last_week|default:"0" }} new last week</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card text-white bg-success dashboard-card">
+                <div class="card-header">Total Pets</div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ total_pets|default:"N/A" }}</h4>
+                    <p class="card-text">{{ available_pets|default:"0" }} available for adoption</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card text-white bg-info dashboard-card">
+                <div class="card-header">Adoption Apps</div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ total_applications|default:"N/A" }}</h4>
+                    <p class="card-text">{{ pending_applications|default:"0" }} pending review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card text-dark bg-warning dashboard-card"> {# เปลี่ยน text-white เป็น text-dark สำหรับพื้นหลังสีอ่อน #}
+                <div class="card-header">Total Donations</div>
+                <div class="card-body">
+                    <h4 class="card-title">฿{{ total_donations_amount|default:"0.00" }}</h4>
+                    <p class="card-text">{{ total_donations_count|default:"0" }} transactions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-paw me-2"></i>Pet Statistics
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Pets Registered
+                        <span class="badge bg-primary rounded-pill">{{ total_pets|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Available for Adoption
+                        <span class="badge bg-success rounded-pill">{{ available_pets|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Already Adopted
+                        <span class="badge bg-secondary rounded-pill">{{ adopted_pets_count|default:"0" }}</span>
+                    </li>
+                    {% if pets_by_type %}
+                        {% for pet_type_stat in pets_by_type %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                           {{ pet_type_stat.pet_type|capfirst }}s
+                            <span class="badge bg-info rounded-pill">{{ pet_type_stat.count|default:"0" }}</span>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item">No pet type data available.</li>
+                    {% endif %}
+                    {% comment %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Pets Added Last Week
+                        <span class="badge bg-light text-dark rounded-pill">{{ recent_pets_added_count|default:"0" }}</span>
+                    </li>
+                    {% endcomment %}
+                </ul>
+                 <div class="card-footer text-muted">
+                    <small>Data reflects current records.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-file-alt me-2"></i>Adoption Application Statistics
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Applications
+                        <span class="badge bg-primary rounded-pill">{{ total_applications|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Pending Review
+                        <span class="badge bg-warning rounded-pill">{{ pending_applications|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Approved
+                        <span class="badge bg-success rounded-pill">{{ approved_applications|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Rejected
+                        <span class="badge bg-danger rounded-pill">{{ rejected_applications|default:"0" }}</span>
+                    </li>
+                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        New Applications (Last Week)
+                        <span class="badge bg-light text-dark rounded-pill">{{ recent_applications_count|default:"0" }}</span>
+                    </li>
+                </ul>
+                 <div class="card-footer text-muted">
+                    <small>Data reflects current application statuses.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-hand-holding-usd me-2"></i>Donation Statistics
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Donated Amount
+                        <span class="badge bg-success rounded-pill">฿{{ total_donations_amount|default:"0.00" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Donations Made
+                        <span class="badge bg-primary rounded-pill">{{ total_donations_count|default:"0" }}</span>
+                    </li>
+                    {% comment %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Active Donation Cases
+                        <span class="badge bg-info rounded-pill">{{ active_donation_cases|default:"0" }}</span>
+                    </li>
+                    {% endcomment %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        New Donations (Last Week)
+                        <span class="badge bg-light text-dark rounded-pill">{{ recent_donations_count|default:"0" }}</span>
+                    </li>
+                </ul>
+                 <div class="card-footer text-muted">
+                    <small>Data reflects all recorded donations.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-users me-2"></i>User Statistics
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Registered Users
+                        <span class="badge bg-primary rounded-pill">{{ total_users|default:"0" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        New Users (Last Week)
+                        <span class="badge bg-success rounded-pill">{{ new_users_last_week|default:"0" }}</span>
+                    </li>
+                </ul>
+                 <div class="card-footer text-muted">
+                    <small>Data reflects registered user accounts.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-tasks me-2"></i>Quick Actions
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'admin:myapp_pet_add' %}" class="btn btn-primary me-2 mb-2"><i class="fas fa-plus-circle me-1"></i> Add New Pet</a>
+                    <a href="{% url 'admin:myapp_adoptionapplication_changelist' %}" class="btn btn-info me-2 mb-2"><i class="fas fa-list-alt me-1"></i> View Adoption Applications</a>
+                    <a href="{% url 'admin:myapp_donationcase_add' %}" class="btn btn-success me-2 mb-2"><i class="fas fa-hand-holding-heart me-1"></i> Add Donation Case</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+    {% endcomment %}
+    
+
+</div>
+{% endblock %}

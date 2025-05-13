@@ -790,3 +790,81 @@ def quiz_results(request):
         'filters_used': filters # ส่งไปเผื่อ debug
     }
     return render(request, 'myapp/quiz_result.html', context)
+
+from django.shortcuts import render
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Count, Sum
+from .models import Pet, AdoptionApplication, DonationRecord, DonationCase # ตรวจสอบว่า import ครบถ้วน
+from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+
+@staff_member_required
+def admin_dashboard_view(request):
+    one_week_ago = timezone.now() - timedelta(days=7)
+
+    # --- สถิติสัตว์เลี้ยง ---
+    total_pets = Pet.objects.count()
+    available_pets = Pet.objects.filter(is_adopted=False).count()
+    adopted_pets_count = Pet.objects.filter(is_adopted=True).count()
+    
+    # ดึงข้อมูลสัตว์เลี้ยงตามประเภท (pet_type)
+    pets_by_type = Pet.objects.values('pet_type').annotate(count=Count('pet_type')).order_by('-count')
+    # ตัวอย่าง: [{'pet_type': 'dog', 'count': 10}, {'pet_type': 'cat', 'count': 5}]
+
+    # หมายเหตุ: สถิติ "สัตว์เลี้ยงที่เพิ่มล่าสุด" ถูกนำออกไปก่อน
+    # หากต้องการคุณสมบัตินี้ กรุณาเพิ่มฟิลด์ date_added (DateTimeField) ใน Pet model
+    # และ uncomment โค้ดด้านล่าง รวมถึงใน context และ template
+    # recent_pets_added_count = Pet.objects.filter(date_added__gte=one_week_ago).count()
+
+
+    # --- สถิติการขอรับอุปการะ ---
+    total_applications = AdoptionApplication.objects.count()
+    # ใช้ค่าคงที่จาก Model AdoptionApplication สำหรับ status
+    pending_applications = AdoptionApplication.objects.filter(status=AdoptionApplication.STATUS_PENDING).count()
+    approved_applications = AdoptionApplication.objects.filter(status=AdoptionApplication.STATUS_APPROVED).count()
+    rejected_applications = AdoptionApplication.objects.filter(status=AdoptionApplication.STATUS_REJECTED).count()
+    # ใช้ apply_date สำหรับการนับคำขอล่าสุด
+    recent_applications_count = AdoptionApplication.objects.filter(apply_date__gte=one_week_ago).count()
+
+    # --- สถิติการบริจาค ---
+    total_donations_amount_data = DonationRecord.objects.aggregate(total=Sum('amount'))
+    total_donations_amount = total_donations_amount_data['total'] or 0
+    total_donations_count = DonationRecord.objects.count()
+    
+    # หมายเหตุ: สถิติ "เคสบริจาคที่กำลังเปิดรับ" ถูกนำออกไปก่อน
+    # หากต้องการคุณสมบัตินี้ กรุณาเพิ่มฟิลด์ is_active (BooleanField) ใน DonationCase model
+    # และ uncomment โค้ดด้านล่าง รวมถึงใน context และ template
+    # active_donation_cases = DonationCase.objects.filter(is_active=True).count()
+
+    # ใช้ donated_at สำหรับการนับการบริจาคล่าสุด
+    recent_donations_count = DonationRecord.objects.filter(donated_at__gte=one_week_ago).count()
+    
+    # --- สถิติผู้ใช้งาน ---
+    total_users = User.objects.count()
+    new_users_last_week = User.objects.filter(date_joined__gte=one_week_ago).count()
+
+    context = {
+        'total_pets': total_pets,
+        'available_pets': available_pets,
+        'adopted_pets_count': adopted_pets_count,
+        'pets_by_type': pets_by_type,
+        # 'recent_pets_added_count': recent_pets_added_count, # ถูกนำออก
+
+        'total_applications': total_applications,
+        'pending_applications': pending_applications,
+        'approved_applications': approved_applications,
+        'rejected_applications': rejected_applications,
+        'recent_applications_count': recent_applications_count,
+
+        'total_donations_amount': f'{total_donations_amount:,.2f}',
+        'total_donations_count': total_donations_count,
+        # 'active_donation_cases': active_donation_cases, # ถูกนำออก
+        'recent_donations_count': recent_donations_count,
+
+        'total_users': total_users,
+        'new_users_last_week': new_users_last_week,
+        
+        'page_title': 'Admin Dashboard'
+    }
+    return render(request, 'myapp/admin_dashboard.html', context)

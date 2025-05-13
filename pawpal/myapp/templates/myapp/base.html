@@ -7,10 +7,10 @@
     <title>{% block title %}PawPal{% endblock %}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Itim&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Itim&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Mitr:wght@200;300;400;500;600;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&family=Quicksand:wght@300..700&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
         a {
        
@@ -24,7 +24,7 @@
             /* ไม่ต้องกำหนด color ที่นี่ เพื่อให้ใช้ filter แทน */
         }
         body {
-            font-family: 'Sarabun', sans-serif;
+            font-family: 'Sarabun', sans-serif; /* หมายเหตุ: Sarabun ไม่ได้อยู่ใน Google Fonts link ด้านบน อาจจะต้องตรวจสอบอีกครั้ง */
             background-color: var(--background);
             margin: 0;
             padding-top: 160px; /* Height of fixed header */
@@ -144,10 +144,10 @@
 
         .profile-dropdown ul li a:hover {
             background-color: #f5f5f5;
-            color: var(--primary);
+            color: var(--primary); /* คุณอาจจะต้องกำหนดค่า --primary ใน CSS ของคุณ */
         }
         .profile-dropdown ul li a:hover i {
-            color: var(--primary);
+            color: var(--primary); /* คุณอาจจะต้องกำหนดค่า --primary ใน CSS ของคุณ */
         }
 
 
@@ -161,14 +161,14 @@
 
 
         .logout-link {
-            color: var(--primary);
+            color: var(--primary); /* คุณอาจจะต้องกำหนดค่า --primary ใน CSS ของคุณ */
             text-decoration: none;
             font-weight: bold;
             font-size: 0.9em;
         }
         .logout-link:hover {
             text-decoration: underline;
-            color: var(--accent-red);
+            color: var(--accent-red); /* คุณอาจจะต้องกำหนดค่า --accent-red ใน CSS ของคุณ */
         }
 
         .logo-container {
@@ -223,7 +223,7 @@
         /* Style ทั่วไปสำหรับ Notification Count Badges */
         .notification-count {
             position: absolute;
-            background-color: var(--accent-red);
+            background-color: var(--accent-red); /* คุณอาจจะต้องกำหนดค่า --accent-red ใน CSS ของคุณ */
             color: white;
             border-radius: 50%;
             width: 18px;
@@ -274,11 +274,11 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .favorite-icon i.fas.fa-heart { color: #ccc; }
-        .favorite-icon i.fas.fa-heart.active { color: var(--accent-red); }
+        .favorite-icon i.fas.fa-heart.active { color: var(--accent-red); } /* คุณอาจจะต้องกำหนดค่า --accent-red */
 
         /* Badge for notification count inside dropdown menu */
         .dropdown-notification-badge { /* เปลี่ยนชื่อ class เพื่อไม่ให้ซ้ำ */
-            background-color: var(--accent-red);
+            background-color: var(--accent-red); /* คุณอาจจะต้องกำหนดค่า --accent-red */
             color: white;
             border-radius: 50%;
             padding: 2px 6px;
@@ -304,22 +304,36 @@
                         <small>{{ user.email }}</small>
                     </div>
                     <ul>
-                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i>  Profile</a></li>
-                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i>  Adoption status</a></li>
-                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i>  History</a></li>
-                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i>  My paws</a></li>
-                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i>  Favorites</a></li>
-                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i>  My Donations</a></li>
-                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i>  Settings</a></li>
+                        <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i> Profile</a></li>
+                        <li><a href="{% url 'my_adoption_applications' %}"><i class="fas fa-file-alt"></i> Adoption status</a></li>
+                        <li><a href="{% url 'adoption_application_history' %}"><i class="fas fa-history"></i> History</a></li>
+                        <li><a href="{% url 'my_adopted_pets' %}"><i class="fas fa-paw"></i> My paws</a></li>
+                        <li><a href="{% url 'favorites' %}"><i class="fas fa-heart"></i> Favorites</a></li>
+                        <li><a href="{% url 'my_donations' %}"><i class="fas fa-donate"></i> My Donations</a></li>
+                        <li><a href="{% url 'account_settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
                         <li>
                             <a href="{% url 'notifications_list' %}">
                                 <i class="fas fa-bell"></i>Notification
                                 {% if unread_notifications_count > 0 %}
-                                    <span class="dropdown-notification-badge">{{ unread_notifications_count }}</span> {# <--- เปลี่ยน class ที่นี่ #}
+                                    <span class="dropdown-notification-badge">{{ unread_notifications_count }}</span>
                                 {% endif %}
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
+
+                        {% if user.is_staff %}
+                        <li>
+                            <a href="{% url 'admin_dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i>Admin Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'admin:index' %}">
+                                <i class="fas fa-cogs"></i>Django Admin
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        {% endif %}
                         <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
                     </ul>
                 </div>
@@ -340,13 +354,13 @@
             <a href="{% url 'favorites' %}" class="favorite-icon-link" title="My Favorites">
                 <img src="{% static 'myapp/images/favorite_home_icon.png' %}" alt="Favorites" class="favorite-icon-img">
                 {% if favorite_count > 0 %}
-                    <span class="notification-count favorite-count-badge">{{ favorite_count }}</span> {# ใช้ class ใหม่ #}
+                    <span class="notification-count favorite-count-badge">{{ favorite_count }}</span>
                 {% endif %}
             </a>
-            <a href="{% url 'notifications_list' %}" class="notifications-link" title="Notifications"> {# ใช้ class ใหม่ #}
-                 <img src="{% static 'myapp/images/noti.png' %}" alt="Notifications Icon" class="notification-bell-icon"> {# ใช้ class ใหม่ #}
+            <a href="{% url 'notifications_list' %}" class="notifications-link" title="Notifications">
+                 <img src="{% static 'myapp/images/noti.png' %}" alt="Notifications Icon" class="notification-bell-icon">
                 {% if unread_notifications_count > 0 %}
-                    <span class="notification-count notification-bell-badge">{{ unread_notifications_count }}</span> {# ใช้ class ใหม่ #}
+                    <span class="notification-count notification-bell-badge">{{ unread_notifications_count }}</span>
                 {% endif %}
             </a>
         </div>

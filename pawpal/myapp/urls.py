@@ -34,4 +34,5 @@ urlpatterns = [
     path('quiz/', views.quiz_start, name='quiz_start'),
     path('quiz/question/<int:question_id>/', views.quiz_question, name='quiz_question'),
     path('quiz/results/', views.quiz_results, name='quiz_results'),
+     path('admin-dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
 ]
