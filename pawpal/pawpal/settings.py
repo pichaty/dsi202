@@ -17,7 +17,7 @@ from dotenv import load_dotenv # เพิ่มบรรทัดนี้
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# # โหลดค่าจาก .env # เพิ่มส่วนนี้
+# # โหลดค่าจาก .env 
 dotenv_path = BASE_DIR / '.env'
 load_dotenv(dotenv_path=dotenv_path)
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -145,7 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-# STATIC_ROOT = BASE_DIR / "staticfiles" # Uncomment for production if using collectstatic
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -170,9 +170,7 @@ ACCOUNT_LOGIN_METHODS = ['username', 'email'] # New setting for login methods
 ACCOUNT_LOGIN_BY_USERNAME = True # Explicitly allow login by username
 ACCOUNT_LOGIN_BY_EMAIL = True    # Explicitly allow login by email
 
-# ACCOUNT_EMAIL_REQUIRED = True                   # Deprecated
-# ACCOUNT_USERNAME_REQUIRED = True                # Deprecated
-# ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True      # Deprecated
+
 # Replace the above three with ACCOUNT_SIGNUP_FIELDS
 ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password*'] # '*' means required. 'password1*' and 'password2*' will be handled if password_confirmation is needed.
 # If you want password confirmation, allauth will handle it by default if password input is present.
@@ -227,3 +225,4 @@ CHANNEL_LAYERS = {
     },
 }
 SOCIALACCOUNT_AUTO_SIGNUP = True 
+
